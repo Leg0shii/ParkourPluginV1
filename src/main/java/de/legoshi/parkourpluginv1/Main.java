@@ -42,7 +42,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
+        // ko ni chi wa
         mySQLManager.savingAllPlayerDataToDB();
 
     }
