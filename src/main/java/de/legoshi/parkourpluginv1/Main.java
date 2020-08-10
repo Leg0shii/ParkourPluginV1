@@ -10,6 +10,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Main extends JavaPlugin {
+    //Im KingBranBran
     // Hello
     public static Main instance;
     public AsyncMySQL mySQL;
