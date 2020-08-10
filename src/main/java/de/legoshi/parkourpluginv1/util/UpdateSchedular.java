@@ -17,7 +17,6 @@ public class UpdateSchedular {
 
                     Main instance = Main.getInstance();
                     PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(all);
-                    instance.playerManager.calculateRanking(all);
 
                     instance.playerManager.updatePlaytimeOfPlayer(playerObject);
 
