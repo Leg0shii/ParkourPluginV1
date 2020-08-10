@@ -27,6 +27,7 @@ public final class Main extends JavaPlugin {
     public void onEnable() {
 
         //testcomment
+        //nexttest
 
         initializeMethods();
         this.mySQL = mySQLManager.initializeTables();
