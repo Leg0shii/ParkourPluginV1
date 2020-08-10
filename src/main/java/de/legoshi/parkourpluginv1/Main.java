@@ -25,6 +25,8 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
 
+        //testcomment
+
         initializeMethods();
         this.mySQL = mySQLManager.initializeTables();
         mapObjectMananger.getAllMapsFromDB();
