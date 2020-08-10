@@ -1,0 +1,15 @@
+name: ParkourPluginV1
+version: ${project.version}
+main: de.legoshi.parkourpluginv1.Main
+authors: [Legoshi]
+description: Plugin with some Parkour Features
+
+commands:
+  ranked:
+  createRankedMap:
+  ppstats:
+  pptop:
+  maptop:
+  bestpp:
+
+
