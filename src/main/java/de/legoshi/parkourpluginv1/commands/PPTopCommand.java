@@ -14,65 +14,77 @@ import java.util.function.Consumer;
 
 public class PPTopCommand implements CommandExecutor {
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+			@Override
+			public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        AsyncMySQL mySQL = Main.getInstance().mySQL;
+						AsyncMySQL mySQL = Main.getInstance().mySQL;
+						Main instance = Main.getInstance();
 
-        if (!(sender instanceof Player)) return true;
+						if (!(sender instanceof Player)) return true;
 
-        Player player = ((Player) sender).getPlayer();
+						Player player = ((Player) sender).getPlayer();
 
-        if (args.length == 0) {
+						mySQL.query("SELECT ppcountp, playername, playeruuid FROM tablename ORDER BY ppcountp DESC;", new Consumer<ResultSet>() {
 
-            mySQL.query("SELECT ppcountp, playername, playeruuid FROM tablename ORDER BY ppcountp DESC;", new Consumer<ResultSet>() {
+									@Override
+									public void accept(ResultSet resultSet) {
 
-                @Override
-                public void accept(ResultSet resultSet) {
+												try {
 
-                    int i = 1;
+															int i = 1;
+															int pageAmount = 1;
 
-                    try {
+															if (args.length == 1) {
 
-                        if(resultSet.next()) {
+																		instance.mySQLManager.getPages(resultSet);
+																		player.sendMessage("page entry: " + Integer.parseInt(args[0]));
 
+																		if((Integer.parseInt(args[0])-1) == instance.mySQLManager.getPages(resultSet)) {
 
-                            player.sendMessage(Message.MSG_HEADERCOURSECLEAR.getRawMessage());
+																					pageAmount = Integer.parseInt(args[0]);
+																					player.sendMessage("HELLO");
 
-                            do {
+																		}
 
-                                player.sendMessage(Message.MSG_COURSECLEAR.getRawMessage().replace("{num}", Integer.toString(i))
-                                    .replace("{player}", resultSet.getString("playername"))
-                                    .replace("{ppscore}", Double.toString(resultSet.getDouble("ppcountp"))));
+																		else {
 
-                                i++;
+																					player.sendMessage(Message.ERR_PAGENOTEXIST.getMessage());
+																					return;
 
-                            } while (i < 11 && resultSet.next());
+																		}
 
-                            player.sendMessage(Message.MSG_FOOTERCOURSECLEAR.getRawMessage());
+															}
 
-                        }
+															resultSet.first();
 
-                        } catch (SQLException throwables) {
+															if (resultSet.next()) {
 
-                            throwables.printStackTrace();
+																		player.sendMessage(Message.MSG_HEADERCOURSECLEAR.getRawMessage());
+																		resultSet.absolute(1+((pageAmount-1)*10));
 
-                        }
+																		do {
 
+																					player.sendMessage(Message.MSG_COURSECLEAR.getRawMessage().replace("{num}", Integer.toString(i))
+																							.replace("{player}", resultSet.getString("playername"))
+																							.replace("{ppscore}", Double.toString(resultSet.getDouble("ppcountp"))));
 
-                }
+																					i++;
 
-            });
+																		} while (i < 11 && resultSet.next());
 
-        } else {
+																		player.sendMessage("Page: " + instance.mySQLManager.getPages(resultSet));
+																		player.sendMessage(Message.MSG_FOOTERCOURSECLEAR.getRawMessage());
 
-            player.sendMessage(Message.ERR_wrongCommandInput.getMessage());
-            return false;
+															}
 
-        }
+												} catch (SQLException throwables) { throwables.printStackTrace(); }
 
-        return false;
+									}
 
-    }
+						});
+
+						return false;
+
+			}
 
 }

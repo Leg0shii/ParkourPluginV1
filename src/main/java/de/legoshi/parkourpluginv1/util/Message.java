@@ -59,7 +59,8 @@ public enum Message {
     ERR_MAPTOPCOMMAND("/maptop <mapID> <fails/pp/time>"),
     ERR_BESTPPCOMMAND("/bestpp <playername>"),
     ERR_PPSTATSCOMMAND("/ppstats"),
-    ERR_PPTOPCOMMAND("/pptop");
+    ERR_PPTOPCOMMAND("/pptop"),
+    ERR_PAGENOTEXIST("This page doesnt exist...");
 
 
 

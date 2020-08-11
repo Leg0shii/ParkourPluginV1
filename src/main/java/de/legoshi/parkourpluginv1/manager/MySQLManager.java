@@ -98,4 +98,20 @@ public class MySQLManager {
 
     }
 
+    public int getPages(ResultSet resultSet) throws SQLException {
+
+        int page = 0;
+
+        if(resultSet.next()) {
+
+            resultSet.last();
+            page = (int) Math.ceil((double) resultSet.getRow()/10.0);
+            Bukkit.getConsoleSender().sendMessage("" + page);
+
+        }
+
+        return page;
+
+    }
+
 }
