@@ -30,6 +30,8 @@ public final class Main extends JavaPlugin {
         mapObjectMananger.getAllMapsFromDB();
 
         updateSchedular.onRun();
+        //so DB doesnt loose connection
+        mySQLManager.keepMySQLbusy();
 
         ListenerRegistration();
         CommandRegistration();

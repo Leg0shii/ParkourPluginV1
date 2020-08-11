@@ -6,7 +6,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 
+import java.sql.ResultSet;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 public class ScoreboardHelper {
 

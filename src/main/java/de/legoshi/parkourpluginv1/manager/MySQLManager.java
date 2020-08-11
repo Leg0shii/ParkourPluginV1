@@ -114,4 +114,29 @@ public class MySQLManager {
 
     }
 
+    public void keepMySQLbusy() {
+
+        Bukkit.getScheduler().runTaskTimer(Main.getInstance(), new Runnable() {
+
+            @Override
+            public void run() {
+
+                Main instance = Main.getInstance();
+                AsyncMySQL mySQL = instance.mySQL;
+
+                mySQL.query("SELECT ppcountc FROM clears WHERE playername = 'Leg0shi_';", new Consumer<ResultSet>() {
+
+                    @Override
+                    public void accept(ResultSet resultSet) {
+
+                    }
+
+                });
+
+            }
+
+        }, 0, (300*20));
+
+    }
+
 }
