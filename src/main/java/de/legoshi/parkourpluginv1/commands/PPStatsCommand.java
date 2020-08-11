@@ -27,7 +27,7 @@ public class PPStatsCommand implements CommandExecutor {
 
         if (!(args.length == 0)) {
 
-            player.sendMessage(Message.ERR_wrongCommandInput.getMessage());
+            player.sendMessage(Message.ERR_PPSTATSCOMMAND.getMessage());
             return true;
 
         }

@@ -37,13 +37,30 @@ public enum Message {
     MSG_COURSECLEAR("{num}. {player}: " +
         ChatColor.DARK_AQUA + ChatColor.BOLD + "{ppscore}pp"),
     MSG_FOOTERCOURSECLEAR("" + ChatColor.AQUA + ChatColor.STRIKETHROUGH + "                                   "),
-    MSG_ANNOUNCEMENT_FAST("" + ChatColor.GOLD + ChatColor.BOLD + "{player}" + ChatColor.RESET +
-        ChatColor.GREEN + " got #1 on" +
-        ChatColor.YELLOW + " {mapname} " +
-        ChatColor.GREEN + " with a score of "+
-        ChatColor.GOLD + " {ppscore}!"),
-    MSG_SHOWBESTTENFAILS("is {player} with {theme}: {score}!"),
-    MSG_ranking("Rank: {ranking}");
+    MSG_ANNOUNCEMENT_FAST("" + ChatColor.WHITE + ChatColor.BOLD + "{player}" + ChatColor.RESET +
+        ChatColor.GRAY + " got #1 on" +
+        ChatColor.WHITE + " {mapname}" +
+        ChatColor.GRAY + " with a score of"+
+        ChatColor.WHITE + ChatColor.BOLD + " {ppscore}!"),
+    MSG_SHOWBESTTENFAILS("is {player} with {theme}: {score}pp."),
+    MSG_ranking("Rank: {ranking}"),
+
+    //helpmessages
+    ERR_HELPCOMMAND("Please type /pphelp to get informations for the commands!"),
+    MSG_HELPHEADER("\n" + ChatColor.WHITE + ChatColor.BOLD + "           Help" +
+        "\n" + ChatColor.RESET + ChatColor.WHITE + ChatColor.STRIKETHROUGH + "                                   "),
+    MSG_HELPFOOTER("" + ChatColor.WHITE + ChatColor.STRIKETHROUGH + "                                   "),
+    MSG_HELPMAPTOP("/maptop - Displays top plays of a selected Map."),
+    MSG_HELPPBESTPP("/bestpp - Shows your/others best PP-Scores."),
+    MSG_HELPPPSTATS("/ppstats - Shows your personal Serverstats."),
+    MSG_HELPPPTOP("/pptop - Shows the global Leaderboard for total PP."),
+
+    //errormessages for commands
+    ERR_MAPTOPCOMMAND("/maptop <mapID> <fails/pp/time>"),
+    ERR_BESTPPCOMMAND("/bestpp <playername>"),
+    ERR_PPSTATSCOMMAND("/ppstats"),
+    ERR_PPTOPCOMMAND("/pptop");
+
 
 
     String m;

@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.function.Consumer;
 
-public class PPPlaysCommand implements CommandExecutor {
+public class PPBestCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -22,44 +22,35 @@ public class PPPlaysCommand implements CommandExecutor {
 
         Player player = ((Player) sender).getPlayer();
 
-        // /ppplays <player>
-
         if(args.length == 0) {
 
-            showTopPlays(player, player);
+            showTopPlays(player, player.getName());
+            return false;
 
         } else if (args.length == 1) {
 
-            if(!(Bukkit.getPlayer(args[0]) == null)) {
-
-                showTopPlays(player, Bukkit.getPlayer(args[0]));
-
-            } else {
-
-                player.sendMessage(Message.Prefix.getRawMessage() + "Player not online :(");
-
-            }
+            showTopPlays(player, args[0]);
+            return false;
 
         }
 
-
-
+        player.sendMessage(Message.ERR_BESTPPCOMMAND.getMessage());
         return false;
 
     }
 
-    private void showTopPlays(Player player, Player playerInQuestion) {
+    private void showTopPlays(Player player, String playername) {
 
         Main instance = Main.getInstance();
         AsyncMySQL mySQL = instance.mySQL;
 
-        mySQL.query("SELECT * FROM clears, maps WHERE clears.mapid = maps.mapid AND playername = '" + playerInQuestion.getName() + "' ORDER BY clears.ppcountc DESC;",
+        mySQL.query("SELECT * FROM clears, maps WHERE clears.mapid = maps.mapid AND playername = '" + playername + "' ORDER BY clears.ppcountc DESC;",
             new Consumer<ResultSet>() {
 
             @Override
             public void accept(ResultSet resultSet) {
 
-                int index = 2;
+                int index = 1;
                 String mapName;
                 int fails;
                 double ppcount;
@@ -69,16 +60,7 @@ public class PPPlaysCommand implements CommandExecutor {
 
                     if(resultSet.next() && resultSet.getBoolean("cleared")) {
 
-                        mapName = resultSet.getString("mapname");
-                        fails = resultSet.getInt("pfails");
-                        ppcount = resultSet.getDouble("ppcountc");
-                        time = resultSet.getDouble("ptime");
-
-                        player.sendMessage("Top Plays from: " + playerInQuestion.getName());
-                        player.sendMessage("| 1. Map: " + mapName + " Fails: " + fails + " PP: " + ppcount + " time: " + time);
-
-
-                        while(resultSet.next() && index < 10 && resultSet.getBoolean("cleared")) {
+                        do {
 
                             mapName = resultSet.getString("mapname");
                             fails = resultSet.getInt("pfails");
@@ -88,7 +70,7 @@ public class PPPlaysCommand implements CommandExecutor {
                             player.sendMessage("| " + index + ". Map: " + mapName + " Fails: " + fails + " PP: " + ppcount + " time: " + time);
                             index++;
 
-                        }
+                        } while(resultSet.next() && index < 10 && resultSet.getBoolean("cleared"));
 
                     } else {
 

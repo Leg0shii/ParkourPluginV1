@@ -47,7 +47,7 @@ public class MapTopCommand implements CommandExecutor {
                 return false;
 
             default:
-                player.sendMessage("/maptop <mapId> <fails/pp/time>");
+                player.sendMessage(Message.ERR_MAPTOPCOMMAND.getMessage());
                 return false;
 
 
@@ -65,7 +65,7 @@ public class MapTopCommand implements CommandExecutor {
             @Override
             public void accept(ResultSet resultSet) {
 
-                int index = 2;
+                int index = 1;
 
                 try {
 
@@ -73,12 +73,7 @@ public class MapTopCommand implements CommandExecutor {
 
                         if (resultSet.getBoolean("cleared")) {
 
-                            player.sendMessage(Message.Prefix.getRawMessage() + "§7 || 1. " + Message.MSG_SHOWBESTTENFAILS.getRawMessage()
-                                .replace("{player}", resultSet.getString("playername"))
-                                .replace("{theme}", objectname)
-                                .replace("{score}", Integer.toString(resultSet.getInt(object))));
-
-                            while (resultSet.next() && index < 10 && resultSet.getBoolean("cleared")) {
+                            do {
 
                                 player.sendMessage(Message.Prefix.getRawMessage() + "§7 || " + index + ". " + Message.MSG_SHOWBESTTENFAILS.getRawMessage()
                                     .replace("{player}", resultSet.getString("playername"))
@@ -86,7 +81,7 @@ public class MapTopCommand implements CommandExecutor {
                                     .replace("{score}", Integer.toString(resultSet.getInt(object))));
                                 index++;
 
-                            }
+                            } while (resultSet.next() && index < 10 && resultSet.getBoolean("cleared"));
 
                         } else {
 

@@ -34,25 +34,31 @@ public class PPTopCommand implements CommandExecutor {
 
                     try {
 
-                        player.sendMessage(Message.MSG_HEADERCOURSECLEAR.getRawMessage());
+                        if(resultSet.next()) {
 
-                        while (i < 11 && resultSet.next()) {
 
-                            player.sendMessage(Message.MSG_COURSECLEAR.getRawMessage().replace("{num}", Integer.toString(i))
-                                .replace("{player}", resultSet.getString("playername"))
-                                .replace("{ppscore}", Double.toString(resultSet.getDouble("ppcountp"))));
+                            player.sendMessage(Message.MSG_HEADERCOURSECLEAR.getRawMessage());
 
-                            i++;
+                            do {
+
+                                player.sendMessage(Message.MSG_COURSECLEAR.getRawMessage().replace("{num}", Integer.toString(i))
+                                    .replace("{player}", resultSet.getString("playername"))
+                                    .replace("{ppscore}", Double.toString(resultSet.getDouble("ppcountp"))));
+
+                                i++;
+
+                            } while (i < 11 && resultSet.next());
+
+                            player.sendMessage(Message.MSG_FOOTERCOURSECLEAR.getRawMessage());
 
                         }
 
-                        player.sendMessage(Message.MSG_FOOTERCOURSECLEAR.getRawMessage());
+                        } catch (SQLException throwables) {
 
-                    } catch (SQLException throwables) {
+                            throwables.printStackTrace();
 
-                        throwables.printStackTrace();
+                        }
 
-                    }
 
                 }
 
