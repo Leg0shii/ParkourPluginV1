@@ -4,6 +4,7 @@ import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.AsyncMySQL;
 import de.legoshi.parkourpluginv1.util.Message;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -54,53 +55,57 @@ public class PPPlaysCommand implements CommandExecutor {
         AsyncMySQL mySQL = instance.mySQL;
 
         mySQL.query("SELECT * FROM clears, maps WHERE clears.mapid = maps.mapid AND playername = '" + playerInQuestion.getName() + "' ORDER BY clears.ppcountc DESC;",
-            new Consumer<ResultSet>() {
+                new Consumer<ResultSet>() {
 
-            @Override
-            public void accept(ResultSet resultSet) {
+                    @Override
+                    public void accept(ResultSet resultSet) {
 
-                int index = 2;
-                String mapName;
-                int fails;
-                double ppcount;
-                double time;
+                        int index = 2;
+                        String mapName;
+                        int fails;
+                        double ppcount;
+                        double time;
 
-                try {
+                        try {
 
-                    if(resultSet.next() && resultSet.getBoolean("cleared")) {
+                            if(resultSet.next() && resultSet.getBoolean("cleared")) {
 
-                        mapName = resultSet.getString("mapname");
-                        fails = resultSet.getInt("pfails");
-                        ppcount = resultSet.getDouble("ppcountc");
-                        time = resultSet.getDouble("ptime");
+                                mapName = resultSet.getString("mapname");
+                                fails = resultSet.getInt("pfails");
+                                ppcount = resultSet.getDouble("ppcountc");
+                                time = resultSet.getDouble("ptime");
 
-                        player.sendMessage("Top Plays from: " + playerInQuestion.getName());
-                        player.sendMessage("| 1. Map: " + mapName + " Fails: " + fails + " PP: " + ppcount + " time: " + time);
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&9&m                                            "));
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('&', " &f&l" + player.getName() + " &9&lTop Plays"));
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&9&m                                            "));
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('&'," 1. " + mapName + " &a" + time + " &c" + fails + " fails &6" + ppcount + "pp"));
 
 
-                        while(resultSet.next() && index < 10 && resultSet.getBoolean("cleared")) {
+                                while(resultSet.next() && index < 10 && resultSet.getBoolean("cleared")) {
 
-                            mapName = resultSet.getString("mapname");
-                            fails = resultSet.getInt("pfails");
-                            ppcount = resultSet.getDouble("ppcountc");
-                            time = resultSet.getDouble("ptime");
+                                    mapName = resultSet.getString("mapname");
+                                    fails = resultSet.getInt("pfails");
+                                    ppcount = resultSet.getDouble("ppcountc");
+                                    time = resultSet.getDouble("ptime");
 
-                            player.sendMessage("| " + index + ". Map: " + mapName + " Fails: " + fails + " PP: " + ppcount + " time: " + time);
-                            index++;
+                                    player.sendMessage(ChatColor.translateAlternateColorCodes('&'," " + index + ". " + mapName + " &a" + time + " &c" + fails + " fails &6" + ppcount + "pp"));
+                                    index++;
 
-                        }
+                                }
 
-                    } else {
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&9&m                                            "));
 
-                        player.sendMessage(Message.Prefix.getRawMessage() + "No Stats available");
+                            } else {
+
+                                player.sendMessage(Message.Prefix.getRawMessage() + "No Stats available");
+
+                            }
+
+                        } catch (SQLException throwables) { throwables.printStackTrace(); }
 
                     }
 
-                } catch (SQLException throwables) { throwables.printStackTrace(); }
-
-            }
-
-        });
+                });
 
     }
 
