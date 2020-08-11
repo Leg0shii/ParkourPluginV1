@@ -4,7 +4,6 @@ import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.AsyncMySQL;
 import de.legoshi.parkourpluginv1.util.Message;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -75,10 +74,8 @@ public class PPPlaysCommand implements CommandExecutor {
                         ppcount = resultSet.getDouble("ppcountc");
                         time = resultSet.getDouble("ptime");
 
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&9&m                                            "));
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', " &f&l" + player.getName() + " &9&lTop Plays"));
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&9&m                                            "));
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&'," 1. " + mapName + " &a" + time + " &c" + fails + " fails &6" + ppcount + "pp"));
+                        player.sendMessage("Top Plays from: " + playerInQuestion.getName());
+                        player.sendMessage("| 1. Map: " + mapName + " Fails: " + fails + " PP: " + ppcount + " time: " + time);
 
 
                         while(resultSet.next() && index < 10 && resultSet.getBoolean("cleared")) {
@@ -88,12 +85,10 @@ public class PPPlaysCommand implements CommandExecutor {
                             ppcount = resultSet.getDouble("ppcountc");
                             time = resultSet.getDouble("ptime");
 
-                            player.sendMessage(ChatColor.translateAlternateColorCodes('&'," " + index + ". " + mapName + " &a" + time + " &c" + fails + " fails &6" + ppcount + "pp"));
+                            player.sendMessage("| " + index + ". Map: " + mapName + " Fails: " + fails + " PP: " + ppcount + " time: " + time);
                             index++;
 
                         }
-
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&9&m                                            "));
 
                     } else {
 
