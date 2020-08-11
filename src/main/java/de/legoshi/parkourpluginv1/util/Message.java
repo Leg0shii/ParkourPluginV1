@@ -60,7 +60,10 @@ public enum Message {
     ERR_BESTPPCOMMAND("/bestpp <playername>"),
     ERR_PPSTATSCOMMAND("/ppstats"),
     ERR_PPTOPCOMMAND("/pptop"),
-    ERR_PAGENOTEXIST("This page doesnt exist...");
+    ERR_PAGENOTEXIST("This page doesnt exist..."),
+
+    //pageMessage
+    MSG_PAGEAMOUNT(ChatColor.GRAY + "       Page " + ChatColor.WHITE + "{page}" + ChatColor.GRAY + "/" + "{pagetotal}");
 
 
 

@@ -3,6 +3,7 @@ package de.legoshi.parkourpluginv1.commands;
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.AsyncMySQL;
 import de.legoshi.parkourpluginv1.util.Message;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -33,16 +34,15 @@ public class PPTopCommand implements CommandExecutor {
 
 															int i = 1;
 															int pageAmount = 1;
+															int totalPageAmount = instance.mySQLManager.getPages(resultSet);
 
 															if (args.length == 1) {
 
-																		instance.mySQLManager.getPages(resultSet);
-																		player.sendMessage("page entry: " + Integer.parseInt(args[0]));
+																		int enteredPage = Integer.parseInt(args[0]);
 
-																		if((Integer.parseInt(args[0])-1) == instance.mySQLManager.getPages(resultSet)) {
+																		if(enteredPage <= totalPageAmount && enteredPage >= 1) {
 
-																					pageAmount = Integer.parseInt(args[0]);
-																					player.sendMessage("HELLO");
+																					pageAmount = enteredPage;
 
 																		}
 
@@ -55,12 +55,11 @@ public class PPTopCommand implements CommandExecutor {
 
 															}
 
-															resultSet.first();
+															resultSet.absolute(((pageAmount-1)*10));
 
 															if (resultSet.next()) {
 
 																		player.sendMessage(Message.MSG_HEADERCOURSECLEAR.getRawMessage());
-																		resultSet.absolute(1+((pageAmount-1)*10));
 
 																		do {
 
@@ -72,8 +71,10 @@ public class PPTopCommand implements CommandExecutor {
 
 																		} while (i < 11 && resultSet.next());
 
-																		player.sendMessage("Page: " + instance.mySQLManager.getPages(resultSet));
 																		player.sendMessage(Message.MSG_FOOTERCOURSECLEAR.getRawMessage());
+																		player.sendMessage(Message.MSG_PAGEAMOUNT.getRawMessage()
+																				.replace("{page}", Integer.toString(pageAmount))
+																				.replace("{pagetotal}", Integer.toString(totalPageAmount)));
 
 															}
 

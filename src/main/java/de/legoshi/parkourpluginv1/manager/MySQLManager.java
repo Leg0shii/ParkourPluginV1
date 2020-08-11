@@ -106,10 +106,10 @@ public class MySQLManager {
 
             resultSet.last();
             page = (int) Math.ceil((double) resultSet.getRow()/10.0);
-            Bukkit.getConsoleSender().sendMessage("" + page);
 
         }
 
+        resultSet.first();
         return page;
 
     }
