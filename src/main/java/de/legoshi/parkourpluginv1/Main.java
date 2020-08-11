@@ -10,8 +10,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Main extends JavaPlugin {
-    //Im KingBranBran
-    // Hello
+
     public static Main instance;
     public AsyncMySQL mySQL;
     public MySQLManager mySQLManager;
@@ -26,9 +25,6 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        //testcomment
-        //nexttest
-
         initializeMethods();
         this.mySQL = mySQLManager.initializeTables();
         mapObjectMananger.getAllMapsFromDB();
@@ -42,7 +38,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // ko ni chi wa
+
         mySQLManager.savingAllPlayerDataToDB();
 
     }
@@ -53,7 +49,8 @@ public final class Main extends JavaPlugin {
         getCommand("ppstats").setExecutor(new PPStatsCommand());
         getCommand("pptop").setExecutor(new PPTopCommand());
         getCommand("maptop").setExecutor(new MapTopCommand());
-        getCommand("bestpp").setExecutor(new PPPlaysCommand());
+        getCommand("bestpp").setExecutor(new PPBestCommand());
+        getCommand("pphelp").setExecutor(new HelpCommand());
 
     }
 

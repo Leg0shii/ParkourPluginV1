@@ -83,7 +83,12 @@ public class PlayerStepPressureplate {
 
                                     instance.mySQLManager.saveClearToDB(failsGained, timeGained, ppFromMap, playerUUID, mapID);
                                     anncounceFastestTime(playerObject.getMapObject(), player, ppFromMap);
-                                    setNewHighestPPScoreOnMap(playerObject.getMapObject(), ppFromMap);
+
+                                    if(ppFromMap > playerObject.getMapObject().getHighestPP()) {
+
+                                        setNewHighestPPScoreOnMap(playerObject.getMapObject(), ppFromMap);
+
+                                    }
 
                                     ppList = instance.playerManager.updatePPScoreList(playerObject, ppFromMap);
                                     instance.playerManager.updatePlayerPPScore(playerObject, ppList, ppFromMap);
@@ -115,10 +120,10 @@ public class PlayerStepPressureplate {
 
             for(Player all : Bukkit.getOnlinePlayers()) {
 
-                all.sendMessage("" + ChatColor.RED + ChatColor.BOLD + "!" + ChatColor.RESET
-                    + Message.MSG_ANNOUNCEMENT_FAST.getRawMessage().replace("{player}", player.getDisplayName())
+                all.sendMessage("" + Message.MSG_ANNOUNCEMENT_FAST.getMessage()
+                    .replace("{player}", player.getDisplayName())
                     .replace("{mapname}", map.getName())
-                    .replace("{ppscore}", String.format("%.1f", ppGained)));
+                    .replace("{ppscore}", String.format("%.2f", ppGained)));
 
             }
 
@@ -168,9 +173,7 @@ public class PlayerStepPressureplate {
         double timeMultiplier = ( (minTime+1) / (timeGained+1) );
         double failsMultiplier = ( (minFails+1) / (failsGained+1) );
 
-        String ppGainedString = String.format("%.2f", (difficulty * timeMultiplier * failsMultiplier)).replace(",", ".");
-
-        return Double.parseDouble(ppGainedString);
+        return (difficulty * timeMultiplier * failsMultiplier);
 
     }
 

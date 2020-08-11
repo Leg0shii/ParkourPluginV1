@@ -77,7 +77,7 @@ public class JoinListener implements Listener {
 
             }
 
-        }, 500, 1);
+        }, 1500, 1);
 
     }
 

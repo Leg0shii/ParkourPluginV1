@@ -3,6 +3,7 @@ package de.legoshi.parkourpluginv1.commands;
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.AsyncMySQL;
 import de.legoshi.parkourpluginv1.util.Message;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,59 +15,77 @@ import java.util.function.Consumer;
 
 public class PPTopCommand implements CommandExecutor {
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+			@Override
+			public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        AsyncMySQL mySQL = Main.getInstance().mySQL;
+						AsyncMySQL mySQL = Main.getInstance().mySQL;
+						Main instance = Main.getInstance();
 
-        if (!(sender instanceof Player)) return true;
+						if (!(sender instanceof Player)) return true;
 
-        Player player = ((Player) sender).getPlayer();
+						Player player = ((Player) sender).getPlayer();
 
-        if (args.length == 0) {
+						mySQL.query("SELECT ppcountp, playername, playeruuid FROM tablename ORDER BY ppcountp DESC;", new Consumer<ResultSet>() {
 
-            mySQL.query("SELECT ppcountp, playername, playeruuid FROM tablename ORDER BY ppcountp DESC;", new Consumer<ResultSet>() {
+									@Override
+									public void accept(ResultSet resultSet) {
 
-                @Override
-                public void accept(ResultSet resultSet) {
+												try {
 
-                    int i = 1;
+															int i = 1;
+															int pageAmount = 1;
+															int totalPageAmount = instance.mySQLManager.getPages(resultSet);
 
-                    try {
+															if (args.length == 1) {
 
-                        player.sendMessage(Message.MSG_HEADERCOURSECLEAR.getRawMessage());
+																		int enteredPage = Integer.parseInt(args[0]);
 
-                        while (i < 11 && resultSet.next()) {
+																		if(enteredPage <= totalPageAmount && enteredPage >= 1) {
 
-                            player.sendMessage(Message.MSG_COURSECLEAR.getRawMessage().replace("{num}", Integer.toString(i))
-                                .replace("{player}", resultSet.getString("playername"))
-                                .replace("{ppscore}", Double.toString(resultSet.getDouble("ppcountp"))));
+																					pageAmount = enteredPage;
 
-                            i++;
+																		}
 
-                        }
+																		else {
 
-                        player.sendMessage(Message.MSG_FOOTERCOURSECLEAR.getRawMessage());
+																					player.sendMessage(Message.ERR_PAGENOTEXIST.getMessage());
+																					return;
 
-                    } catch (SQLException throwables) {
+																		}
 
-                        throwables.printStackTrace();
+															}
 
-                    }
+															resultSet.absolute(((pageAmount-1)*10));
 
-                }
+															if (resultSet.next()) {
 
-            });
+																		player.sendMessage(Message.MSG_HEADERCOURSECLEAR.getRawMessage());
 
-        } else {
+																		do {
 
-            player.sendMessage(Message.ERR_wrongCommandInput.getMessage());
-            return false;
+																					player.sendMessage(Message.MSG_COURSECLEAR.getRawMessage().replace("{num}", Integer.toString(i))
+																							.replace("{player}", resultSet.getString("playername"))
+																							.replace("{ppscore}", Double.toString(resultSet.getDouble("ppcountp"))));
 
-        }
+																					i++;
 
-        return false;
+																		} while (i < 11 && resultSet.next());
 
-    }
+																		player.sendMessage(Message.MSG_FOOTERCOURSECLEAR.getRawMessage());
+																		player.sendMessage(Message.MSG_PAGEAMOUNT.getRawMessage()
+																				.replace("{page}", Integer.toString(pageAmount))
+																				.replace("{pagetotal}", Integer.toString(totalPageAmount)));
+
+															}
+
+												} catch (SQLException throwables) { throwables.printStackTrace(); }
+
+									}
+
+						});
+
+						return false;
+
+			}
 
 }
