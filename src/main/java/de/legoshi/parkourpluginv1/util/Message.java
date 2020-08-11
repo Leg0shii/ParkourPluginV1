@@ -32,17 +32,18 @@ public enum Message {
     MYSQL_TRY_RECONNECT("MYSQL trying to reconnect..."),
     MSG_setCP("Your cp has been set!"),
     ERR_WrongInput("Wrong Input."),
-    MSG_HEADERCOURSECLEAR("\n" + ChatColor.AQUA + ChatColor.BOLD + "     Global Ranking" +
-        "\n" + ChatColor.RESET + ChatColor.AQUA + ChatColor.STRIKETHROUGH + "                                   " ),
-    MSG_COURSECLEAR("{num}. {player}: " +
-        ChatColor.DARK_AQUA + ChatColor.BOLD + "{ppscore}pp"),
-    MSG_FOOTERCOURSECLEAR("" + ChatColor.AQUA + ChatColor.STRIKETHROUGH + "                                   "),
+    MSG_HEADERCOURSECLEAR("" + ChatColor.AQUA + ChatColor.STRIKETHROUGH + "                                            " + "\n"
+        + ChatColor.AQUA + ChatColor.BOLD + " Global Ranking" + "\n"
+        + ChatColor.RESET + ChatColor.AQUA + ChatColor.STRIKETHROUGH + "                                            " ),
+    MSG_COURSECLEAR(" {num}. {player}: " +
+        ChatColor.GOLD + "{ppscore}pp"),
+    MSG_FOOTERCOURSECLEAR("" + ChatColor.AQUA + ChatColor.STRIKETHROUGH + "                                            "),
     MSG_ANNOUNCEMENT_FAST("" + ChatColor.GOLD + ChatColor.BOLD + "{player}" + ChatColor.RESET +
         ChatColor.GREEN + " got #1 on" +
-        ChatColor.YELLOW + " {mapname} " +
+        ChatColor.YELLOW + "{mapname}" +
         ChatColor.GREEN + " with a score of "+
-        ChatColor.GOLD + " {ppscore}!"),
-    MSG_SHOWBESTTENFAILS("is {player} with {theme}: {score}!"),
+        ChatColor.GOLD + "{ppscore}!"),
+    MSG_SHOWBESTTENFAILS("{player}: {color}{score}{suffix}"),
     MSG_ranking("Rank: {ranking}");
 
 
