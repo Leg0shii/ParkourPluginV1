@@ -1,3 +1,8 @@
 
 .idea/vcs.xml
 *.class
+.idea/libraries/Maven__org_spigotmc_spigot_api_1_12_2_R0_1_SNAPSHOT.xml
+.idea/artifacts/ParkourPluginV1_jar.xml
+.idea/artifacts/ParkourPluginV1.xml
+out/artifacts/ParkourPluginV1_jar/ParkourPluginV1.jar
+target/
