@@ -21,6 +21,8 @@ public final class Main extends JavaPlugin {
     public PlayerInteractManager playerInteractManager;
     public UpdateSchedular updateSchedular;
     public ScoreboardHelper scoreboardHelper;
+    public PlayerTag playerTag;
+    public TabTagCreator tabTagCreator;
 
     @Override
     public void onEnable() {
@@ -93,6 +95,8 @@ public final class Main extends JavaPlugin {
         updateSchedular = new UpdateSchedular();
         scoreboardHelper = new ScoreboardHelper();
         mySQLManager = new MySQLManager();
+        playerTag = new PlayerTag();
+        tabTagCreator = new TabTagCreator();
 
 
     }
