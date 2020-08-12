@@ -21,6 +21,8 @@ public class MapTopCommand implements CommandExecutor {
         if (!(sender instanceof Player)) return false;
 
         Player player = ((Player) sender).getPlayer();
+        String format;
+        String type;
 
         if(args.length != 2) {
 
@@ -34,17 +36,23 @@ public class MapTopCommand implements CommandExecutor {
         switch (args[1].toLowerCase()) {
             case "fails":
 
-                showMapScores(player, id, "pfails", "Fails", "ASC");
+                type = "Fails";
+                format = Message.MSG_MAPTOP_FAILS.getRawMessage();
+                showMapScores(player, id, "pfails", "ASC", format, type);
                 return false;
 
             case "pp":
 
-                showMapScores(player, id, "ppcountc", "PP", "DESC");
+                type = "Performance";
+                format = Message.MSG_MAPTOP_PP.getRawMessage();
+                showMapScores(player, id, "ppcountc", "DESC", format, type);
                 return false;
 
             case "time":
 
-                showMapScores(player, id, "ptime", "Time", "ASC");
+                type = "Times";
+                format = Message.MSG_MAPTOP_TIMES.getRawMessage();
+                showMapScores(player, id, "ptime", "ASC", format, type);
                 return false;
 
             default:
@@ -56,49 +64,43 @@ public class MapTopCommand implements CommandExecutor {
 
     }
 
-    private void showMapScores(Player player, int id, String object, String objectname, String sort) {
+    private void showMapScores(Player player, int id, String object, String sort, String format, String type) {
 
         Main instance = Main.getInstance();
         AsyncMySQL mySQL = instance.mySQL;
 
-        mySQL.query("SELECT "+ object +", playername, cleared FROM clears WHERE mapid = "+ id +" ORDER BY "+ object + " " + sort +";", new Consumer<ResultSet>() {
-
+        mySQL.query("SELECT * FROM clears, maps " +
+            "WHERE clears.mapid = maps.mapid AND clears.mapid = "+ id +" ORDER BY clears."+ object + " " + sort +";", new Consumer<ResultSet>() {
             @Override
             public void accept(ResultSet resultSet) {
 
                 int index = 1;
-                String type;
-                String format;
-
-                switch (objectname) {
-                    case "Fails":
-                        type = "Fails";
-                        format = Message.MSG_MAPTOP_FAILS.getRawMessage();
-                        break;
-                    case "PP":
-                        type = "Performace";
-                        format = Message.MSG_MAPTOP_PP.getRawMessage();
-                        break;
-                    default:
-                        format = Message.MSG_MAPTOP_TIMES.getRawMessage();
-                        type = "Times";
-                }
 
                 try {
 
+                    resultSet.first();
                     if(resultSet.next()) {
+
+                        String value = "";
 
                         if (resultSet.getBoolean("cleared")) {
 
                             player.sendMessage(ChatColorHelper.chat(Message.MSG_MAPTOP_HEADER.getRawMessage()
-                                    .replace("{map}", "MAP")
-                                    .replace("{type}", type))); // Implement {map} please
+                                    .replace("{map}", resultSet.getString("mapname"))
+                                    .replace("{type}", type)));
                             do {
+
+                                //parses numbers with correct rounding
+                                if(type.equals("Fails")) { value = String.valueOf(resultSet.getInt(object)); }
+                                else if (type.equals("Times")) { value = String.format("%.3f", resultSet.getDouble(object)) + "s"; }
+                                else if (type.equals("Performance")) { value = String.format("%.2f", resultSet.getDouble(object)) + ""; }
 
                                 player.sendMessage(ChatColorHelper.chat(Message.MSG_MAPTOP_FORMAT.getRawMessage()
                                         .replace("{num}", String.valueOf(index))
                                         .replace("{name}", resultSet.getString("playername"))
-                                        .replace("{amount}", format.replace("{num}", String.valueOf(resultSet.getInt(object))))));
+                                        .replace("{amount}", format.replace("{num}", value))));
+
+                                index++;
 
                             } while (resultSet.next() && index < 10 && resultSet.getBoolean("cleared"));
                             player.sendMessage(ChatColorHelper.chat(Message.MSG_MAPTOP_FOOTER.getRawMessage()));
