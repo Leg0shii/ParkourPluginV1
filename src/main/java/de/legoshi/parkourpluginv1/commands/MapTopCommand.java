@@ -95,11 +95,6 @@ public class MapTopCommand implements CommandExecutor {
                                     .replace("{type}", type))); // Implement {map} please
                             do {
 
-//                                player.sendMessage(Message.Prefix.getRawMessage() + "§7 || " + index + ". " + Message.MSG_SHOWBESTTENFAILS.getRawMessage()
-//                                    .replace("{player}", resultSet.getString("playername"))
-//                                    .replace("{theme}", objectname)
-//                                    .replace("{score}", Integer.toString(resultSet.getInt(object))));
-//                                index++;
                                 player.sendMessage(ChatColorHelper.chat(Message.MSG_MAPTOP_FORMAT.getRawMessage()
                                         .replace("{num}", String.valueOf(index))
                                         .replace("{name}", resultSet.getString("playername"))

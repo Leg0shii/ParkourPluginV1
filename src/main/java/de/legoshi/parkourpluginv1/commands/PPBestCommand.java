@@ -69,7 +69,6 @@ public class PPBestCommand implements CommandExecutor {
                             ppcount = resultSet.getDouble("ppcountc");
                             time = resultSet.getDouble("ptime");
 
-                            //player.sendMessage("| " + index + ". Map: " + mapName + " Fails: " + fails + " PP: " + ppcount + " time: " + time);
                             player.sendMessage(ChatColorHelper.chat(Message.MSG_BEST_FORMAT.getRawMessage()
                                     .replace("{num}", String.valueOf(index))
                                     .replace("{map}", mapName)
