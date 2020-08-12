@@ -47,6 +47,8 @@ public class JoinListener implements Listener {
             instance.playerManager.createPlayerData(player);
             instance.playerManager.calculateRanking(player);
 
+            for(Player all : Bukkit.getOnlinePlayers()) instance.tabTagCreator.updateRank(all);
+
             Bukkit.getConsoleSender().sendMessage("Initialize new Playerdata");
             return;
 
@@ -73,7 +75,7 @@ public class JoinListener implements Listener {
                 instance.scoreboardHelper.updatePlaytimeOnScoreBoard(player, playerObject.getPlaytime());
                 instance.scoreboardHelper.updateRankOnScoreBoard(player, playerObject.getRank());
 
-                instance.tabTagCreator.updateRank(player);
+                for(Player all : Bukkit.getOnlinePlayers()) instance.tabTagCreator.updateRank(all);
 
                 timer.cancel();
 
