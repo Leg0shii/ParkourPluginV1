@@ -7,6 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import de.legoshi.parkourpluginv1.util.ChatColorHelper;
 
 import java.util.concurrent.TimeUnit;
 
@@ -39,12 +40,21 @@ public class PPStatsCommand implements CommandExecutor {
         String ranking = Integer.toString(playerObject.getRank());
         String playtime = Long.toString(TimeUnit.HOURS.convert(playerObject.getPlaytime(), TimeUnit.MILLISECONDS));
 
-        player.sendMessage(Message.MSG_stats.getMessage().replace("{Player}", player.getDisplayName()));
-        player.sendMessage(Message.MSG_ranking.getMessage().replace("{ranking}", ranking));
-        player.sendMessage(Message.MSG_ppcount.getMessage().replace("{ppcount}", String.format("%.2f", playerObject.getPpcount())));
-        player.sendMessage(Message.MSG_scorecount.getMessage().replace("{scorecount}", scorecount));
-        player.sendMessage(Message.MSG_failcount.getMessage().replace("{failcount}", failcount));
-        player.sendMessage(Message.MSG_playtime.getMessage().replace("{playtime}", playtime) + "h");
+//        player.sendMessage(Message.MSG_stats.getMessage().replace("{Player}", player.getDisplayName()));
+//        player.sendMessage(Message.MSG_ranking.getMessage().replace("{ranking}", ranking));
+//        player.sendMessage(Message.MSG_ppcount.getMessage().replace("{ppcount}", String.format("%.2f", playerObject.getPpcount())));
+//        player.sendMessage(Message.MSG_scorecount.getMessage().replace("{scorecount}", scorecount));
+//        player.sendMessage(Message.MSG_failcount.getMessage().replace("{failcount}", failcount));
+//        player.sendMessage(Message.MSG_playtime.getMessage().replace("{playtime}", playtime) + "h");
+
+        player.sendMessage(ChatColorHelper.chat(Message.MSG_STATS_HEADER.getRawMessage().replace("{player}", player.getDisplayName())));
+        player.sendMessage(ChatColorHelper.chat(Message.MSG_STATS_RANKING.getRawMessage().replace("{number}", ranking)));
+        player.sendMessage(ChatColorHelper.chat(Message.MSG_STATS_PP.getRawMessage().replace("{number}", String.format("%.2f", playerObject.getPpcount()))));
+        player.sendMessage(ChatColorHelper.chat(Message.MSG_STATS_SCORE.getRawMessage().replace("{number}", scorecount)));
+        player.sendMessage(ChatColorHelper.chat(Message.MSG_STATS_FAILS.getRawMessage().replace("{number}", failcount)));
+        player.sendMessage(ChatColorHelper.chat(Message.MSG_STATS_PLAYTIME.getRawMessage().replace("{number}", playtime)));
+        player.sendMessage(ChatColorHelper.chat(Message.MSG_STATS_FOOTER.getRawMessage()));
+
 
         return false;
 

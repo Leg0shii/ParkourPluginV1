@@ -2,6 +2,7 @@ package de.legoshi.parkourpluginv1.commands;
 
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.AsyncMySQL;
+import de.legoshi.parkourpluginv1.util.ChatColorHelper;
 import de.legoshi.parkourpluginv1.util.Message;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -66,6 +67,22 @@ public class MapTopCommand implements CommandExecutor {
             public void accept(ResultSet resultSet) {
 
                 int index = 1;
+                String type;
+                String format;
+
+                switch (objectname) {
+                    case "Fails":
+                        type = "Fails";
+                        format = Message.MSG_MAPTOP_FAILS.getRawMessage();
+                        break;
+                    case "PP":
+                        type = "Performace";
+                        format = Message.MSG_MAPTOP_PP.getRawMessage();
+                        break;
+                    default:
+                        format = Message.MSG_MAPTOP_TIMES.getRawMessage();
+                        type = "Times";
+                }
 
                 try {
 
@@ -73,15 +90,23 @@ public class MapTopCommand implements CommandExecutor {
 
                         if (resultSet.getBoolean("cleared")) {
 
+                            player.sendMessage(ChatColorHelper.chat(Message.MSG_MAPTOP_HEADER.getRawMessage()
+                                    .replace("{map}", "MAP")
+                                    .replace("{type}", type))); // Implement {map} please
                             do {
 
-                                player.sendMessage(Message.Prefix.getRawMessage() + "§7 || " + index + ". " + Message.MSG_SHOWBESTTENFAILS.getRawMessage()
-                                    .replace("{player}", resultSet.getString("playername"))
-                                    .replace("{theme}", objectname)
-                                    .replace("{score}", Integer.toString(resultSet.getInt(object))));
-                                index++;
+//                                player.sendMessage(Message.Prefix.getRawMessage() + "§7 || " + index + ". " + Message.MSG_SHOWBESTTENFAILS.getRawMessage()
+//                                    .replace("{player}", resultSet.getString("playername"))
+//                                    .replace("{theme}", objectname)
+//                                    .replace("{score}", Integer.toString(resultSet.getInt(object))));
+//                                index++;
+                                player.sendMessage(ChatColorHelper.chat(Message.MSG_MAPTOP_FORMAT.getRawMessage()
+                                        .replace("{num}", String.valueOf(index))
+                                        .replace("{name}", resultSet.getString("playername"))
+                                        .replace("{amount}", format.replace("{num}", String.valueOf(resultSet.getInt(object))))));
 
                             } while (resultSet.next() && index < 10 && resultSet.getBoolean("cleared"));
+                            player.sendMessage(ChatColorHelper.chat(Message.MSG_MAPTOP_FOOTER.getRawMessage()));
 
                         } else {
 

@@ -39,32 +39,39 @@ public enum Message {
         "\n" + ChatColor.AQUA + ChatColor.BOLD + " Global Ranking" +
         "\n" + ChatColor.RESET + ChatColor.AQUA + ChatColor.STRIKETHROUGH + "                                            " ),
     MSG_COURSECLEAR(" {num}. {player}: " +
-        ChatColor.DARK_AQUA + ChatColor.BOLD + "{ppscore}pp"),
+        ChatColor.GOLD + "{ppscore}pp"),
     MSG_FOOTERCOURSECLEAR("" + ChatColor.AQUA + ChatColor.STRIKETHROUGH + "                                            "),
 
     // ppstats command
     MSG_STATS_HEADER(
         "\n&b&m                                            " +
-        "\n &b&lGlobal Ranking" +
+        "&r\n &b&l{player}'s Stats" +
         "\n&b&m                                            "),
-    MSG_STATS_FORMAT(" {name}: {number}{suffix}"),
-    MSG__STATS_FOOTER("&b&m                                            "),
+    MSG_STATS_RANKING(" Rank: &d#{number}"),
+    MSG_STATS_PP(" PP: &6{number}pp"),
+    MSG_STATS_SCORE(" Score: {number}"),
+    MSG_STATS_FAILS(" Fails: &c{number} fails"),
+    MSG_STATS_PLAYTIME(" Playtime: &a{number}h"),
+    MSG_STATS_FOOTER("&b&m                                            "),
 
     // bestpp command
     MSG_BEST_HEADER(
             "\n&9&m                                            " +
-                    "\n &9&l{player}'s Top Scores" +
+                    "&r\n &9&l{player}'s Top Scores" +
                     "\n&9&m                                            "),
     MSG_BEST_FORMAT(" {num}. {map}: &a{time} &c{fails} fails &6{pp}pp"),
-    MSG__BEST_FOOTER("&9&m                                            "),
+    MSG_BEST_FOOTER("&9&m                                            "),
 
     // maptop command
     MSG_MAPTOP_HEADER(
             "\n&d&m                                            " +
-                    "\n &d&l{map} Top {type}" +
+                    "&r\n &d&l{map} Top {type}" +
                     "\n&d&m                                            "),
-    MSG_MAPTOP_FORMAT(" {num}. {map}: &a{time} &c{fails} fails &6{pp}pp"),
-    MSG__MAPTOP_FOOTER("&d&m                                            "),
+    MSG_MAPTOP_FAILS("&c{num} fails"),
+    MSG_MAPTOP_PP("&6{num}pp"),
+    MSG_MAPTOP_TIMES("&a{num}"),
+    MSG_MAPTOP_FORMAT(" {num}. {name}: {amount}"),
+    MSG_MAPTOP_FOOTER("&d&m                                            "),
 
     //announcement
     MSG_ANNOUNCEMENT_FAST("" + ChatColor.WHITE + ChatColor.BOLD + "{player}" + ChatColor.RESET +
@@ -81,7 +88,7 @@ public enum Message {
         "\n" + ChatColor.RESET + ChatColor.WHITE + ChatColor.STRIKETHROUGH + "                                            "),
     MSG_HELPFOOTER("" + ChatColor.WHITE + ChatColor.STRIKETHROUGH + "                                            "),
     MSG_HELPMAPTOP(" /maptop - Displays top plays of a selected Map."),
-    MSG_HELPPBESTPP("/ bestpp - Shows your/others best PP-Scores."),
+    MSG_HELPPBESTPP(" /bestpp - Shows your/others best PP-Scores."),
     MSG_HELPPPSTATS(" /ppstats - Shows your personal Serverstats."),
     MSG_HELPPPTOP(" /pptop - Shows the global Leaderboard for total PP."),
 
