@@ -73,6 +73,8 @@ public class JoinListener implements Listener {
                 instance.scoreboardHelper.updatePlaytimeOnScoreBoard(player, playerObject.getPlaytime());
                 instance.scoreboardHelper.updateRankOnScoreBoard(player, playerObject.getRank());
 
+                instance.tabTagCreator.updateRank(player);
+
                 timer.cancel();
 
             }
