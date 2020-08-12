@@ -16,7 +16,7 @@ public class TabTagCreator {
 
 						for(Player all : Bukkit.getOnlinePlayers()) {
 
-									PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
+									PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(all);
 									PlayerTag playerTag = instance.playerTag.getPlayerTag(playerObject);
 
 									String team = playerTag.getTeam();
