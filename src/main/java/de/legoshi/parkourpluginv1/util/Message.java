@@ -98,6 +98,7 @@ public enum Message {
     ERR_PPSTATSCOMMAND("/ppstats"),
     ERR_PPTOPCOMMAND("/pptop"),
     ERR_PAGENOTEXIST("This page doesnt exist..."),
+    ERR_NOTANUMBER("Please enter a number..."),
 
     //pageMessage
     MSG_PAGEAMOUNT(ChatColor.GRAY + "       Page " + ChatColor.WHITE + "{page}" + ChatColor.GRAY + "/" + "{pagetotal}");

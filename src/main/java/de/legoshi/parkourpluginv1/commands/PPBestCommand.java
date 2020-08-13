@@ -25,12 +25,12 @@ public class PPBestCommand implements CommandExecutor {
 
         if(args.length == 0) {
 
-            showTopPlays(player, player.getName());
+            showTopPlays(player, player.getName(), args);
             return false;
 
         } else if (args.length == 1) {
 
-            showTopPlays(player, args[0]);
+            showTopPlays(player, args[0], args);
             return false;
 
         }
@@ -40,7 +40,7 @@ public class PPBestCommand implements CommandExecutor {
 
     }
 
-    private void showTopPlays(Player player, String playername) {
+    private void showTopPlays(Player player, String playername, String[] args) {
 
         Main instance = Main.getInstance();
         AsyncMySQL mySQL = instance.mySQL;
