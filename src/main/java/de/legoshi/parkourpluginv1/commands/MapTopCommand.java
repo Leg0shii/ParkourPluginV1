@@ -23,36 +23,49 @@ public class MapTopCommand implements CommandExecutor {
         Player player = ((Player) sender).getPlayer();
         String format;
         String type;
+        int id;
 
-        if(args.length != 2) {
+        if(args.length != 2 && args.length != 3) {
 
-            player.sendMessage("/maptop <mapid> <fails/pp/time>");
+            player.sendMessage("/maptop <mapid> <fails/pp/time> <page>");
             return false;
 
         }
 
-        int id = Integer.parseInt(args[0]);
+        //check if id input is a number
+        try {
+
+            id = Integer.parseInt(args[0]);
+            int page = Integer.parseInt(args[0]);
+
+        }
+        catch (NumberFormatException nfe) {
+
+            player.sendMessage(Message.ERR_NOTANUMBER.getMessage());
+            return false;
+
+        }
 
         switch (args[1].toLowerCase()) {
             case "fails":
 
                 type = "Fails";
                 format = Message.MSG_MAPTOP_FAILS.getRawMessage();
-                showMapScores(player, id, "pfails", "ASC", format, type);
+                showMapScores(player, id, "pfails", "ASC", format, type, args);
                 return false;
 
             case "pp":
 
                 type = "Performance";
                 format = Message.MSG_MAPTOP_PP.getRawMessage();
-                showMapScores(player, id, "ppcountc", "DESC", format, type);
+                showMapScores(player, id, "ppcountc", "DESC", format, type, args);
                 return false;
 
             case "time":
 
                 type = "Times";
                 format = Message.MSG_MAPTOP_TIMES.getRawMessage();
-                showMapScores(player, id, "ptime", "ASC", format, type);
+                showMapScores(player, id, "ptime", "ASC", format, type, args);
                 return false;
 
             default:
@@ -64,7 +77,7 @@ public class MapTopCommand implements CommandExecutor {
 
     }
 
-    private void showMapScores(Player player, int id, String object, String sort, String format, String type) {
+    private void showMapScores(Player player, int id, String object, String sort, String format, String type, String[] args) {
 
         Main instance = Main.getInstance();
         AsyncMySQL mySQL = instance.mySQL;
@@ -77,6 +90,26 @@ public class MapTopCommand implements CommandExecutor {
                 int index = 1;
 
                 try {
+
+                    int pageAmount = 1;
+                    int totalPageAmount = instance.mySQLManager.getPages(resultSet);
+
+                    if (args.length == 1) {
+
+                        int enteredPage = Integer.parseInt(args[0]);
+
+                        if (enteredPage <= totalPageAmount && enteredPage >= 1) {
+
+                            pageAmount = enteredPage;
+
+                        } else {
+
+                            player.sendMessage(Message.ERR_PAGENOTEXIST.getMessage());
+                            return;
+
+                        }
+
+                    }
 
                     resultSet.first();
                     if(resultSet.next()) {
@@ -103,6 +136,11 @@ public class MapTopCommand implements CommandExecutor {
                                 index++;
 
                             } while (resultSet.next() && index < 10 && resultSet.getBoolean("cleared"));
+
+                            player.sendMessage(ChatColorHelper.chat(Message.MSG_MAPTOP_FOOTER.getRawMessage()));
+                            player.sendMessage(Message.MSG_PAGEAMOUNT.getRawMessage()
+                                .replace("{page}", Integer.toString(pageAmount))
+                                .replace("{pagetotal}", Integer.toString(totalPageAmount)));
                             player.sendMessage(ChatColorHelper.chat(Message.MSG_MAPTOP_FOOTER.getRawMessage()));
 
                         } else {

@@ -35,10 +35,20 @@ public class PPTopCommand implements CommandExecutor {
                     int i = 1;
                     int pageAmount = 1;
                     int totalPageAmount = instance.mySQLManager.getPages(resultSet);
+                    int enteredPage;
 
                     if (args.length == 1) {
 
-                        int enteredPage = Integer.parseInt(args[0]);
+                        try {
+
+                            enteredPage = Integer.parseInt(args[0]);
+
+                        } catch (NumberFormatException nfe) {
+
+                            player.sendMessage(Message.ERR_NOTANUMBER.getMessage());
+                            return;
+
+                        }
 
                         if(enteredPage <= totalPageAmount && enteredPage >= 1) {
 
@@ -75,6 +85,7 @@ public class PPTopCommand implements CommandExecutor {
                         player.sendMessage(Message.MSG_PAGEAMOUNT.getRawMessage()
                                 .replace("{page}", Integer.toString(pageAmount))
                                 .replace("{pagetotal}", Integer.toString(totalPageAmount)));
+                        player.sendMessage(Message.MSG_FOOTERCOURSECLEAR.getRawMessage());
 
                     }
 
