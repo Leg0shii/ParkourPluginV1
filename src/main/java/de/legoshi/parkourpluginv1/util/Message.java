@@ -39,7 +39,7 @@ public enum Message {
         "\n &7&lGlobal Ranking" +
         "\n&8&m                                            " ),
     MSG_COURSECLEAR("{color}{num}. &r{player}: &6&l{ppscore}pp"),
-    MSG_FOOTERCOURSECLEAR("\n&8&m                                            "),
+    MSG_FOOTERCOURSECLEAR("&8&m                                            "),
 
     // ppstats command
     MSG_STATS_HEADER(
