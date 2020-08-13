@@ -23,6 +23,8 @@ public final class Main extends JavaPlugin {
     public ScoreboardHelper scoreboardHelper;
     public PlayerTag playerTag;
     public TabTagCreator tabTagCreator;
+    public TitelManager titelManager;
+    public PlayerStepPressureplate playerStepPressureplate;
 
     @Override
     public void onEnable() {
@@ -97,7 +99,8 @@ public final class Main extends JavaPlugin {
         mySQLManager = new MySQLManager();
         playerTag = new PlayerTag();
         tabTagCreator = new TabTagCreator();
-
+        titelManager = new TitelManager();
+        playerStepPressureplate = new PlayerStepPressureplate();
 
     }
 

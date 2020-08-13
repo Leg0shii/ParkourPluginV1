@@ -120,9 +120,10 @@ public class PlayerNetherStarClick {
     public Timer timer(Player player) {
 
         Timer timer = new Timer();
-        PlayerObject playerObject = Main.getInstance().playerManager.playerObjectHashMap.get(player);
+        Main instance = Main.getInstance();
+        PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
 
-        timer.scheduleAtFixedRate(new TimerTask() {
+            timer.scheduleAtFixedRate(new TimerTask() {
 
             @Override
             public void run() {
@@ -132,6 +133,13 @@ public class PlayerNetherStarClick {
                     timer.cancel();
 
                 }
+
+                //outputs the time and current pp of player over hotbar
+                double currentPP = instance.playerStepPressureplate.calculatePPFromMap(playerObject);
+                double currentTime = playerObject.getTimerelative();
+
+                instance.titelManager.sendActionBar(player,
+                    ChatColor.BLUE + "Time: " + String.format("%.3f",currentTime) + " || Current PP: " + String.format("%.2f", currentPP));
 
                 playerObject.setTimerelative(playerObject.getTimerelative() + 0.05);
 

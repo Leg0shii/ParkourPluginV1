@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.spigotmc:spigot:1.12.2-OFFLINE">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/spigotmc/spigot/1.12.2-OFFLINE/spigot-1.12.2-OFFLINE.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/spigotmc/spigot/1.12.2-OFFLINE/spigot-1.12.2-OFFLINE-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/spigotmc/spigot/1.12.2-OFFLINE/spigot-1.12.2-OFFLINE-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
