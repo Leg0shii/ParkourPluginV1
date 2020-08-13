@@ -1,5 +1,7 @@
 package de.legoshi.parkourpluginv1.util;
 
+import org.bukkit.ChatColor;
+
 public class PlayerTag {
 
 			private String prefix;
@@ -21,6 +23,18 @@ public class PlayerTag {
 						return prefix;
 			}
 
+			public String getPrefix(int rank) {
+
+						String prefix = "";
+
+						if(rank == 1) prefix = "" + ChatColor.AQUA + ChatColor.BOLD;
+						if(rank == 2) prefix = "" + ChatColor.GOLD + ChatColor.BOLD;
+						if(rank == 3) prefix = "" + ChatColor.GRAY + ChatColor.BOLD;
+
+						return prefix;
+
+			}
+
 			public void setPrefix(String prefix) {
 						this.prefix = prefix;
 			}
@@ -35,7 +49,13 @@ public class PlayerTag {
 
 			public PlayerTag getPlayerTag(final PlayerObject playerObject) {
 
-						return new PlayerTag("[" + playerObject.getRank() + "] ", Integer.toString(playerObject.getRank()));
+						String rank = Integer.toString(playerObject.getRank());
+						String color = "";
+
+						color = getPrefix(playerObject.getRank());
+						rank = color + rank;
+
+						return new PlayerTag(ChatColor.RESET + "[" + rank + ChatColor.RESET + "] ", Integer.toString(playerObject.getRank()));
 
 			}
 

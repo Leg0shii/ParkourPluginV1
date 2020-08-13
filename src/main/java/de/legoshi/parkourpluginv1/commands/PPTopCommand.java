@@ -39,6 +39,7 @@ public class PPTopCommand implements CommandExecutor {
 
                     if (args.length == 1) {
 
+                        //checking for another page
                         try {
 
                             enteredPage = Integer.parseInt(args[0]);
@@ -73,9 +74,12 @@ public class PPTopCommand implements CommandExecutor {
 
                         do {
 
-                            player.sendMessage(Message.MSG_COURSECLEAR.getRawMessage().replace("{num}", Integer.toString(i))
-                                    .replace("{player}", resultSet.getString("playername"))
-                                    .replace("{ppscore}", Double.toString(resultSet.getDouble("ppcountp"))));
+                            String color = instance.playerTag.getPrefix((i + (pageAmount-1)*10));
+
+                            player.sendMessage(Message.MSG_COURSECLEAR.getRawMessage()
+                                .replace("{num}", color + (i + (pageAmount-1)*10) + ChatColor.RESET)
+                                .replace("{player}", resultSet.getString("playername"))
+                                .replace("{ppscore}", String.format("%.2f", resultSet.getDouble("ppcountp"))));
 
                             i++;
 
