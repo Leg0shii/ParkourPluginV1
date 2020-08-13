@@ -35,12 +35,11 @@ public enum Message {
 
     //pptop command
     MSG_HEADERCOURSECLEAR(
-        "\n" + ChatColor.RESET + ChatColor.AQUA + ChatColor.STRIKETHROUGH + "                                            " +
-        "\n" + ChatColor.AQUA + ChatColor.BOLD + " Global Ranking" +
-        "\n" + ChatColor.RESET + ChatColor.AQUA + ChatColor.STRIKETHROUGH + "                                            " ),
-    MSG_COURSECLEAR(" {num}. {player}: " +
-        ChatColor.GOLD + "{ppscore}pp"),
-    MSG_FOOTERCOURSECLEAR("" + ChatColor.AQUA + ChatColor.STRIKETHROUGH + "                                            "),
+        "\n&8&m                                            " +
+        "\n &7&lGlobal Ranking" +
+        "\n&8&m                                            " ),
+    MSG_COURSECLEAR("{color}{num}. &r{player}: &6&l{ppscore}pp"),
+    MSG_FOOTERCOURSECLEAR("\n&8&m                                            "),
 
     // ppstats command
     MSG_STATS_HEADER(

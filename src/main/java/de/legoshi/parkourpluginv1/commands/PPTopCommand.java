@@ -2,6 +2,7 @@ package de.legoshi.parkourpluginv1.commands;
 
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.AsyncMySQL;
+import de.legoshi.parkourpluginv1.util.ChatColorHelper;
 import de.legoshi.parkourpluginv1.util.Message;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -70,26 +71,27 @@ public class PPTopCommand implements CommandExecutor {
 
                     if (resultSet.next()) {
 
-                        player.sendMessage(Message.MSG_HEADERCOURSECLEAR.getRawMessage());
+                        player.sendMessage(ChatColorHelper.chat(Message.MSG_HEADERCOURSECLEAR.getRawMessage()));
 
                         do {
 
                             String color = instance.playerTag.getPrefix((i + (pageAmount-1)*10));
 
-                            player.sendMessage(Message.MSG_COURSECLEAR.getRawMessage()
-                                .replace("{num}", color + (i + (pageAmount-1)*10) + ChatColor.RESET)
-                                .replace("{player}", resultSet.getString("playername"))
-                                .replace("{ppscore}", String.format("%.2f", resultSet.getDouble("ppcountp"))));
+                            player.sendMessage(ChatColorHelper.chat(Message.MSG_COURSECLEAR.getRawMessage()
+                                    .replace("{color}", color)
+                                    .replace("{num}", "" + (i + (pageAmount-1)*10))
+                                    .replace("{player}", resultSet.getString("playername"))
+                                    .replace("{ppscore}", String.format("%.2f", resultSet.getDouble("ppcountp")))));
 
                             i++;
 
                         } while (i < 11 && resultSet.next());
 
-                        player.sendMessage(Message.MSG_FOOTERCOURSECLEAR.getRawMessage());
+                        player.sendMessage(ChatColorHelper.chat(Message.MSG_FOOTERCOURSECLEAR.getRawMessage()));
                         player.sendMessage(Message.MSG_PAGEAMOUNT.getRawMessage()
                                 .replace("{page}", Integer.toString(pageAmount))
                                 .replace("{pagetotal}", Integer.toString(totalPageAmount)));
-                        player.sendMessage(Message.MSG_FOOTERCOURSECLEAR.getRawMessage());
+                        player.sendMessage(ChatColorHelper.chat(Message.MSG_FOOTERCOURSECLEAR.getRawMessage()));
 
                     }
 
