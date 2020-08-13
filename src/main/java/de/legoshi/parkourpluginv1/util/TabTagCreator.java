@@ -4,6 +4,7 @@ import de.legoshi.parkourpluginv1.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 import java.util.ArrayList;
 
@@ -28,7 +29,8 @@ public class TabTagCreator {
 									}
 
 									scoreboard.getTeam(team).setPrefix(playerTag.getPrefix());
-									scoreboard.getTeam(team).addPlayer(all);
+									scoreboard.getTeam(team).setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
+									scoreboard.getTeam(team).addEntry("" + all.getName());
 
 						}
 

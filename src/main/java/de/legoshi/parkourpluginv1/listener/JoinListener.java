@@ -33,6 +33,9 @@ public class JoinListener implements Listener {
         Date now = new Date();
         playerObject.setPlaytimeSave(now.getTime());
 
+        //welcome message
+        instance.titelManager.sendTitle(player, "Welcome to Ranked Parkour!", "", 5);
+
 
         if (!(player.hasPlayedBefore())) {
 
@@ -48,8 +51,23 @@ public class JoinListener implements Listener {
             instance.playerManager.calculateRanking(player);
 
             for(Player all : Bukkit.getOnlinePlayers()) instance.tabTagCreator.updateRank(all);
-
             Bukkit.getConsoleSender().sendMessage("Initialize new Playerdata");
+
+            Timer t = new Timer();
+            t.scheduleAtFixedRate(new TimerTask() {
+
+                @Override
+                public void run() {
+
+                    //helpmessage
+                    instance.titelManager.sendTitle(player, "For help write /pphelp", "", 5);
+
+                    t.cancel();
+
+                }
+
+            }, 1500, 1);
+
             return;
 
         }
@@ -64,7 +82,6 @@ public class JoinListener implements Listener {
         instance.scoreboardHelper.initializeScoreboard(player);
 
         Timer timer = new Timer();
-
         timer.scheduleAtFixedRate(new TimerTask() {
 
             @Override
