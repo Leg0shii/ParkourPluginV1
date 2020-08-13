@@ -72,8 +72,12 @@ public class ScoreboardHelper {
 
     public void updateRankOnScoreBoard(Player player, int rank) {
 
+        Main instance = Main.getInstance();
+        String prefix = "";
+        prefix = instance.playerTag.getPrefix(rank);
+
         Scoreboard scoreboard = player.getScoreboard();
-        scoreboard.getTeam("rank").setPrefix("" + ChatColor.GRAY + rank);
+        scoreboard.getTeam("rank").setPrefix("" + ChatColor.GRAY + prefix + rank);
 
     }
 
