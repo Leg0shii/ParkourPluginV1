@@ -57,8 +57,8 @@ public class MapObjectMananger {
                             resultSet.getInt("mapid"),
                             resultSet.getDouble("difficulty"),
                             0,
-                            0,
-                            0,
+                            resultSet.getInt("minFails"),
+                            resultSet.getDouble("minTime"),
                             l);
 
                         //saves the highestpp of a course into the DB

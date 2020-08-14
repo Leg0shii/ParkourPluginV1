@@ -3,6 +3,7 @@ package de.legoshi.parkourpluginv1.listener;
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.AsyncMySQL;
 import de.legoshi.parkourpluginv1.util.MapObject;
+import de.legoshi.parkourpluginv1.util.Message;
 import de.legoshi.parkourpluginv1.util.PlayerObject;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.GuiPageElement;
@@ -95,7 +96,7 @@ public class PlayerNetherStarClick {
                         playerObject.setTimerelative(0);
                         instance.inventory.createParkourInventory(event.getPlayer());
 
-                        click.getEvent().getWhoClicked().sendMessage(ChatColor.RED + "You selected the Map: " + maps.getName());
+                        click.getEvent().getWhoClicked().sendMessage(Message.MSG_JOINED_COURSE.getMessage().replace("{mapname}", maps.getName()));
                         click.getEvent().getWhoClicked().teleport(maps.getSpawn());
                         playerObject.setTimer(timer(player));
 
@@ -105,9 +106,14 @@ public class PlayerNetherStarClick {
                         return true; // returning true will cancel the click event and stop taking the item
 
                     },
-                    title,
-                    "Difficulty: " + difficulty + "\nMapID: " + mapId
-
+                    "" + ChatColor.RESET + ChatColor.BOLD + title,
+                        "" + ChatColor.RESET + ChatColor.GRAY + "Builder: " + ChatColor.GOLD + " - \n" +
+                        ChatColor.RESET + ChatColor.GRAY + "Difficulty: " + instance.playerTag.difficultyString(difficulty) + ChatColor.DARK_GRAY + " (" +difficulty + ")\n" +
+                        ChatColor.RESET + ChatColor.GRAY + "MapID: " + ChatColor.GOLD + mapId +
+                        "\n\n" +
+                        ChatColor.RESET + ChatColor.GRAY +ChatColor.GRAY + "------[ Map-Judge ]------\n" +
+                        ChatColor.RESET + ChatColor.GRAY + "Min-Fails: " + ChatColor.GOLD + maps.getMinFails() + "\n" +
+                        ChatColor.RESET + ChatColor.GRAY + "Min-Time: " + ChatColor.GOLD + maps.getMinTime()
                 )));
             }
             gui.addElement(group);

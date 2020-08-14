@@ -25,8 +25,10 @@ public class PPStatsCommand implements CommandExecutor {
         }
 
         Player player = ((Player) sender).getPlayer();
+        player.sendMessage(Message.Prefix.getRawMessage() + "Currently reworked. All Important stats can be seen in the Scoreboard");
+        return true;
 
-        if (!(args.length == 0)) {
+        /*if (!(args.length == 0)) {
 
             player.sendMessage(Message.ERR_PPSTATSCOMMAND.getMessage());
             return true;
@@ -40,6 +42,7 @@ public class PPStatsCommand implements CommandExecutor {
         String playtime = Long.toString(TimeUnit.HOURS.convert(playerObject.getPlaytime(), TimeUnit.MILLISECONDS));
 
         player.sendMessage(ChatColorHelper.chat(Message.MSG_STATS_HEADER.getRawMessage().replace("{player}", player.getDisplayName())));
+        player.sendMessage("\n");
         player.sendMessage(ChatColorHelper.chat(Message.MSG_STATS_RANKING.getRawMessage().replace("{number}", ranking)));
         player.sendMessage(ChatColorHelper.chat(Message.MSG_STATS_PP.getRawMessage().replace("{number}", String.format("%.2f", playerObject.getPpcount()))));
         player.sendMessage(ChatColorHelper.chat(Message.MSG_STATS_FAILS.getRawMessage().replace("{number}", failcount)));
@@ -47,7 +50,7 @@ public class PPStatsCommand implements CommandExecutor {
         player.sendMessage(ChatColorHelper.chat(Message.MSG_STATS_FOOTER.getRawMessage()));
 
 
-        return false;
+        return false;*/
 
     }
 

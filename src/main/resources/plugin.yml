@@ -9,8 +9,8 @@ commands:
   createRankedMap:
   ppstats:
   pptop:
-  maptop:
-  bestpp:
+  pptopmap:
+  ppbest:
   pphelp:
 
 

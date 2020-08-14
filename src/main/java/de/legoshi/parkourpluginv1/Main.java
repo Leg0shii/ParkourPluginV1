@@ -54,8 +54,8 @@ public final class Main extends JavaPlugin {
         getCommand("createRankedMap").setExecutor(new CreateRankedMap());
         getCommand("ppstats").setExecutor(new PPStatsCommand());
         getCommand("pptop").setExecutor(new PPTopCommand());
-        getCommand("maptop").setExecutor(new MapTopCommand());
-        getCommand("bestpp").setExecutor(new PPBestCommand());
+        getCommand("pptopmap").setExecutor(new MapTopCommand());
+        getCommand("ppbest").setExecutor(new PPBestCommand());
         getCommand("pphelp").setExecutor(new HelpCommand());
 
     }

@@ -107,6 +107,10 @@ public class MySQLManager {
             resultSet.last();
             page = (int) Math.ceil((double) resultSet.getRow()/10.0);
 
+        } else {
+
+            return 1;
+
         }
 
         resultSet.first();

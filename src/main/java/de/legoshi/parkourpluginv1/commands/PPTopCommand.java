@@ -80,8 +80,8 @@ public class PPTopCommand implements CommandExecutor {
 
                             player.sendMessage(ChatColorHelper.chat(Message.MSG_COURSECLEAR.getRawMessage()
                                     .replace("{color}", color)
-                                    .replace("{num}", "" + (i + (pageAmount-1)*10))
-                                    .replace("{player}", resultSet.getString("playername"))
+                                    .replace("{num}", "" + (i + (pageAmount-1)*10) + ChatColor.RESET)
+                                    .replace("{player}", instance.playerTag.fillSpaces(16, resultSet.getString("playername") + ":"))
                                     .replace("{ppscore}", String.format("%.2f", resultSet.getDouble("ppcountp")))));
 
                             i++;
