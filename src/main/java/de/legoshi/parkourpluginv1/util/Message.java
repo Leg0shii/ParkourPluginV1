@@ -36,41 +36,36 @@ public enum Message {
     //pptop command
     MSG_HEADERCOURSECLEAR(
         "\n&8&m                                            " +
-        "\n &7&lGlobal Ranking" +
-        "\n&8&m                                            " ),
-    MSG_COURSECLEAR("{color}{num}. &r{player}: &6&l{ppscore}pp"),
+        "\n&7&lGlobal Ranking"),
+    MSG_COURSECLEAR("{color}{num}. {player}: {ppscore}pp"),
     MSG_FOOTERCOURSECLEAR("&8&m                                            "),
 
     // ppstats command
     MSG_STATS_HEADER(
-        "\n&b&m                                            " +
-        "&r\n &b&l{player}'s Stats" +
-        "\n&b&m                                            "),
-    MSG_STATS_RANKING(" Rank: &d#{number}"),
-    MSG_STATS_PP(" PP: &6{number}pp"),
-    MSG_STATS_SCORE(" Score: {number}"),
-    MSG_STATS_FAILS(" Fails: &c{number} fails"),
-    MSG_STATS_PLAYTIME(" Playtime: &a{number}h"),
-    MSG_STATS_FOOTER("&b&m                                            "),
+        "\n&8&m                                            " +
+        "&r\n &7&l{player}'s Stats"),
+    MSG_STATS_RANKING(" Rank: #{number}"),
+    MSG_STATS_PP(" PP: {number}pp"),
+    MSG_STATS_FAILS(" Fails: {number} fails"),
+    MSG_STATS_PLAYTIME(" Playtime: {number}h"),
+    MSG_STATS_FOOTER("&8&m                                            "),
 
     // bestpp command
     MSG_BEST_HEADER(
-            "\n&9&m                                            " +
-                    "&r\n &9&l{player}'s Top Scores" +
-                    "\n&9&m                                            "),
-    MSG_BEST_FORMAT(" {num}. {map}: &a{time} &c{fails} fails &6{pp}pp"),
-    MSG_BEST_FOOTER("&9&m                                            "),
+            "\n&8&m                                            " +
+                    "&r\n &7&l{player}'s Top Scores"),
+    MSG_BEST_FORMAT(" {num}. {map}: &7{time} &7{fails} fails &7{pp}pp"),
+    MSG_BEST_FOOTER("&8&m                                            "),
 
     // maptop command
     MSG_MAPTOP_HEADER(
-            "\n&d&m                                            " +
-                    "&r\n &d&l{map} Top {type}" +
-                    "\n&d&m                                            "),
-    MSG_MAPTOP_FAILS("&c{num} fails"),
-    MSG_MAPTOP_PP("&6{num}pp"),
-    MSG_MAPTOP_TIMES("&a{num}"),
+            "\n&8&m                                            " +
+                    "&r\n &7&l{map} Top {type}"),
+    MSG_MAPTOP_FAILS("&7{num} fails"),
+    MSG_MAPTOP_PP("&7{num}pp"),
+    MSG_MAPTOP_TIMES("&7{num}"),
     MSG_MAPTOP_FORMAT(" {num}. {name}: {amount}"),
-    MSG_MAPTOP_FOOTER("&d&m                                            "),
+    MSG_MAPTOP_FOOTER("&8&m                                            "),
 
     //announcement
     MSG_ANNOUNCEMENT_FAST("" + ChatColor.WHITE + ChatColor.BOLD + "{player}" + ChatColor.RESET +
@@ -83,13 +78,13 @@ public enum Message {
 
     //helpmessages
     ERR_HELPCOMMAND("Please type /pphelp to get informations for the commands!"),
-    MSG_HELPHEADER("\n" + ChatColor.WHITE + ChatColor.BOLD + " Help" +
-        "\n" + ChatColor.RESET + ChatColor.WHITE + ChatColor.STRIKETHROUGH + "                                            "),
-    MSG_HELPFOOTER("" + ChatColor.WHITE + ChatColor.STRIKETHROUGH + "                                            "),
+    MSG_HELPHEADER("\n" + ChatColor.RESET + ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH + "                                            " +
+        "\n" + ChatColor.GRAY + ChatColor.BOLD + " Help"),
+    MSG_HELPFOOTER("" + ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH + "                                            "),
     MSG_HELPMAPTOP(" /maptop - Displays top plays of a selected Map."),
     MSG_HELPPBESTPP(" /bestpp - Shows your/others best PP-Scores."),
     MSG_HELPPPSTATS(" /ppstats - Shows your personal Serverstats."),
-    MSG_HELPPPTOP(" /pptop - Shows the global Leaderboard for total PP."),
+    MSG_HELPPPTOP("\n /pptop - Shows the global Leaderboard for total PP."),
 
     //errormessages for commands
     ERR_MAPTOPCOMMAND("/maptop <mapID> <fails/pp/time>"),
@@ -100,7 +95,16 @@ public enum Message {
     ERR_NOTANUMBER("Please enter a number..."),
 
     //pageMessage
-    MSG_PAGEAMOUNT(ChatColor.GRAY + "       Page " + ChatColor.WHITE + "{page}" + ChatColor.GRAY + "/" + "{pagetotal}");
+    MSG_PAGEAMOUNT(ChatColor.GRAY + "       Page " + ChatColor.WHITE + "{page}" + ChatColor.GRAY + "/" + "{pagetotal}"),
+
+    //resultscreen
+    MSG_RESULT_HEADER("" + ChatColor.BOLD + ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH + "                                            "
+    + ChatColor.RESET + ChatColor.GRAY + ChatColor.BOLD + "\n You completed the course " + ChatColor.WHITE + "{mapname}!"),
+    MSG_RESULT_SCREEN(
+        "\n" + ChatColor.RESET + "PP-Score:  {newpp}pp " + ChatColor.GRAY + " ({oldpp}pp) \n"
+        + ChatColor.RESET + "Time:  {newTime}s " + ChatColor.GRAY + " ({oldTime}s) \n"
+        + ChatColor.RESET + "Fails:  {newFails} " + ChatColor.GRAY + " ({oldFails})"),
+    MSG_RESUT_FOOTER("" + ChatColor.BOLD + ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH + "                                            ");
 
 
 

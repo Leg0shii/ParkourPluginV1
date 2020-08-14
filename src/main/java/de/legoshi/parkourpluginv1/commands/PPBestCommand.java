@@ -62,6 +62,7 @@ public class PPBestCommand implements CommandExecutor {
                     if(resultSet.next() && resultSet.getBoolean("cleared")) {
 
                         player.sendMessage(ChatColorHelper.chat(Message.MSG_BEST_HEADER.getRawMessage().replace("{player}", playername)));
+                        player.sendMessage("\n ");
                         do {
 
                             mapName = resultSet.getString("mapname");
@@ -72,7 +73,7 @@ public class PPBestCommand implements CommandExecutor {
                             player.sendMessage(ChatColorHelper.chat(Message.MSG_BEST_FORMAT.getRawMessage()
                                     .replace("{num}", String.valueOf(index))
                                     .replace("{map}", mapName)
-                                    .replace("{time}", String.valueOf(time))
+                                    .replace("{time}s", String.valueOf(time))
                                     .replace("{fails}", String.valueOf(fails))
                                     .replace("{pp}", String.valueOf(ppcount))));
                             index++;

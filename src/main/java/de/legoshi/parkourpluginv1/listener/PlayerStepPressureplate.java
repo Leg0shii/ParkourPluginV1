@@ -3,6 +3,7 @@ package de.legoshi.parkourpluginv1.listener;
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.manager.CheckpointManager;
 import de.legoshi.parkourpluginv1.util.*;
+import io.netty.handler.codec.MessageAggregationException;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -55,15 +56,14 @@ public class PlayerStepPressureplate {
                 failsGained = playerObject.getFailsrelative();
                 timeGained = playerObject.getTimerelative();
 
-                //prints resultscreen
-                showResultScreen(player, ppFromMap, failsGained, timeGained);
-
                 //setting Updates into PlayerObject
                 playerObject.setFailscount(failsGained + playerObject.getFailscount());
 
                 //gets informations from clears list
-                mySQL.query("SELECT ppcountc FROM clears " +
-                    "WHERE mapid = " + playerObject.getMapObject().getID() + " AND playeruuid = '" + playerObject.getUuid() + "';", new Consumer<ResultSet>() {
+                mySQL.query("SELECT * FROM clears, maps " +
+                    "WHERE clears.mapid = maps.mapid " +
+                    "AND clears.mapid = " + playerObject.getMapObject().getID() + " " +
+                    "AND clears.playeruuid = '" + playerObject.getUuid() + "';", new Consumer<ResultSet>() {
 
                     @Override
                     public void accept(ResultSet resultSet) {
@@ -75,6 +75,18 @@ public class PlayerStepPressureplate {
                         try {
 
                             if (resultSet.next()) {
+
+                                //int mapRank = findMapRank(resultset);
+
+                                //prints resultscreen
+                                showResultScreen(player,
+                                    ppFromMap,
+                                    resultSet.getDouble("ppcountc"),
+                                    failsGained,
+                                    resultSet.getInt("pfails"),
+                                    timeGained,
+                                    resultSet.getDouble("ptime"),
+                                    resultSet.getString("mapname"));
 
                                 if (ppFromMap > resultSet.getDouble("ppcountc")) {
 
@@ -177,12 +189,35 @@ public class PlayerStepPressureplate {
 
     }
 
-    public void showResultScreen(Player player, double ppGained, double failsGained, double timeGained) {
+    public void showResultScreen(Player player, double ppGained, double ppOld, int failsGained, int failsOld, double timeGained, double timeOld, String mapname) {
 
-        player.sendMessage(Message.Prefix.getRawMessage() + "You beat the Course! Here is your Result: ");
-        player.sendMessage(Message.Prefix.getRawMessage() + "PP-Score: " + ppGained);
-        player.sendMessage(Message.Prefix.getRawMessage() + "Fails: " + failsGained);
-        player.sendMessage(Message.Prefix.getRawMessage() + "Course beaten in: " + String.format("%.3f",timeGained) + "s");
+        String prefixPP = "" + ChatColor.GRAY;
+        String prefixTime = "" + ChatColor.GRAY;
+        String prefixFails = "" + ChatColor.GRAY;
+
+        if(ppGained > ppOld) prefixPP = "" + ChatColor.GREEN;
+        if(timeGained < timeOld) prefixTime = "" + ChatColor.GREEN;
+        if(failsGained < failsOld) prefixFails = "" + ChatColor.GREEN;
+
+        if(ppGained < ppOld) prefixPP = "" + ChatColor.RED;
+        if(timeGained > timeOld) prefixTime = "" + ChatColor.RED;
+        if(failsGained > failsOld) prefixFails = "" + ChatColor.RED;
+
+        player.sendMessage(Message.MSG_RESULT_HEADER.getRawMessage().replace("{mapname}", mapname));
+        player.sendMessage(Message.MSG_RESULT_SCREEN.getRawMessage()
+        .replace("{newpp}", (prefixPP + String.format("%.2f",ppGained)))
+            .replace("{oldpp}", String.format("%.2f",ppOld))
+            .replace("{newTime}", (prefixTime + String.format("%.3f",timeGained)))
+            .replace("{oldTime}", String.format("%.3f",timeOld))
+            .replace("{newFails}", (prefixFails + failsGained))
+            .replace("{oldFails}", Integer.toString(failsOld)));
+        player.sendMessage(Message.MSG_RESUT_FOOTER.getRawMessage());
+
+    }
+
+    public void findMapRank(ResultSet resultSet) {
+
+
 
     }
 

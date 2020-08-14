@@ -36,14 +36,12 @@ public class PPStatsCommand implements CommandExecutor {
         PlayerObject playerObject = Main.getInstance().playerManager.playerObjectHashMap.get(player);
 
         String failcount = Integer.toString(playerObject.getFailscount());
-        String scorecount = Integer.toString(playerObject.getScorecount());
         String ranking = Integer.toString(playerObject.getRank());
         String playtime = Long.toString(TimeUnit.HOURS.convert(playerObject.getPlaytime(), TimeUnit.MILLISECONDS));
 
         player.sendMessage(ChatColorHelper.chat(Message.MSG_STATS_HEADER.getRawMessage().replace("{player}", player.getDisplayName())));
         player.sendMessage(ChatColorHelper.chat(Message.MSG_STATS_RANKING.getRawMessage().replace("{number}", ranking)));
         player.sendMessage(ChatColorHelper.chat(Message.MSG_STATS_PP.getRawMessage().replace("{number}", String.format("%.2f", playerObject.getPpcount()))));
-        player.sendMessage(ChatColorHelper.chat(Message.MSG_STATS_SCORE.getRawMessage().replace("{number}", scorecount)));
         player.sendMessage(ChatColorHelper.chat(Message.MSG_STATS_FAILS.getRawMessage().replace("{number}", failcount)));
         player.sendMessage(ChatColorHelper.chat(Message.MSG_STATS_PLAYTIME.getRawMessage().replace("{number}", playtime)));
         player.sendMessage(ChatColorHelper.chat(Message.MSG_STATS_FOOTER.getRawMessage()));

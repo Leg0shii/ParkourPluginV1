@@ -72,6 +72,7 @@ public class PPTopCommand implements CommandExecutor {
                     if (resultSet.next()) {
 
                         player.sendMessage(ChatColorHelper.chat(Message.MSG_HEADERCOURSECLEAR.getRawMessage()));
+                        player.sendMessage("\n");
 
                         do {
 
@@ -87,8 +88,7 @@ public class PPTopCommand implements CommandExecutor {
 
                         } while (i < 11 && resultSet.next());
 
-                        player.sendMessage(ChatColorHelper.chat(Message.MSG_FOOTERCOURSECLEAR.getRawMessage()));
-                        player.sendMessage(Message.MSG_PAGEAMOUNT.getRawMessage()
+                        player.sendMessage("\n" + Message.MSG_PAGEAMOUNT.getRawMessage()
                                 .replace("{page}", Integer.toString(pageAmount))
                                 .replace("{pagetotal}", Integer.toString(totalPageAmount)));
                         player.sendMessage(ChatColorHelper.chat(Message.MSG_FOOTERCOURSECLEAR.getRawMessage()));
