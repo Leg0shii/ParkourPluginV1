@@ -5,6 +5,7 @@ import org.bukkit.Location;
 public class MapObject {
 
     String name;
+    String mapType;
     double highestPP;
     int ID;
     double difficulty;
@@ -17,7 +18,7 @@ public class MapObject {
 
     }
 
-    public MapObject(String name, int ID, double difficulty, double stars, int minFails, double minTime, Location spawn) {
+    public MapObject(String name, int ID, double difficulty, double stars, int minFails, double minTime, Location spawn, String mapType) {
 
         this.name = name;
         this.ID = ID;
@@ -27,6 +28,7 @@ public class MapObject {
         this.minTime = minTime;
         this.spawn = spawn;
         this.highestPP = 0;
+        this.mapType = mapType;
 
     }
 
@@ -85,4 +87,8 @@ public class MapObject {
     public void setMinTime(int minTime) {
         this.minTime = minTime;
     }
+
+    public String getMapType() { return mapType; }
+
+    public void setMapType(String mapType) { this.mapType = mapType; }
 }

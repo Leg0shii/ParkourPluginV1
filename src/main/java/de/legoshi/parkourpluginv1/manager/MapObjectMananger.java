@@ -44,7 +44,11 @@ public class MapObjectMananger {
 
                 while (true) {
                     try {
-                        if (!resultSet.next()) break;
+                        if (!resultSet.next()) {
+
+                            Main.getInstance().mapObjectMananger.setMapObjectArrayList(mapObjectList);
+                            return;
+                        }
 
                         //loads all MapObjects from the DB into the MapObjectManager
                         World world = Bukkit.getWorld(resultSet.getString("world"));
@@ -59,7 +63,8 @@ public class MapObjectMananger {
                             0,
                             resultSet.getInt("minFails"),
                             resultSet.getDouble("minTime"),
-                            l);
+                            l,
+                            resultSet.getString("maptype"));
 
                         //saves the highestpp of a course into the DB
                         mySQL.query("SELECT ppcountc FROM clears WHERE mapID = "+ mo.getID() +" ORDER BY ppcountc DESC", new Consumer<ResultSet>() {
@@ -87,8 +92,6 @@ public class MapObjectMananger {
                     } catch (SQLException throwables) { throwables.printStackTrace(); }
 
                 }
-
-                Main.getInstance().mapObjectMananger.setMapObjectArrayList(mapObjectList);
 
             }
 

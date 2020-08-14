@@ -22,7 +22,7 @@ public class JoinListener implements Listener {
 
         Player player = event.getPlayer();
         World world = Bukkit.getWorld("world");
-        Location location = new Location(world, -616, 4, 9);
+        Location location = new Location(world, -619, 5, 10, -160, 5);
         Main instance = Main.getInstance();
         PlayerObject playerObject = new PlayerObject(player.getUniqueId(), 0, 0, 0, 0, 0, 0);
 
@@ -59,13 +59,13 @@ public class JoinListener implements Listener {
                 public void run() {
 
                     //helpmessage
-                    instance.titelManager.sendTitle(player, "", "Help: /pphelp", 20);
+                    instance.titelManager.sendTitle(player, "", "Help: /pphelp", 60);
 
                     t.cancel();
 
                 }
 
-            }, 1500, 1);
+            }, 5000, 1);
 
             for(Player all : Bukkit.getOnlinePlayers()) instance.tabTagCreator.updateRank(all);
 

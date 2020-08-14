@@ -32,7 +32,7 @@ public class MySQLManager {
                 ",playername VARCHAR(255) , ppcountp DOUBLE(12, 4), scorecount INT(255), playtime BIGINT(19), failcount INT(255), PRIMARY KEY(playeruuid));");
             //create table for mapdata
             mySQL.update("CREATE TABLE IF NOT EXISTS maps (mapid INT(255) AUTO_INCREMENT," +
-                " mapname VARCHAR(255), difficulty DOUBLE(12, 4), minFails INT(255), minTime DOUBLE(12, 4)," +
+                " mapname VARCHAR(255), maptype VARCHAR(255), difficulty DOUBLE(12, 4), minFails INT(255), minTime DOUBLE(12, 4)," +
                 " x DOUBLE(12, 4), y DOUBLE(12, 4), z DOUBLE(12, 4), world VARCHAR(255), PRIMARY KEY(mapid));");
             //create table for clears
             mySQL.update("CREATE TABLE IF NOT EXISTS clears (feldID INT(255) AUTO_INCREMENT, mapid VARCHAR(255), playeruuid VARCHAR(255), cleared BOOLEAN" +
