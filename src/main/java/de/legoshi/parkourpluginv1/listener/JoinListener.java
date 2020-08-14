@@ -34,7 +34,7 @@ public class JoinListener implements Listener {
         playerObject.setPlaytimeSave(now.getTime());
 
         //welcome message
-        instance.titelManager.sendTitle(player, "Welcome to Ranked Parkour!", "", 5);
+        instance.titelManager.sendTitle(player, "", "Welcome to RPK!", 20);
 
 
         if (!(player.hasPlayedBefore())) {
@@ -60,7 +60,7 @@ public class JoinListener implements Listener {
                 public void run() {
 
                     //helpmessage
-                    instance.titelManager.sendTitle(player, "For help write /pphelp", "", 5);
+                    instance.titelManager.sendTitle(player, "", "For help write /pphelp", 20);
 
                     t.cancel();
 
