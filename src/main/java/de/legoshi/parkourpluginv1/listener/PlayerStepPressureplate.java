@@ -109,6 +109,7 @@ public class PlayerStepPressureplate {
 
                                     instance.playerManager.updateRankOfAllOnlinePlayer();
                                     instance.scoreboardHelper.updatePPScoreOnScoreBoard(player, playerObject.getPpcount());
+                                    for(Player all : Bukkit.getOnlinePlayers()) instance.tabTagCreator.updateRank(all);
 
                                 }
 
@@ -185,7 +186,7 @@ public class PlayerStepPressureplate {
         double timeMultiplier = ( (minTime+1) / (timeGained+1) );
         double failsMultiplier = ( (minFails+1) / (failsGained+1) );
 
-        return (difficulty * timeMultiplier * failsMultiplier);
+        return (difficulty * (4*timeMultiplier) * (6*failsMultiplier))/10;
 
     }
 

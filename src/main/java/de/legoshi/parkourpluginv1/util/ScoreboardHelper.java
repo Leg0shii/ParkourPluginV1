@@ -27,7 +27,7 @@ public class ScoreboardHelper {
 
         Bukkit.getConsoleSender().sendMessage("Scoreboard Created!");
 
-        objective.setDisplayName(ChatColor.BOLD + "RANKED PK");
+        objective.setDisplayName("" + ChatColor.DARK_AQUA + ChatColor.BOLD + "RANKED PK");
 
         Team noCollide = scoreboard.getTeam("noCollide");
         noCollide.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
@@ -74,31 +74,31 @@ public class ScoreboardHelper {
 
         Main instance = Main.getInstance();
         String prefix = "";
-        prefix = instance.playerTag.getPrefix(rank);
+        //prefix = instance.playerTag.getPrefix(rank);
 
         Scoreboard scoreboard = player.getScoreboard();
-        scoreboard.getTeam("rank").setPrefix("" + ChatColor.GRAY + prefix + rank);
+        scoreboard.getTeam("rank").setPrefix("" + ChatColor.WHITE + rank);
 
     }
 
     public void updatePPScoreOnScoreBoard(Player player, double pp) {
 
         Scoreboard scoreboard = player.getScoreboard();
-        scoreboard.getTeam("ppscore").setPrefix("" + ChatColor.GRAY + String.format("%.2f", pp));
+        scoreboard.getTeam("ppscore").setPrefix("" + ChatColor.WHITE + String.format("%.2f", pp));
 
     }
 
     public void updateFailsOnScoreBoard(Player player, int fails) {
 
         Scoreboard scoreboard = player.getScoreboard();
-        scoreboard.getTeam("fails").setPrefix(ChatColor.GRAY + "" + fails);
+        scoreboard.getTeam("fails").setPrefix(ChatColor.WHITE + "" + fails);
 
     }
 
     public void updatePlaytimeOnScoreBoard(Player player, long playtime) {
 
         Scoreboard scoreboard = player.getScoreboard();
-        scoreboard.getTeam("playtime").setPrefix("" + ChatColor.GRAY
+        scoreboard.getTeam("playtime").setPrefix("" + ChatColor.WHITE
             + TimeUnit.HOURS.convert(playtime, TimeUnit.MILLISECONDS) + "h");
 
     }

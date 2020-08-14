@@ -25,9 +25,9 @@ public class MapTopCommand implements CommandExecutor {
         String type;
         int id;
 
-        if(args.length != 2 && args.length != 3) {
+        if(args.length < 2 || args.length > 3) {
 
-            player.sendMessage("/maptop <mapid> <fails/pp/time> <page>");
+            player.sendMessage(Message.ERR_MAPTOPCOMMAND.getMessage());
             return false;
 
         }
@@ -36,7 +36,6 @@ public class MapTopCommand implements CommandExecutor {
         try {
 
             id = Integer.parseInt(args[0]);
-            int page = Integer.parseInt(args[0]);
 
         }
         catch (NumberFormatException nfe) {
@@ -82,8 +81,8 @@ public class MapTopCommand implements CommandExecutor {
         Main instance = Main.getInstance();
         AsyncMySQL mySQL = instance.mySQL;
 
-        mySQL.query("SELECT * FROM clears, maps " +
-            "WHERE clears.mapid = maps.mapid AND clears.mapid = "+ id +" ORDER BY clears."+ object + " " + sort +";", new Consumer<ResultSet>() {
+        mySQL.query("SELECT maps.mapname, clears." + object + ", clears.cleared, clears.playername FROM clears, maps " +
+            "WHERE clears.mapid = maps.mapid AND clears.mapid = "+ id +" AND clears.cleared = 1 ORDER BY clears."+ object + " " + sort +";", new Consumer<ResultSet>() {
             @Override
             public void accept(ResultSet resultSet) {
 
@@ -93,10 +92,21 @@ public class MapTopCommand implements CommandExecutor {
 
                     int pageAmount = 1;
                     int totalPageAmount = instance.mySQLManager.getPages(resultSet);
+                    int enteredPage = 1;
 
-                    if (args.length == 1) {
+                    if (args.length == 3) {
 
-                        int enteredPage = Integer.parseInt(args[0]);
+                        try {
+
+                            enteredPage = Integer.parseInt(args[2]);
+
+                        }
+                        catch (NumberFormatException nfe) {
+
+                            player.sendMessage(Message.ERR_NOTANUMBER.getMessage());
+                            return;
+
+                        }
 
                         if (enteredPage <= totalPageAmount && enteredPage >= 1) {
 
@@ -111,43 +121,44 @@ public class MapTopCommand implements CommandExecutor {
 
                     }
 
-                    resultSet.first();
+                    resultSet.absolute(((pageAmount-1)*10));
                     if(resultSet.next()) {
 
                         String value = "";
 
-                        if (resultSet.getBoolean("cleared")) {
+                        player.sendMessage(ChatColorHelper.chat(Message.MSG_MAPTOP_HEADER.getRawMessage()
+                            .replace("{map}", resultSet.getString("mapname"))
+                            .replace("{type}", type)));
+                        player.sendMessage("\n ");
 
-                            player.sendMessage(ChatColorHelper.chat(Message.MSG_MAPTOP_HEADER.getRawMessage()
-                                    .replace("{map}", resultSet.getString("mapname"))
-                                    .replace("{type}", type)));
-                            player.sendMessage("\n ");
                             do {
 
-                                //parses numbers with correct rounding
-                                if(type.equals("Fails")) { value = String.valueOf(resultSet.getInt(object)); }
-                                else if (type.equals("Times")) { value = String.format("%.3f", resultSet.getDouble(object)) + "s"; }
-                                else if (type.equals("Performance")) { value = String.format("%.2f", resultSet.getDouble(object)) + ""; }
+                                if(resultSet.getBoolean("cleared")) {
 
-                                player.sendMessage(ChatColorHelper.chat(Message.MSG_MAPTOP_FORMAT.getRawMessage()
+                                    //parses numbers with correct rounding
+                                    if (type.equals("Fails")) {
+                                        value = String.valueOf(resultSet.getInt(object));
+                                    } else if (type.equals("Times")) {
+                                        value = String.format("%.3f", resultSet.getDouble(object));
+                                    } else if (type.equals("Performance")) {
+                                        value = String.format("%.2f", resultSet.getDouble(object)) + "";
+                                    }
+
+                                    player.sendMessage(ChatColorHelper.chat(Message.MSG_MAPTOP_FORMAT.getRawMessage()
                                         .replace("{num}", String.valueOf(index))
-                                        .replace("{name}", resultSet.getString("playername"))
+                                        .replace("{name}", instance.playerTag.fillSpaces(17, resultSet.getString("playername") + ":"))
                                         .replace("{amount}", format.replace("{num}", value))));
 
-                                index++;
+                                    index++;
 
-                            } while (resultSet.next() && index < 10 && resultSet.getBoolean("cleared"));
+                                }
+
+                            } while (index < 11 && resultSet.next());
 
                             player.sendMessage("\n" + Message.MSG_PAGEAMOUNT.getRawMessage()
                                 .replace("{page}", Integer.toString(pageAmount))
                                 .replace("{pagetotal}", Integer.toString(totalPageAmount)));
                             player.sendMessage(ChatColorHelper.chat(Message.MSG_MAPTOP_FOOTER.getRawMessage()));
-
-                        } else {
-
-                            player.sendMessage(Message.Prefix.getRawMessage() + "No Stats available");
-
-                        }
 
                     } else {
 

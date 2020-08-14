@@ -1,14 +1,13 @@
 package de.legoshi.parkourpluginv1.listener;
 
 import de.legoshi.parkourpluginv1.Main;
+import de.legoshi.parkourpluginv1.util.Message;
 import de.legoshi.parkourpluginv1.util.PlayerObject;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import java.util.Date;
-import java.util.UUID;
 
 public class QuitListener implements Listener {
 
@@ -18,22 +17,23 @@ public class QuitListener implements Listener {
         Player player = event.getPlayer();
         Main instance = Main.getInstance();
         PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
-        Date now = new Date();
-
-        long timeGained = (now.getTime() - playerObject.getPlaytimeSave()) + playerObject.getPlaytime();
-        int failsGained = (playerObject.getFailscount() + playerObject.getFailsrelative());
-        double ppGained = playerObject.getPpcount();
-        UUID playerUUID = player.getUniqueId();
 
         //cancels timer that might be running when leaving from course
         playerObject.getTimer().cancel();
 
-        //adds failcount to db when player leaves
+        //adds all data to db when player leaves
         instance.mySQLManager.savingPlayerDataToDB(player);
 
         //emptying filled hashmaps
         instance.playerManager.playerObjectHashMap.remove(player);
         instance.checkpointManager.checkpointObjectHashMap.remove(player);
+        event.setQuitMessage("");
+
+        for(Player all : Bukkit.getOnlinePlayers()) {
+
+            all.sendMessage(Message.MSG_Leave.getMessage().replace("{Player}", player.getName()));
+
+        }
 
     }
 

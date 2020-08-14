@@ -22,15 +22,24 @@ public class PPBestCommand implements CommandExecutor {
         if(!(sender instanceof Player)) return false;
 
         Player player = ((Player) sender).getPlayer();
+        int pages = 1;
 
-        if(args.length == 0) {
+        if (args.length == 1) {
 
-            showTopPlays(player, player.getName(), args);
+            showTopPlays(player, args[0], pages);
             return false;
 
-        } else if (args.length == 1) {
+        } else if(args.length == 2) {
 
-            showTopPlays(player, args[0], args);
+            try { pages = Integer.parseInt(args[1]); }
+            catch (NumberFormatException nfe) {
+
+                player.sendMessage(Message.ERR_NOTANUMBER.getMessage());
+                return false;
+
+            }
+
+            showTopPlays(player, args[0], pages);
             return false;
 
         }
@@ -40,7 +49,7 @@ public class PPBestCommand implements CommandExecutor {
 
     }
 
-    private void showTopPlays(Player player, String playername, String[] args) {
+    private void showTopPlays(Player player, String playername, int page) {
 
         Main instance = Main.getInstance();
         AsyncMySQL mySQL = instance.mySQL;
@@ -56,9 +65,24 @@ public class PPBestCommand implements CommandExecutor {
                 int fails;
                 double ppcount;
                 double time;
+                int pageAmount = 1;
 
                 try {
 
+                    int totalPageAmount = instance.mySQLManager.getPages(resultSet);
+
+                        if (page <= totalPageAmount && page >= 1) {
+
+                            pageAmount = page;
+
+                        } else {
+
+                            player.sendMessage(Message.ERR_PAGENOTEXIST.getMessage());
+                            return;
+
+                        }
+
+                    resultSet.absolute(((pageAmount-1)*10));
                     if(resultSet.next() && resultSet.getBoolean("cleared")) {
 
                         player.sendMessage(ChatColorHelper.chat(Message.MSG_BEST_HEADER.getRawMessage().replace("{player}", playername)));
@@ -71,19 +95,24 @@ public class PPBestCommand implements CommandExecutor {
                             time = resultSet.getDouble("ptime");
 
                             player.sendMessage(ChatColorHelper.chat(Message.MSG_BEST_FORMAT.getRawMessage()
-                                    .replace("{num}", String.valueOf(index))
-                                    .replace("{map}", mapName)
-                                    .replace("{time}s", String.valueOf(time))
+                                    .replace("{num}", Integer.toString(1+(pageAmount-1)*10))
+                                    .replace("{map}", instance.playerTag.fillSpaces(16, mapName + ":"))
+                                    .replace("{time}", String.format("%.3f", time))
                                     .replace("{fails}", String.valueOf(fails))
-                                    .replace("{pp}", String.valueOf(ppcount))));
+                                    .replace("{pp}", String.format("%.2f", ppcount))));
                             index++;
 
                         } while(resultSet.next() && index < 10 && resultSet.getBoolean("cleared"));
+
+                        player.sendMessage("\n" + Message.MSG_PAGEAMOUNT.getRawMessage()
+                            .replace("{page}", Integer.toString(pageAmount))
+                            .replace("{pagetotal}", Integer.toString(totalPageAmount)));
                         player.sendMessage(ChatColorHelper.chat(Message.MSG_BEST_FOOTER.getRawMessage()));
 
                     } else {
 
                         player.sendMessage(Message.Prefix.getRawMessage() + "No Stats available");
+
                     }
 
                 } catch (SQLException throwables) { throwables.printStackTrace(); }

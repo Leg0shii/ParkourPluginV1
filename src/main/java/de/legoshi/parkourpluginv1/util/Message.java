@@ -16,14 +16,6 @@ public enum Message {
     ERR_nameExist("Name already exists"),
     ERR_noNegative("No negative numbers allowed"),
     MSG_successfulCreatedMap("Successfully created new Ranked Map"),
-    MSG_stats("--- Stats of {Player} ---"),
-    MSG_playcount("Playcount: {playcount}"),
-    MSG_failcount("Failcount: {failcount}"),
-    MSG_ppcount("PP: {ppcount}"),
-    MSG_playtime("Playtime: {playtime}"),
-    MSG_scorecount("Score: {scorecount}"),
-    MSG_accuracy("Accuracy: {accuracy}"),
-    MSG_top5pp("#1: {pp1} \n #2: {pp2} \n #3: {pp3} \n #4: {pp4} \n #5: {pp5} \n"),
     ERR_wrongCommandInput("Wrong Syntax"),
     MYSQL_RECONNECT_FAILED("MYSQL Reconnect failed..."),
     MYSQL_RECONNECT_SUCCESS("MYSQL Reconnect success..."),
@@ -32,12 +24,13 @@ public enum Message {
     MYSQL_TRY_RECONNECT("MYSQL trying to reconnect..."),
     MSG_setCP("Your cp has been set!"),
     ERR_WrongInput("Wrong Input."),
+    MSG_JOINED_COURSE("You selected the course: {mapname}"),
 
     //pptop command
     MSG_HEADERCOURSECLEAR(
         "\n&8&m                                            " +
         "\n&7&lGlobal Ranking"),
-    MSG_COURSECLEAR("{color}{num}. {player}: {ppscore}pp"),
+    MSG_COURSECLEAR("{color}{num}. {player} &6{ppscore}&fpp"),
     MSG_FOOTERCOURSECLEAR("&8&m                                            "),
 
     // ppstats command
@@ -54,17 +47,17 @@ public enum Message {
     MSG_BEST_HEADER(
             "\n&8&m                                            " +
                     "&r\n &7&l{player}'s Top Scores"),
-    MSG_BEST_FORMAT(" {num}. {map}: &7{time} &7{fails} fails &7{pp}pp"),
+    MSG_BEST_FORMAT(" {num}. {map} &a{time}&fs - &c{fails} &ffails - &6{pp}&fpp"),
     MSG_BEST_FOOTER("&8&m                                            "),
 
     // maptop command
     MSG_MAPTOP_HEADER(
             "\n&8&m                                            " +
                     "&r\n &7&l{map} Top {type}"),
-    MSG_MAPTOP_FAILS("&7{num} fails"),
-    MSG_MAPTOP_PP("&7{num}pp"),
-    MSG_MAPTOP_TIMES("&7{num}"),
-    MSG_MAPTOP_FORMAT(" {num}. {name}: {amount}"),
+    MSG_MAPTOP_FAILS("&c{num} &ffails"),
+    MSG_MAPTOP_PP("&6{num}&fpp"),
+    MSG_MAPTOP_TIMES("&a{num}&fs"),
+    MSG_MAPTOP_FORMAT(" {num}. {name} {amount}"),
     MSG_MAPTOP_FOOTER("&8&m                                            "),
 
     //announcement
@@ -81,16 +74,17 @@ public enum Message {
     MSG_HELPHEADER("\n" + ChatColor.RESET + ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH + "                                            " +
         "\n" + ChatColor.GRAY + ChatColor.BOLD + " Help"),
     MSG_HELPFOOTER("" + ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH + "                                            "),
-    MSG_HELPMAPTOP(" /maptop - Displays top plays of a selected Map."),
-    MSG_HELPPBESTPP(" /bestpp - Shows your/others best PP-Scores."),
+    MSG_HELPMAPTOP(" /pptopmap <mapID> <fails/pp/time> [page] - Shows top plays of a selected Map."),
+    MSG_HELPPBESTPP(" /ppbest <name> [page] - Shows best PP-Scores."),
     MSG_HELPPPSTATS(" /ppstats - Shows your personal Serverstats."),
-    MSG_HELPPPTOP("\n /pptop - Shows the global Leaderboard for total PP."),
+    MSG_HELPPPTOP("\n /pptop [page] - Shows the global Leaderboard for total PP."),
+    MSG_HELPBRACKETS("Please note that arguments with [ ] are optional."),
 
     //errormessages for commands
-    ERR_MAPTOPCOMMAND("/maptop <mapID> <fails/pp/time>"),
-    ERR_BESTPPCOMMAND("/bestpp <playername>"),
+    ERR_MAPTOPCOMMAND("/pptopmap <mapID> <fails/pp/time> [page]"),
+    ERR_BESTPPCOMMAND("/ppbest <playername> [page]"),
     ERR_PPSTATSCOMMAND("/ppstats"),
-    ERR_PPTOPCOMMAND("/pptop"),
+    ERR_PPTOPCOMMAND("/pptop [page]"),
     ERR_PAGENOTEXIST("This page doesnt exist..."),
     ERR_NOTANUMBER("Please enter a number..."),
 
@@ -120,6 +114,5 @@ public enum Message {
     public String getRawMessage() {
         return this.m;
     }
-
 
 }

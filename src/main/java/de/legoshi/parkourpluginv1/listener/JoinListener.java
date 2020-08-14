@@ -40,9 +40,9 @@ public class JoinListener implements Listener {
         if (!(player.hasPlayedBefore())) {
 
             player.teleport(location);
+            player.sendMessage(Message.MSG_Welcome.getMessage());
 
             event.setJoinMessage(Message.MSG_FirstJoined.getMessage().replace("{Player}", player.getName()));
-            player.sendMessage(Message.MSG_Welcome.getMessage());
 
             instance.mySQL.update("INSERT INTO tablename (playeruuid, playername, ppcountp, playtime, scorecount, failcount) VALUES" +
                 "('" + player.getUniqueId().toString() + "', '"+ player.getName() +"' , 0.0, 0.0, 0, 0);");
@@ -50,7 +50,6 @@ public class JoinListener implements Listener {
             instance.playerManager.createPlayerData(player);
             instance.playerManager.calculateRanking(player);
 
-            for(Player all : Bukkit.getOnlinePlayers()) instance.tabTagCreator.updateRank(all);
             Bukkit.getConsoleSender().sendMessage("Initialize new Playerdata");
 
             Timer t = new Timer();
@@ -60,13 +59,15 @@ public class JoinListener implements Listener {
                 public void run() {
 
                     //helpmessage
-                    instance.titelManager.sendTitle(player, "", "For help write /pphelp", 20);
+                    instance.titelManager.sendTitle(player, "", "Help: /pphelp", 20);
 
                     t.cancel();
 
                 }
 
             }, 1500, 1);
+
+            for(Player all : Bukkit.getOnlinePlayers()) instance.tabTagCreator.updateRank(all);
 
             return;
 
@@ -77,7 +78,6 @@ public class JoinListener implements Listener {
 
         player.teleport(location);
         event.setJoinMessage(Message.MSG_Join.getMessage().replace("{Player}", player.getName()));
-        player.sendMessage(Message.MSG_Welcome.getMessage());
         instance.playerManager.calculateRanking(player);
         instance.scoreboardHelper.initializeScoreboard(player);
 
