@@ -30,7 +30,7 @@ public class PlayerStepPressureplate {
             Material checkPress = event.getClickedBlock().getType();
 
             World world = Bukkit.getWorld("world");
-            Location location = new Location(world, -616, 4, 9);
+            Location location = new Location(world, -619, 5, 10, -160, 5);
 
 
             //activates when player steps on CP
@@ -109,7 +109,21 @@ public class PlayerStepPressureplate {
 
                                     instance.playerManager.updateRankOfAllOnlinePlayer();
                                     instance.scoreboardHelper.updatePPScoreOnScoreBoard(player, playerObject.getPpcount());
-                                    for(Player all : Bukkit.getOnlinePlayers()) instance.tabTagCreator.updateRank(all);
+
+                                    Timer timer = new Timer();
+
+                                    timer.scheduleAtFixedRate(new TimerTask() {
+
+                                        @Override
+                                        public void run() {
+
+                                                for(Player all : Bukkit.getOnlinePlayers()) instance.tabTagCreator.updateRank(all);
+
+                                            timer.cancel();
+
+                                        }
+
+                                    }, 3000, 1);
 
                                 }
 

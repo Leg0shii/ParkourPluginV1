@@ -69,7 +69,7 @@ public class PlayerManager {
                         ArrayList<PPMapObject> ppMapObjects = new ArrayList<>();
                         int id = resultSet.getInt("mapid");
                         double pp = resultSet.getDouble("ppcountc");
-                        MapObject mapObject = new MapObject("", id, 0, 0, 0, 0, null);
+                        MapObject mapObject = new MapObject("", id, 0, 0, 0, 0, null, "");
                         PPMapObject ppMapObject = new PPMapObject(pp, mapObject);
                         ppMapObjects.add(ppMapObject);
 
@@ -77,7 +77,7 @@ public class PlayerManager {
 
                             id = resultSet.getInt("mapid");
                             pp = resultSet.getDouble("ppcountc");
-                            mapObject = new MapObject("", id, 0, 0, 0, 0, null);
+                            mapObject = new MapObject("", id, 0, 0, 0, 0, null, "");
                             ppMapObject = new PPMapObject(pp, mapObject);
                             ppMapObjects.add(ppMapObject);
 

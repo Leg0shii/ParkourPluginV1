@@ -108,6 +108,7 @@ public class PlayerNetherStarClick {
                     },
                     "" + ChatColor.RESET + ChatColor.BOLD + title,
                         "" + ChatColor.RESET + ChatColor.GRAY + "Builder: " + ChatColor.GOLD + " - \n" +
+                        "" + ChatColor.RESET + ChatColor.GRAY + "Maptype: " + ChatColor.GOLD + maps.getMapType() + "\n" +
                         ChatColor.RESET + ChatColor.GRAY + "Difficulty: " + instance.playerTag.difficultyString(difficulty) + ChatColor.DARK_GRAY + " (" +difficulty + ")\n" +
                         ChatColor.RESET + ChatColor.GRAY + "MapID: " + ChatColor.GOLD + mapId +
                         "\n\n" +
@@ -145,7 +146,7 @@ public class PlayerNetherStarClick {
                 double currentTime = playerObject.getTimerelative();
 
                 instance.titelManager.sendActionBar(player,
-                    ChatColor.BLUE + "Time: " + String.format("%.3f",currentTime) + " || Current PP: " + String.format("%.2f", currentPP));
+                    ChatColor.BLUE + "Time: " + ChatColor.GRAY + String.format("%.3f",currentTime) + ChatColor.BLUE + " || Current PP: " + ChatColor.GRAY + String.format("%.2f", currentPP));
 
                 playerObject.setTimerelative(playerObject.getTimerelative() + 0.05);
 

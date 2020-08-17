@@ -32,10 +32,10 @@ public class PlayerRedDyeClick {
 
                 ItemStack redDye = new ItemStack(Material.INK_SACK, 1, (short) 1);
                 ItemMeta metaRedDye = redDye.getItemMeta();
-                metaRedDye.setDisplayName("Checkpoint");
+                metaRedDye.setDisplayName(ChatColor.RESET + "Checkpoint");
                 redDye.setItemMeta(metaRedDye);
 
-                if(clickedItem.equals(redDye) && clickedItem.getItemMeta().getDisplayName().equals("Checkpoint")) {
+                if(clickedItem.equals(redDye) && clickedItem.getItemMeta().getDisplayName().equals(ChatColor.RESET + "Checkpoint")) {
 
                     if(playerObject.isDyeClick()) {  return; }
                     else playerObject.setDyeClick(true);

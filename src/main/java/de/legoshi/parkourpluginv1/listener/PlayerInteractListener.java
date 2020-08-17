@@ -16,6 +16,7 @@ public class PlayerInteractListener implements Listener {
         instance.playerInteractManager.getNetherStarClick().onNetherStarClick(event);
         instance.playerInteractManager.getRedDyeClick().onReDyeClick(event);
         instance.playerInteractManager.getPlayerGrayDyeClick().onGrayClick(event);
+        instance.playerInteractManager.getPlayerCyanDyeClick().onCyanDyeInventoryClick(event);
 
     }
 

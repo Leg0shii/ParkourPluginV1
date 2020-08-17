@@ -26,9 +26,10 @@ public class CreateRankedMap implements CommandExecutor {
                 AsyncMySQL mySQL = Main.getInstance().mySQL;
                 int minFails;
                 double minTime;
+                String maptype;
 
                 //if Input has all arguments
-                if(args.length == 4 && player.getDisplayName().equals("Leg0shi_")) {
+                if(args.length == 5 && player.getDisplayName().equals("Leg0shi_")) {
 
                         //checks if numbers in difficulty/minTime/minFails negative
                         try {
@@ -54,6 +55,7 @@ public class CreateRankedMap implements CommandExecutor {
                         name = args[0];
                         minFails = Integer.parseInt(args[2]);
                         minTime = Double.parseDouble(args[3]);
+                        maptype = args[4];
                         spawn = player.getLocation();
 
                         double x = spawn.getX();
@@ -64,10 +66,10 @@ public class CreateRankedMap implements CommandExecutor {
                         ArrayList<MapObject> mapObjectArrayList = Main.getInstance().mapObjectMananger.getMapObjectArrayList();
 
                         Main.getInstance().mapObjectMananger.getMapObjectArrayList().add(new MapObject(name, mapObjectArrayList.size()+1, difficulty,
-                            0, minFails, minTime, spawn));
+                            0, minFails, minTime, spawn, maptype));
 
-                        mySQL.update("INSERT INTO maps (mapname, difficulty, minfails, mintime, x, y, z, world) VALUES " +
-                            "('"+name+"', "+difficulty+", "+minFails+", "+minTime+", '"+x+"', '"+y+"', '"+z+"', '"+world+"');");
+                        mySQL.update("INSERT INTO maps (mapname, maptype, difficulty, minfails, mintime, x, y, z, world) VALUES " +
+                            "('"+name+"', '"+maptype+"', "+difficulty+", "+minFails+", "+minTime+", '"+x+"', '"+y+"', '"+z+"', '"+world+"');");
 
                         sender.sendMessage(Message.MSG_successfulCreatedMap.getMessage());
 

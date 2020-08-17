@@ -3,6 +3,7 @@ package de.legoshi.parkourpluginv1.listener;
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.Message;
 import de.legoshi.parkourpluginv1.util.PlayerObject;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -23,7 +24,7 @@ public class PlayerGrayDyeClick {
             Player player = event.getPlayer();
             Main instance = Main.getInstance();
 
-            metaGrayDye.setDisplayName("Back to Spawn");
+            metaGrayDye.setDisplayName(ChatColor.RESET + "Back to Spawn");
             grayDye.setItemMeta(metaGrayDye);
             PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
 

@@ -24,7 +24,7 @@ public enum Message {
     MYSQL_TRY_RECONNECT("MYSQL trying to reconnect..."),
     MSG_setCP("Your cp has been set!"),
     ERR_WrongInput("Wrong Input."),
-    MSG_JOINED_COURSE("You selected the course: {mapname}"),
+    MSG_JOINED_COURSE("You selected the course: " +ChatColor.WHITE+ "{mapname}"),
 
     //pptop command
     MSG_HEADERCOURSECLEAR(

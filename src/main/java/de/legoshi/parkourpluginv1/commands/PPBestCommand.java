@@ -83,26 +83,32 @@ public class PPBestCommand implements CommandExecutor {
                         }
 
                     resultSet.absolute(((pageAmount-1)*10));
+
                     if(resultSet.next() && resultSet.getBoolean("cleared")) {
 
                         player.sendMessage(ChatColorHelper.chat(Message.MSG_BEST_HEADER.getRawMessage().replace("{player}", playername)));
-                        player.sendMessage("\n ");
+                        player.sendMessage("\n");
+
                         do {
 
-                            mapName = resultSet.getString("mapname");
-                            fails = resultSet.getInt("pfails");
-                            ppcount = resultSet.getDouble("ppcountc");
-                            time = resultSet.getDouble("ptime");
+                            if(resultSet.getBoolean("cleared")) {
 
-                            player.sendMessage(ChatColorHelper.chat(Message.MSG_BEST_FORMAT.getRawMessage()
-                                    .replace("{num}", Integer.toString(1+(pageAmount-1)*10))
+                                mapName = resultSet.getString("mapname");
+                                fails = resultSet.getInt("pfails");
+                                ppcount = resultSet.getDouble("ppcountc");
+                                time = resultSet.getDouble("ptime");
+
+                                player.sendMessage(ChatColorHelper.chat(Message.MSG_BEST_FORMAT.getRawMessage()
+                                    .replace("{num}", Integer.toString(((pageAmount - 1) * 10) + index))
                                     .replace("{map}", instance.playerTag.fillSpaces(16, mapName + ":"))
                                     .replace("{time}", String.format("%.3f", time))
                                     .replace("{fails}", String.valueOf(fails))
                                     .replace("{pp}", String.format("%.2f", ppcount))));
-                            index++;
+                                index++;
 
-                        } while(resultSet.next() && index < 10 && resultSet.getBoolean("cleared"));
+                            }
+
+                        } while(resultSet.next() && index < 11);
 
                         player.sendMessage("\n" + Message.MSG_PAGEAMOUNT.getRawMessage()
                             .replace("{page}", Integer.toString(pageAmount))

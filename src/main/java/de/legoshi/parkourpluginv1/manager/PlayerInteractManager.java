@@ -8,6 +8,7 @@ public class PlayerInteractManager {
     PlayerStepPressureplate playerStepPressureplate;
     PlayerRedDyeClick redDyeClick;
     PlayerGrayDyeClick playerGrayDyeClick;
+    PlayerCyanDyeClick playerCyanDyeClick;
 
     public PlayerInteractManager() {
 
@@ -15,6 +16,7 @@ public class PlayerInteractManager {
         playerStepPressureplate = new PlayerStepPressureplate();
         redDyeClick = new PlayerRedDyeClick();
         playerGrayDyeClick = new PlayerGrayDyeClick();
+        playerCyanDyeClick = new PlayerCyanDyeClick();
 
     }
 
@@ -25,5 +27,7 @@ public class PlayerInteractManager {
     public PlayerRedDyeClick getRedDyeClick() { return redDyeClick; }
 
     public PlayerGrayDyeClick getPlayerGrayDyeClick() { return playerGrayDyeClick; }
+
+    public PlayerCyanDyeClick getPlayerCyanDyeClick() { return playerCyanDyeClick; }
 
 }

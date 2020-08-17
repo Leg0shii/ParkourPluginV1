@@ -129,7 +129,7 @@ public class MapTopCommand implements CommandExecutor {
                         player.sendMessage(ChatColorHelper.chat(Message.MSG_MAPTOP_HEADER.getRawMessage()
                             .replace("{map}", resultSet.getString("mapname"))
                             .replace("{type}", type)));
-                        player.sendMessage("\n ");
+                        player.sendMessage("\n");
 
                             do {
 
