@@ -22,7 +22,9 @@ public class JoinListener implements Listener {
 
         Player player = event.getPlayer();
         World world = Bukkit.getWorld("world");
+      
         Location location = new Location(world, -619, 5, 10, -160, 5);
+
         Main instance = Main.getInstance();
         PlayerObject playerObject = new PlayerObject(player.getUniqueId(), 0, 0, 0, 0, 0, 0);
 
