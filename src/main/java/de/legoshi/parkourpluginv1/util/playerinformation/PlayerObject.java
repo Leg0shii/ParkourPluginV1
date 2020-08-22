@@ -13,9 +13,9 @@ public class PlayerObject {
     public PlayerObject(Player player) {
 
         this.player = player;
-        PlayerMap playerMap = new PlayerMap();
-        PlayerPlayStats playerPlayStats = new PlayerPlayStats();
-        PlayerStatus playerStatus = new PlayerStatus();
+        this.playerMap = new PlayerMap();
+        this.playerPlayStats = new PlayerPlayStats();
+        this.playerStatus = new PlayerStatus();
 
     }
 
