@@ -1,10 +1,7 @@
 package de.legoshi.parkourpluginv1.manager;
 
 import de.legoshi.parkourpluginv1.Main;
-import de.legoshi.parkourpluginv1.util.AsyncMySQL;
-import de.legoshi.parkourpluginv1.util.MapObject;
-import de.legoshi.parkourpluginv1.util.PPMapObject;
-import de.legoshi.parkourpluginv1.util.PlayerObject;
+import de.legoshi.parkourpluginv1.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -28,6 +25,8 @@ public class PlayerManager {
         Main instance = Main.getInstance();
         AsyncMySQL mySQL = instance.mySQL;
         PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
+        FW file = new FW("./ParkourBuild", player.getUniqueId().toString() + ".yml");
+        if(file.getBoolean("hascourse")) playerObject.setBuildCourse(true);
 
         mySQL.query("SELECT * FROM tablename WHERE playeruuid = '"+player.getUniqueId()+"';", new Consumer<ResultSet>() {
 
@@ -69,7 +68,7 @@ public class PlayerManager {
                         ArrayList<PPMapObject> ppMapObjects = new ArrayList<>();
                         int id = resultSet.getInt("mapid");
                         double pp = resultSet.getDouble("ppcountc");
-                        MapObject mapObject = new MapObject("", id, 0, 0, 0, 0, null, "");
+                        MapObject mapObject = new MapObject("", id, 0, 0, 0, 0, null, "", "", "");
                         PPMapObject ppMapObject = new PPMapObject(pp, mapObject);
                         ppMapObjects.add(ppMapObject);
 
@@ -77,7 +76,7 @@ public class PlayerManager {
 
                             id = resultSet.getInt("mapid");
                             pp = resultSet.getDouble("ppcountc");
-                            mapObject = new MapObject("", id, 0, 0, 0, 0, null, "");
+                            mapObject = new MapObject("", id, 0, 0, 0, 0, null, "", "", "");
                             ppMapObject = new PPMapObject(pp, mapObject);
                             ppMapObjects.add(ppMapObject);
 

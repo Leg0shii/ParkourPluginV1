@@ -29,7 +29,7 @@ public class CreateRankedMap implements CommandExecutor {
                 String maptype;
 
                 //if Input has all arguments
-                if(args.length == 5 && player.getDisplayName().equals("Leg0shi_")) {
+                if(args.length == 6 && player.getName().equals("Leg0shi_")) {
 
                         //checks if numbers in difficulty/minTime/minFails negative
                         try {
@@ -62,11 +62,12 @@ public class CreateRankedMap implements CommandExecutor {
                         double y = spawn.getY();
                         double z = spawn.getZ();
                         String world = spawn.getWorld().getName();
+                        String builder = args[5];
 
                         ArrayList<MapObject> mapObjectArrayList = Main.getInstance().mapObjectMananger.getMapObjectArrayList();
 
                         Main.getInstance().mapObjectMananger.getMapObjectArrayList().add(new MapObject(name, mapObjectArrayList.size()+1, difficulty,
-                            0, minFails, minTime, spawn, maptype));
+                            0, minFails, minTime, spawn, maptype, "ranked", builder));
 
                         mySQL.update("INSERT INTO maps (mapname, maptype, difficulty, minfails, mintime, x, y, z, world) VALUES " +
                             "('"+name+"', '"+maptype+"', "+difficulty+", "+minFails+", "+minTime+", '"+x+"', '"+y+"', '"+z+"', '"+world+"');");

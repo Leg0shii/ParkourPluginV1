@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.github.WesJD.AnvilGUI:anvilgui:master">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/WesJD/AnvilGUI/anvilgui/master/anvilgui-master.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/WesJD/AnvilGUI/anvilgui/master/anvilgui-master-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/WesJD/AnvilGUI/anvilgui/master/anvilgui-master-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

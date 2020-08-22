@@ -13,12 +13,14 @@ public class MapObject {
     int minFails;
     double minTime;
     Location spawn;
+    String mapstatus;
+    String builder;
 
     public MapObject() {
 
     }
 
-    public MapObject(String name, int ID, double difficulty, double stars, int minFails, double minTime, Location spawn, String mapType) {
+    public MapObject(String name, int ID, double difficulty, double stars, int minFails, double minTime, Location spawn, String mapType, String mapstatus, String builder) {
 
         this.name = name;
         this.ID = ID;
@@ -29,16 +31,24 @@ public class MapObject {
         this.spawn = spawn;
         this.highestPP = 0;
         this.mapType = mapType;
+        this.mapstatus = mapstatus;
+        this.builder = builder;
 
     }
+
+    public String getMapstatus() { return mapstatus; }
+
+    public void setMapstatus(String mapstatus) { this.mapstatus = mapstatus; }
+
+    public String getBuilder() { return builder; }
+
+    public void setBuilder(String builder) { this.builder = builder; }
 
     public double getHighestPP() { return highestPP; }
 
     public void setHighestPP(double highestPP) { this.highestPP = highestPP; }
 
-    public Location getSpawn() {
-        return spawn;
-    }
+    public Location getSpawn() { return spawn; }
 
     public void setSpawn(Location spawn) {
         this.spawn = spawn;

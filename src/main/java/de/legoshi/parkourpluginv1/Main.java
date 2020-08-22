@@ -6,9 +6,11 @@ import de.legoshi.parkourpluginv1.manager.*;
 import de.legoshi.parkourpluginv1.util.*;
 import org.bukkit.Bukkit;
 
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.io.IOException;
 
 public final class Main extends JavaPlugin {
 
@@ -26,6 +28,7 @@ public final class Main extends JavaPlugin {
     public TabTagCreator tabTagCreator;
     public TitelManager titelManager;
     public PlayerStepPressureplate playerStepPressureplate;
+    public InvGui invGui;
 
     @Override
     public void onEnable() {
@@ -37,6 +40,7 @@ public final class Main extends JavaPlugin {
         updateSchedular.onRun();
         //so DB doesnt loose connection
         mySQLManager.keepMySQLbusy();
+        createFolders();
 
         ListenerRegistration();
         CommandRegistration();
@@ -58,6 +62,7 @@ public final class Main extends JavaPlugin {
         getCommand("pptopmap").setExecutor(new MapTopCommand());
         getCommand("ppbest").setExecutor(new PPBestCommand());
         getCommand("pphelp").setExecutor(new HelpCommand());
+        getCommand("setmapname").setExecutor(new SetMapNameCommand());
 
     }
 
@@ -101,7 +106,19 @@ public final class Main extends JavaPlugin {
         tabTagCreator = new TabTagCreator();
         titelManager = new TitelManager();
         playerStepPressureplate = new PlayerStepPressureplate();
+        invGui = new InvGui();
 
     }
 
+    public void createFolders() {
+
+        File pkbfile = new File("./ParkourBuild");
+        if(pkbfile.mkdir()) { Bukkit.getConsoleSender().sendMessage("Successfully created Folder: ParkourBuild"); }
+        else { Bukkit.getConsoleSender().sendMessage("Folder: ParkourBuild Already exist"); }
+
+        File pkmapsfile = new File("./ParkourMapsPlayers");
+        if(pkmapsfile.mkdir()) { Bukkit.getConsoleSender().sendMessage("Successfully created Folder: ParkourMapsPlayers"); }
+        else { Bukkit.getConsoleSender().sendMessage("Folder: ParkourMapsPlayers Already exist"); }
+
+    }
 }

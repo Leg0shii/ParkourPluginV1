@@ -12,5 +12,6 @@ commands:
   pptopmap:
   ppbest:
   pphelp:
+  setmapname:
 
 

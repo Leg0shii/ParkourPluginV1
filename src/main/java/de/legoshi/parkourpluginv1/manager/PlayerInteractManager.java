@@ -9,6 +9,7 @@ public class PlayerInteractManager {
     PlayerRedDyeClick redDyeClick;
     PlayerGrayDyeClick playerGrayDyeClick;
     PlayerCyanDyeClick playerCyanDyeClick;
+    PlayerPickAxeClick playerPickAxeClick;
 
     public PlayerInteractManager() {
 
@@ -17,6 +18,7 @@ public class PlayerInteractManager {
         redDyeClick = new PlayerRedDyeClick();
         playerGrayDyeClick = new PlayerGrayDyeClick();
         playerCyanDyeClick = new PlayerCyanDyeClick();
+        playerPickAxeClick = new PlayerPickAxeClick();
 
     }
 
@@ -29,5 +31,7 @@ public class PlayerInteractManager {
     public PlayerGrayDyeClick getPlayerGrayDyeClick() { return playerGrayDyeClick; }
 
     public PlayerCyanDyeClick getPlayerCyanDyeClick() { return playerCyanDyeClick; }
+
+    public PlayerPickAxeClick getPlayerPickAxeClick() { return playerPickAxeClick; }
 
 }

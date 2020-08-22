@@ -1,11 +1,30 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="ParkourPluginV1">
+  <artifact type="jar" build-on-make="true" name="ParkourPluginV1">
     <output-path>$USER_HOME$/Desktop/PracticeServer/plugins</output-path>
     <root id="archive" name="ParkourPluginV1.jar">
       <element id="module-output" name="ParkourPluginV1" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/de/themoep/inventorygui/1.4.2-SNAPSHOT/inventorygui-1.4.2-SNAPSHOT.jar" path-in-jar="/" />
       <element id="library" level="project" name="Maven: de.themoep:inventorygui:1.4.2-SNAPSHOT" />
-      <element id="library" level="project" name="Maven: org.mongodb:mongo-java-driver:3.12.5" />
+      <element id="library" level="project" name="Maven: commons-codec:commons-codec:1.9" />
+      <element id="library" level="project" name="Maven: commons-logging:commons-logging:1.2" />
+      <element id="library" level="project" name="Maven: mysql:mysql-connector-java:8.0.13" />
+      <element id="library" level="project" name="Maven: org.spigotmc:spigot:1.12.2-OFFLINE" />
+      <element id="library" level="project" name="Maven: org.lokra.seaweedfs:seaweedfs-client:0.7.3.RELEASE" />
+      <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.8.0" />
+      <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.8.0" />
+      <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.8.0" />
+      <element id="library" level="project" name="Maven: com.google.protobuf:protobuf-java:3.6.1" />
+      <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpclient-cache:4.5.2" />
+      <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpclient:4.5.2" />
+      <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpcore:4.4.4" />
+      <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpmime:4.5.2" />
+      <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.7" />
+      <element id="library" level="project" name="Maven: org.springframework:spring-beans:4.3.1.RELEASE" />
+      <element id="library" level="project" name="Maven: org.springframework:spring-core:4.3.1.RELEASE" />
+      <element id="library" level="project" name="Maven: org.ehcache:ehcache:3.1.1" />
+      <element id="library" level="project" name="Maven: com.github.WesJD.AnvilGUI:anvilgui:master" />
+      <element id="extracted-dir" path="$USER_HOME$/Desktop/PracticeServer/plugins/ParkourPluginV1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/WesJD/AnvilGUI/anvilgui/master/anvilgui-master.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
