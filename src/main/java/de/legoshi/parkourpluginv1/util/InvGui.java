@@ -2,6 +2,13 @@ package de.legoshi.parkourpluginv1.util;
 
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.manager.MapObjectMananger;
+import de.legoshi.parkourpluginv1.util.mapinformation.MapJudges;
+import de.legoshi.parkourpluginv1.util.mapinformation.MapMetaData;
+import de.legoshi.parkourpluginv1.util.mapinformation.MapObject;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerMap;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerPlayStats;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerStatus;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.GuiPageElement;
 import de.themoep.inventorygui.InventoryGui;
@@ -10,6 +17,7 @@ import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.MapMeta;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +54,7 @@ public class InvGui {
 									}
 
 						}
-						String mapName = mapObject.getName();
+						String mapName = mapObject.getMapMetaData().getName();
 						int mapid = mapObject.getID();
 
 						InventoryGui guiInMap = new InventoryGui(instance, player, guiTitleInMap, guiSetupInMap);
@@ -72,9 +80,8 @@ public class InvGui {
 											WorldCreator worldCreator = new WorldCreator(String.valueOf(mapid));
 											World world = worldCreator.createWorld();
 											player.teleport(new Location(world, 0, 50, 0));
-											playerObject.setBuildmode(true);
+											playerObject.getPlayerStatus().setBuildmode(true);
 											instance.inventory.builderInventory(player);
-
 											player.closeInventory();
 											return true;
 
@@ -104,6 +111,7 @@ public class InvGui {
 
 						Main instance = Main.getInstance();
 						PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
+						PlayerStatus playerStatus = playerObject.getPlayerStatus();
 						AsyncMySQL mySQL = instance.mySQL;
 
 						FW fw = new FW("./ParkourBuild", player.getUniqueId().toString() + ".yml");
@@ -115,8 +123,8 @@ public class InvGui {
 								new ItemStack(Material.WOOL),
 								click -> {
 
-											playerObject.setBuildCourse(true);
-											playerObject.setBuildmode(true);
+											playerStatus.setBuildCourse(true);
+											playerStatus.setBuildmode(true);
 											fw.setValue("hasCourse", true);
 											try {
 														fw.save();
@@ -133,30 +141,31 @@ public class InvGui {
 
 																				if (resultSet.next()) {
 
-																							MapObject mapObject;
-																							int difficulty = 0;
-																							int minFails = 0;
-																							double minTime = 0;
-																							String name = "" + (resultSet.getInt("mapid") + 1);
-																							String mapname = "-";
-																							World newWorld = createNewWorld(name);
-																							Location spawn = new Location(newWorld, 0, 50, 0);
-																							int x = 0;
-																							int y = 0;
-																							int z = 0;
-																							String maptype = "";
-																							String builder = player.getName();
-																							mapObject = new MapObject("-", Integer.parseInt(name), difficulty ,0.0 ,minFails ,minTime ,spawn, maptype, "unranked", builder);
+																							//initializes new MapObject
+																							MapJudges mapJudges = new MapJudges();
+																							MapMetaData mapMetaData = new MapMetaData();
+																							mapMetaData.setBuilder(player.getName());
+																							int mapid = (resultSet.getInt("mapid") + 1);
+																							World newWorld = createNewWorld(String.valueOf(mapid));
+																							Location mapSpawn = new Location(newWorld, 0, 50, 0);
+																							mapMetaData.setSpawn(mapSpawn);
+																							MapObject mapObject = new MapObject(mapid, mapMetaData, mapJudges);
 
-																							fw.setValue("mapname", name);
+																							//saves new map into mapfile of player
+																							fw.setValue("mapname", mapid);
 																							fw.save();
 
+																							//adding map to servermaplist
 																							Main.getInstance().mapObjectMananger.getMapObjectArrayList().add(mapObject);
 
-																							mySQL.update("INSERT INTO maps (mapname, builder, maptype, difficulty, minfails, mintime, x, y, z, world) VALUES " +
-																									"('"+mapname+"', '"+ builder +"', '" + maptype + "', " + difficulty + ", " + minFails + ", " + minTime + ", '" + x + "', '" + y + "', '" + z + "', '" + newWorld.getName() + "');");
+																							//inserting map into database
+																							String buildername = player.getName();
+																							String worldName = String.valueOf(mapid);
 
-																							player.teleport(new Location(newWorld, 0, 50, 0));
+																							mySQL.update("INSERT INTO maps (mapname, builder, maptype, difficulty, minfails, mintime, x, y, z, world) VALUES " +
+																									"('-','"+ buildername +"' ,'' ,0 ,0 ,0 ,0 ,50 ,0 , '" + worldName + "');");
+
+																							player.teleport(mapSpawn);
 																							click.getEvent().getWhoClicked().sendMessage(ChatColor.RED + "New World Created");
 																							instance.inventory.builderInventory(player);
 																							player.closeInventory();
@@ -204,7 +213,7 @@ public class InvGui {
 						InventoryGui gui = new InventoryGui(Main.getInstance(), player, "Map Selection", guiSetup);
 
 						//sorts maps
-						mapObjectArrayList.sort(Comparator.comparing(MapObject::getDifficulty));
+						mapObjectArrayList.sort(Comparator.comparing(MapObject::getMapJudges, Comparator.comparing(MapJudges::getDifficulty)));
 
 						// First page
 						gui.addElement(new GuiPageElement('f', new ItemStack(Material.ARROW), GuiPageElement.PageAction.FIRST, "Go to first page (current: %page%)"));
@@ -219,13 +228,18 @@ public class InvGui {
 
 						for (MapObject maps : mapObjectArrayList) {
 
-									player.sendMessage("" + maps.getMapstatus());
+									MapMetaData mapMetaData = maps.getMapMetaData();
+									MapJudges mapJudges = maps.getMapJudges();
+									player.sendMessage("" + mapMetaData.getMapstatus());
 
-									if (maps.getMapstatus().equals("ranked")) {
+									PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
+									PlayerStatus playerStatus = playerObject.getPlayerStatus();
+									PlayerMap playerMap = playerObject.getPlayerMap();
+
+									if (mapMetaData.getMapstatus().equals("ranked")) {
 
 												ItemStack material = null;
-												PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
-												double difficulty = maps.getDifficulty();
+												double difficulty = mapJudges.getDifficulty();
 												int mapId = maps.getID();
 
 												//creates the block that is displaed in the GUI depending on the difficulty
@@ -236,24 +250,24 @@ public class InvGui {
 												else if (difficulty <= 6.49) material = new ItemStack(Material.WOOL, 1, (short) 10);
 												else if (difficulty >= 6.50) material = new ItemStack(Material.WOOL, 1, (short) 15);
 
-												String title = maps.getName();
+												String title = mapMetaData.getName();
 												// Add an element to the group
 												// Elements are in the order they got added to the group and don't need to have the same type.
 												group.addElement((new StaticGuiElement('e', new ItemStack(material),
 														click -> {
 
-																	playerObject.setJumpmode(true);
-																	playerObject.setFailsrelative(0);
-																	playerObject.setMapObject(maps);
-																	playerObject.setTimerelative(0);
+																	playerStatus.setJumpmode(true);
+																	playerMap.setFailsrelative(0);
+																	playerMap.setMapObject(maps);
+																	playerMap.setTimeRelative(0);
 																	instance.inventory.createParkourInventory(player);
 
 																	WorldCreator worldCreator = new WorldCreator(Integer.toString(maps.getID()));
 																	worldCreator.createWorld();
 
-																	click.getEvent().getWhoClicked().sendMessage(Message.MSG_JOINED_COURSE.getMessage().replace("{mapname}", maps.getName()));
-																	click.getEvent().getWhoClicked().teleport(maps.getSpawn());
-																	playerObject.setTimer(timer(player));
+																	click.getEvent().getWhoClicked().sendMessage(Message.MSG_JOINED_COURSE.getMessage().replace("{mapname}", mapMetaData.getName()));
+																	click.getEvent().getWhoClicked().teleport(mapMetaData.getSpawn());
+																	playerObject.getPlayerPlayStats().setTimer(timer(player));
 
 																	//adding mapattempt into db
 																	instance.mapObjectMananger.firstPlayerMapLoad(player, maps);
@@ -263,13 +277,13 @@ public class InvGui {
 														},
 														"" + ChatColor.RESET + ChatColor.BOLD + title,
 														"" + ChatColor.RESET + ChatColor.GRAY + "Builder: " + ChatColor.GOLD + " - \n" +
-																"" + ChatColor.RESET + ChatColor.GRAY + "Maptype: " + ChatColor.GOLD + maps.getMapType() + "\n" +
+																"" + ChatColor.RESET + ChatColor.GRAY + "Maptype: " + ChatColor.GOLD + mapMetaData.getMapType() + "\n" +
 																ChatColor.RESET + ChatColor.GRAY + "Difficulty: " + instance.playerTag.difficultyString(difficulty) + ChatColor.DARK_GRAY + " (" + difficulty + ")\n" +
 																ChatColor.RESET + ChatColor.GRAY + "MapID: " + ChatColor.GOLD + mapId +
 																"\n\n" +
 																ChatColor.RESET + ChatColor.GRAY + ChatColor.GRAY + "------[ Map-Judge ]------\n" +
-																ChatColor.RESET + ChatColor.GRAY + "Min-Fails: " + ChatColor.GOLD + maps.getMinFails() + "\n" +
-																ChatColor.RESET + ChatColor.GRAY + "Min-Time: " + ChatColor.GOLD + maps.getMinTime()
+																ChatColor.RESET + ChatColor.GRAY + "Min-Fails: " + ChatColor.GOLD + mapJudges.getMinFails() + "\n" +
+																ChatColor.RESET + ChatColor.GRAY + "Min-Time: " + ChatColor.GOLD + mapJudges.getMinTime()
 												)));
 									}
 									gui.addElement(group);
@@ -286,6 +300,7 @@ public class InvGui {
 						FW file = new FW("./ParkourBuild", player.getUniqueId().toString() + ".yml");
 						Main instance = Main.getInstance();
 						PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
+						PlayerStatus playerStatus = playerObject.getPlayerStatus();
 						AsyncMySQL mySQL = instance.mySQL;
 
 						InventoryGui gui = new InventoryGui(Main.getInstance(), player, "Upload?", guiSetup);
@@ -294,7 +309,7 @@ public class InvGui {
 								new ItemStack(Material.WOOL, 1, (short) 3),
 								click -> {
 
-											playerObject.setBuildCourse(false);
+											playerStatus.setBuildCourse(false);
 											mySQL.update("UPDATE maps SET mapstatus = 'unranked' WHERE mapid = " + Integer.parseInt(file.getString("mapname")));
 											mySQL.update("UPDATE maps SET world = " + file.getString("mapname") +
 													" WHERE mapid = " + Integer.parseInt(file.getString("mapname")));
@@ -346,13 +361,15 @@ public class InvGui {
 						Timer timer = new Timer();
 						Main instance = Main.getInstance();
 						PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
+						PlayerStatus playerStatus = playerObject.getPlayerStatus();
+						PlayerMap playerMap = playerObject.getPlayerMap();
 
 						timer.scheduleAtFixedRate(new TimerTask() {
 
 									@Override
 									public void run() {
 
-												if (!(Main.getInstance().playerManager.playerObjectHashMap.get(player).isJumpmode())) {
+												if (!(playerStatus.isJumpmode())) {
 
 															timer.cancel();
 
@@ -360,12 +377,12 @@ public class InvGui {
 
 												//outputs the time and current pp of player over hotbar
 												double currentPP = instance.playerStepPressureplate.calculatePPFromMap(playerObject);
-												double currentTime = playerObject.getTimerelative();
+												double currentTime = playerMap.getTimeRelative();
 
 												instance.titelManager.sendActionBar(player,
 														ChatColor.BLUE + "Time: " + ChatColor.GRAY + String.format("%.3f", currentTime) + ChatColor.BLUE + " || Current PP: " + ChatColor.GRAY + String.format("%.2f", currentPP));
 
-												playerObject.setTimerelative(playerObject.getTimerelative() + 0.05);
+												playerMap.setTimeRelative(playerMap.getTimeRelative() + 0.05);
 
 									}
 

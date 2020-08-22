@@ -1,7 +1,7 @@
 package de.legoshi.parkourpluginv1.listener;
 
 import de.legoshi.parkourpluginv1.Main;
-import de.legoshi.parkourpluginv1.util.PlayerObject;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,7 +20,7 @@ public class PlayerNetherStarClick {
 
         if ((action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) && event.hasItem()) {
 
-            if (event.getItem().getType().equals(Material.NETHER_STAR) && !(playerObject.isBuildmode())) {
+            if (event.getItem().getType().equals(Material.NETHER_STAR) && !(playerObject.getPlayerStatus().isBuildmode())) {
 
                 instance.invGui.guiShowAllCourses(player).show(player);
 

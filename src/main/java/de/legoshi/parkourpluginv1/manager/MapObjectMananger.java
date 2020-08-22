@@ -2,12 +2,15 @@ package de.legoshi.parkourpluginv1.manager;
 
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.AsyncMySQL;
-import de.legoshi.parkourpluginv1.util.MapObject;
-import de.legoshi.parkourpluginv1.util.PlayerObject;
+import de.legoshi.parkourpluginv1.util.mapinformation.MapJudges;
+import de.legoshi.parkourpluginv1.util.mapinformation.MapMetaData;
+import de.legoshi.parkourpluginv1.util.mapinformation.MapObject;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.MapMeta;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -52,24 +55,33 @@ public class MapObjectMananger {
 
                         //loads all MapObjects from the DB into the MapObjectManager
                         World world = Bukkit.getWorld(resultSet.getString("world"));
-
-                        Location l = new Location(world, resultSet.getDouble("x"),
+                        Location mapSpawn = new Location(
+                            world,
+                            resultSet.getDouble("x"),
                             resultSet.getDouble("y"),
-                            resultSet.getDouble("z"));
+                            resultSet.getDouble("z")
+                        );
 
-                        MapObject mo = new MapObject(resultSet.getString("mapname"),
-                            resultSet.getInt("mapid"),
-                            resultSet.getDouble("difficulty"),
+                        MapJudges mapJudges = new MapJudges(
                             0,
+                            resultSet.getDouble("difficulty"),
                             resultSet.getInt("minFails"),
-                            resultSet.getDouble("minTime"),
-                            l,
-                            resultSet.getString("maptype"),
+                            resultSet.getDouble("minTime"));
+                        MapMetaData mapMetaData = new MapMetaData(
+                            mapSpawn,
                             resultSet.getString("mapstatus"),
-                            resultSet.getString("builder"));
+                            resultSet.getString("builder"),
+                            resultSet.getString("mapname"),
+                            resultSet.getString("maptype")
+                        );
+                        MapObject mapObject = new MapObject(
+                            resultSet.getInt("mapid"),
+                            mapMetaData,
+                            mapJudges
+                        );
 
                         //saves the highestpp of a course into the DB
-                        mySQL.query("SELECT ppcountc FROM clears WHERE mapID = "+ mo.getID() +" ORDER BY ppcountc DESC", new Consumer<ResultSet>() {
+                        mySQL.query("SELECT ppcountc FROM clears WHERE mapID = "+ mapObject.getID() +" ORDER BY ppcountc DESC", new Consumer<ResultSet>() {
 
                             @Override
                             public void accept(ResultSet resultSet) {
@@ -78,14 +90,14 @@ public class MapObjectMananger {
 
                                     if(resultSet.next()) {
 
-                                        mo.setHighestPP(resultSet.getDouble("ppcountc"));
-                                        Bukkit.getConsoleSender().sendMessage("Map: " + mo.getID() + " PP: " + mo.getHighestPP());
+                                        mapObject.getMapJudges().setHighestPP(resultSet.getDouble("ppcountc"));
+                                        Bukkit.getConsoleSender().sendMessage("Map: " + mapObject.getID() + " PP: " + mapObject.getMapJudges().getHighestPP());
 
                                     }
 
                                 } catch (SQLException throwables) { throwables.printStackTrace(); }
 
-                                mapObjectList.add(mo);
+                                mapObjectList.add(mapObject);
 
                             }
 
@@ -120,7 +132,7 @@ public class MapObjectMananger {
                         if(!(resultSet.next())) {
 
                             mySQL.update("INSERT INTO clears (playeruuid, playername, mapid, cleared, ppcountc, ptime, pfails) VALUES " +
-                                "('"+playerObject.getUuid()+"', '"+ player.getName() +"', '"+maps.getID()+"', false, 0.0, 0, 0.0);");
+                                "('"+playerObject.getPlayer().getUniqueId().toString()+"', '"+ player.getName() +"', '"+maps.getID()+"', false, 0.0, 0, 0.0);");
 
                         }
 
@@ -133,7 +145,6 @@ public class MapObjectMananger {
                 }
 
             });
-
 
     }
 

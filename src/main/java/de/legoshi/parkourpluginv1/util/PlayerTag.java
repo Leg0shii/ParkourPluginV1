@@ -1,5 +1,7 @@
 package de.legoshi.parkourpluginv1.util;
 
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerPlayStats;
 import org.bukkit.ChatColor;
 
 public class PlayerTag {
@@ -8,8 +10,10 @@ public class PlayerTag {
 			private String team;
 
 			public PlayerTag(String prefix, String team) {
+
 						this.prefix = prefix;
 						this.team = team;
+
 			}
 
 			public PlayerTag() {
@@ -49,18 +53,19 @@ public class PlayerTag {
 
 			public PlayerTag getPlayerTag(final PlayerObject playerObject) {
 
-						String rank = Integer.toString(playerObject.getRank());
-						int rankNumber = playerObject.getRank();
+						PlayerPlayStats playerPlayStats = playerObject.getPlayerPlayStats();
+						String rank = Integer.toString(playerPlayStats.getRank());
+						int rankNumber = playerPlayStats.getRank();
 						String color = "";
 
-						if(playerObject.getPpcount() == 0) {
+						if(playerPlayStats.getPpcount() == 0) {
 
 									rank = "-";
 									rankNumber = 10000;
 
 						} else {
 
-									color = getPrefix(playerObject.getRank());
+									color = getPrefix(playerPlayStats.getRank());
 									rank = color + rank;
 
 						}

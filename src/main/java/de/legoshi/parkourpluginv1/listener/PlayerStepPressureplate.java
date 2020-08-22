@@ -3,7 +3,12 @@ package de.legoshi.parkourpluginv1.listener;
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.manager.CheckpointManager;
 import de.legoshi.parkourpluginv1.util.*;
-import io.netty.handler.codec.MessageAggregationException;
+import de.legoshi.parkourpluginv1.util.mapinformation.MapJudges;
+import de.legoshi.parkourpluginv1.util.mapinformation.MapObject;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerMap;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerPlayStats;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerStatus;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -21,11 +26,14 @@ public class PlayerStepPressureplate {
         Player player = event.getPlayer();
         Main instance = Main.getInstance();
         PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
+        PlayerStatus playerStatus = playerObject.getPlayerStatus();
+        PlayerPlayStats playerPlayStats = playerObject.getPlayerPlayStats();
+        PlayerMap playerMap = playerObject.getPlayerMap();
+        boolean isJumpmode = playerStatus.isJumpmode();
 
-        if (playerObject.isJumpmode() && event.getAction() == Action.PHYSICAL) {
+        if (isJumpmode && event.getAction() == Action.PHYSICAL) {
 
             CheckpointObject checkpointObject = instance.checkpointManager.checkpointObjectHashMap.get(player);
-            boolean isJumpmode = playerObject.isJumpmode();
             AsyncMySQL mySQL = instance.mySQL;
             Material checkPress = event.getClickedBlock().getType();
 
@@ -44,7 +52,7 @@ public class PlayerStepPressureplate {
                 double timeGained;
 
                 //player jumpmode to false and tp back to spawn
-                playerObject.setJumpmode(false);
+                playerObject.getPlayerStatus().setJumpmode(false);
                 checkpointObject.setLocation(new Location(player.getWorld(), 0, 0, 0));
 
                 //player.sendMessage("You got teleported! From: " + player.getDisplayName());
@@ -53,17 +61,17 @@ public class PlayerStepPressureplate {
 
                 //calculates pp and saves player that played the map
                 ppFromMap = calculatePPFromMap(playerObject);
-                failsGained = playerObject.getFailsrelative();
-                timeGained = playerObject.getTimerelative();
+                failsGained = playerMap.getFailsrelative();
+                timeGained = playerMap.getTimeRelative();
 
                 //setting Updates into PlayerObject
-                playerObject.setFailscount(failsGained + playerObject.getFailscount());
+                playerPlayStats.setFailscount(failsGained + playerPlayStats.getFailscount());
 
                 //gets informations from clears list
                 mySQL.query("SELECT * FROM clears, maps " +
                     "WHERE clears.mapid = maps.mapid " +
-                    "AND clears.mapid = " + playerObject.getMapObject().getID() + " " +
-                    "AND clears.playeruuid = '" + playerObject.getUuid() + "';", new Consumer<ResultSet>() {
+                    "AND clears.mapid = " + playerMap.getMapObject().getID() + " " +
+                    "AND clears.playeruuid = '" + playerObject.getPlayer().getUniqueId().toString() + "';", new Consumer<ResultSet>() {
 
                     @Override
                     public void accept(ResultSet resultSet) {
@@ -91,24 +99,24 @@ public class PlayerStepPressureplate {
                                 if (ppFromMap > resultSet.getDouble("ppcountc")) {
 
                                     playerUUID = player.getUniqueId();
-                                    mapID = playerObject.getMapObject().getID();
+                                    mapID = playerMap.getMapObject().getID();
 
                                     instance.mySQLManager.saveClearToDB(failsGained, timeGained, ppFromMap, playerUUID, mapID);
-                                    anncounceFastestTime(playerObject.getMapObject(), player, ppFromMap);
+                                    anncounceFastestTime(playerMap.getMapObject(), player, ppFromMap);
 
-                                    if(ppFromMap > playerObject.getMapObject().getHighestPP()) {
+                                    if(ppFromMap > playerMap.getMapObject().getMapJudges().getHighestPP()) {
 
-                                        setNewHighestPPScoreOnMap(playerObject.getMapObject(), ppFromMap);
+                                        setNewHighestPPScoreOnMap(playerMap.getMapObject(), ppFromMap);
 
                                     }
 
                                     ppList = instance.playerManager.updatePPScoreList(playerObject, ppFromMap);
                                     instance.playerManager.updatePlayerPPScore(playerObject, ppList, ppFromMap);
 
-                                    mySQL.update("UPDATE tablename SET ppcountp = " + playerObject.getPpcount() + " WHERE playeruuid = '" + player.getUniqueId() + "';");
+                                    mySQL.update("UPDATE tablename SET ppcountp = " + playerPlayStats.getPpcount() + " WHERE playeruuid = '" + player.getUniqueId() + "';");
 
                                     instance.playerManager.updateRankOfAllOnlinePlayer();
-                                    instance.scoreboardHelper.updatePPScoreOnScoreBoard(player, playerObject.getPpcount());
+                                    instance.scoreboardHelper.updatePPScoreOnScoreBoard(player, playerPlayStats.getPpcount());
 
                                     Timer timer = new Timer();
 
@@ -143,13 +151,13 @@ public class PlayerStepPressureplate {
 
     public void anncounceFastestTime(MapObject map, Player player, double ppGained) {
 
-        if (ppGained > map.getHighestPP()) {
+        if (ppGained > map.getMapJudges().getHighestPP()) {
 
             for(Player all : Bukkit.getOnlinePlayers()) {
 
                 all.sendMessage("" + Message.MSG_ANNOUNCEMENT_FAST.getMessage()
                     .replace("{player}", player.getDisplayName())
-                    .replace("{mapname}", map.getName())
+                    .replace("{mapname}", map.getMapMetaData().getName())
                     .replace("{ppscore}", String.format("%.2f", ppGained)));
 
             }
@@ -164,7 +172,7 @@ public class PlayerStepPressureplate {
         ArrayList<MapObject> mapObjectArrayList = instance.mapObjectMananger.getMapObjectArrayList();
 
         mapObjectArrayList.sort(Comparator.comparing(MapObject::getID));
-        mapObjectArrayList.get(map.getID()-1).setHighestPP(ppGained);
+        mapObjectArrayList.get(map.getID()-1).getMapJudges().setHighestPP(ppGained);
 
     }
 
@@ -190,12 +198,15 @@ public class PlayerStepPressureplate {
 
     public double calculatePPFromMap(PlayerObject playerObject) {
 
-        double minFails = playerObject.getMapObject().getMinFails();
-        double minTime = playerObject.getMapObject().getMinTime();
-        double difficulty = playerObject.getMapObject().getDifficulty();
+        PlayerMap playerMap = playerObject.getPlayerMap();
+        MapJudges mapJudges = playerMap.getMapObject().getMapJudges();
 
-        int failsGained = playerObject.getFailsrelative();
-        double timeGained = playerObject.getTimerelative();
+        double minFails = mapJudges.getMinFails();
+        double minTime = mapJudges.getMinTime();
+        double difficulty = mapJudges.getDifficulty();
+
+        int failsGained = playerMap.getFailsrelative();
+        double timeGained = playerMap.getTimeRelative();
 
         double timeMultiplier = ( (minTime+1) / (timeGained+1) );
         double failsMultiplier = ( (minFails+1) / (failsGained+1) );

@@ -10,7 +10,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.IOException;
 
 public final class Main extends JavaPlugin {
 
@@ -34,12 +33,13 @@ public final class Main extends JavaPlugin {
     public void onEnable() {
 
         initializeMethods();
-        this.mySQL = mySQLManager.initializeTables();
-        mapObjectMananger.getAllMapsFromDB();
 
-        updateSchedular.onRun();
-        //so DB doesnt loose connection
-        mySQLManager.keepMySQLbusy();
+        this.mySQL = mySQLManager.initializeTables(); //Initializes all required sql tables
+        mapObjectMananger.getAllMapsFromDB(); //loads all build maps from sql into an arraylist
+
+        updateSchedular.onRun(); //updates playertime every 30min
+        mySQLManager.keepMySQLbusy(); //so DB doesnt loose connection
+
         createFolders();
 
         ListenerRegistration();
@@ -78,8 +78,6 @@ public final class Main extends JavaPlugin {
         pm.registerEvents(new QuitListener(), this);
 
         pm.registerEvents(new PlayerInteractListener(), this);
-
-        pm.registerEvents(new InventoryClickListener(), this);
 
     }
 
@@ -121,4 +119,5 @@ public final class Main extends JavaPlugin {
         else { Bukkit.getConsoleSender().sendMessage("Folder: ParkourMapsPlayers Already exist"); }
 
     }
+
 }

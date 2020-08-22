@@ -2,7 +2,10 @@ package de.legoshi.parkourpluginv1.listener;
 
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.Message;
-import de.legoshi.parkourpluginv1.util.PlayerObject;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerMap;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerPlayStats;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerStatus;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -28,20 +31,23 @@ public class PlayerCyanDyeClick {
         if(currentItem != null && currentItem.equals(purpleDye)) {
 
             PlayerObject playerObject = Main.getInstance().playerManager.playerObjectHashMap.get(player);
+            PlayerStatus playerStatus = playerObject.getPlayerStatus();
+            PlayerMap playerMap = playerObject.getPlayerMap();
+            PlayerPlayStats playerPlayStats = playerObject.getPlayerPlayStats();
 
             //cancels double clicks
-            if(playerObject.isDyeClick()) {  return; }
-            else playerObject.setDyeClick(true);
+            if(playerStatus.isDyeClick()) {  return; }
+            else playerStatus.setDyeClick(true);
 
             //saves Fails into Playerobject after reset
-            playerObject.setFailscount((playerObject.getFailsrelative() + playerObject.getFailscount()));
+            playerPlayStats.setFailscount((playerMap.getFailsrelative() + playerPlayStats.getFailscount()));
 
             //sets fails and time to 0 again
-            playerObject.setFailsrelative(0);
-            playerObject.setTimerelative(0);
+            playerMap.setFailsrelative(0);
+            playerMap.setTimeRelative(0);
 
             //teleports player to start
-            player.teleport(playerObject.getMapObject().getSpawn());
+            player.teleport(playerMap.getMapObject().getMapMetaData().getSpawn());
             player.sendMessage(Message.Prefix.getRawMessage() + "Restarted");
 
             //cancles clickevent and closes Inventory

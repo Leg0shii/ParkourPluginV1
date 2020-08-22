@@ -2,7 +2,7 @@ package de.legoshi.parkourpluginv1.listener;
 
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.Message;
-import de.legoshi.parkourpluginv1.util.PlayerObject;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,7 +19,7 @@ public class QuitListener implements Listener {
         PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
 
         //cancels timer that might be running when leaving from course
-        playerObject.getTimer().cancel();
+        playerObject.getPlayerPlayStats().getTimer().cancel();
 
         //adds all data to db when player leaves
         instance.mySQLManager.savingPlayerDataToDB(player);
