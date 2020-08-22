@@ -4,8 +4,8 @@ import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.manager.MapObjectMananger;
 import de.legoshi.parkourpluginv1.util.AsyncMySQL;
 import de.legoshi.parkourpluginv1.util.FW;
-import de.legoshi.parkourpluginv1.util.MapObject;
-import de.legoshi.parkourpluginv1.util.PlayerObject;
+import de.legoshi.parkourpluginv1.util.mapinformation.MapObject;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -26,7 +26,7 @@ public class SetMapNameCommand implements CommandExecutor {
 						FW file = new FW("./ParkourBuild", player.getUniqueId().toString() + ".yml");
 						AsyncMySQL mySQL = instance.mySQL;
 
-						if(!(playerObject.isBuildCourse())) {
+						if(!(playerObject.getPlayerStatus().isBuildCourse())) {
 
 									player.sendMessage("You dont have a Map!");
 									return false;
@@ -64,7 +64,7 @@ public class SetMapNameCommand implements CommandExecutor {
 
 									if(file.getString("mapname").equals(Integer.toString(mapObjectArrayList.get(index).getID()))) {
 
-												Main.instance.mapObjectMananger.getMapObjectArrayList().get(index).setName(args[0]);
+												Main.instance.mapObjectMananger.getMapObjectArrayList().get(index).getMapMetaData().setName(args[0]);
 
 									}
 

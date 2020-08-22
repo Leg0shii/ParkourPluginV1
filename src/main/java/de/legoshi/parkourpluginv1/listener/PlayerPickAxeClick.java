@@ -1,7 +1,9 @@
 package de.legoshi.parkourpluginv1.listener;
 
 import de.legoshi.parkourpluginv1.Main;
-import de.legoshi.parkourpluginv1.util.PlayerObject;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerMap;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerStatus;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -16,15 +18,16 @@ public class PlayerPickAxeClick implements Listener {
 						Player player = event.getPlayer();
 						Main instance = Main.getInstance();
 						PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
+						PlayerStatus playerStatus = playerObject.getPlayerStatus();
 
 						ItemStack pickaxe = new ItemStack(Material.DIAMOND_PICKAXE, 1);
 						ItemMeta pickaxeMeta = pickaxe.getItemMeta();
 						pickaxeMeta.setDisplayName(ChatColor.RESET + "Building");
 						pickaxe.setItemMeta(pickaxeMeta);
 
-						if (event.hasItem() && event.getItem().isSimilar(pickaxe) && !(playerObject.isBuildmode())) {
+						if (event.hasItem() && event.getItem().isSimilar(pickaxe) && !(playerStatus.isBuildmode())) {
 
-									if(playerObject.isBuildCourse()) {
+									if(playerStatus.isBuildCourse()) {
 
 												instance.invGui.guiEditMap(player).show(player);
 

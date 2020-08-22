@@ -1,15 +1,10 @@
 package de.legoshi.parkourpluginv1.commands;
 
-import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.Message;
-import de.legoshi.parkourpluginv1.util.PlayerObject;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import de.legoshi.parkourpluginv1.util.ChatColorHelper;
-
-import java.util.concurrent.TimeUnit;
 
 public class PPStatsCommand implements CommandExecutor {
 

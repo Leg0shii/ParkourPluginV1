@@ -2,16 +2,13 @@ package de.legoshi.parkourpluginv1.manager;
 
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.AsyncMySQL;
-import de.legoshi.parkourpluginv1.util.MapObject;
-import de.legoshi.parkourpluginv1.util.Message;
-import de.legoshi.parkourpluginv1.util.PlayerObject;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerPlayStats;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -63,12 +60,13 @@ public class MySQLManager {
     public void savingPlayerDataToDB(Player player) {
 
         PlayerObject playerObject = Main.getInstance().playerManager.playerObjectHashMap.get(player);
+        PlayerPlayStats playerPlayStats = playerObject.getPlayerPlayStats();
         UUID playerUUID = player.getUniqueId();
 
-        mySQL.update("UPDATE tablename SET ppcountp = "+ playerObject.getPpcount() +" WHERE playeruuid = '" + playerUUID + "';");
-        mySQL.update("UPDATE tablename SET failcount = "+ playerObject.getFailscount() +" WHERE playeruuid = '" + playerUUID + "';");
+        mySQL.update("UPDATE tablename SET ppcountp = "+ playerPlayStats.getPpcount() +" WHERE playeruuid = '" + playerUUID + "';");
+        mySQL.update("UPDATE tablename SET failcount = "+ playerPlayStats.getFailscount() +" WHERE playeruuid = '" + playerUUID + "';");
         mySQL.update("UPDATE tablename SET playtime = "+
-            ((new Date().getTime() - playerObject.getPlaytimeSave()) + playerObject.getPlaytime() +" WHERE playeruuid = '" + playerUUID + "';"));
+            ((new Date().getTime() - playerPlayStats.getPlaytimeSave()) + playerPlayStats.getPlaytime() +" WHERE playeruuid = '" + playerUUID + "';"));
 
     }
 
@@ -79,11 +77,12 @@ public class MySQLManager {
         for(Player all : Bukkit.getOnlinePlayers()) {
 
             PlayerObject playerObject = Main.getInstance().playerManager.playerObjectHashMap.get(all);
+            PlayerPlayStats playerPlayStats = playerObject.getPlayerPlayStats();
 
-            mySQL.update("UPDATE tablename SET ppcountp = " + playerObject.getPpcount() + " WHERE playeruuid = '" + all.getUniqueId() + "';");
-            mySQL.update("UPDATE tablename SET failcount = " + playerObject.getFailscount() + " WHERE playeruuid = '" + all.getUniqueId() + "';");
+            mySQL.update("UPDATE tablename SET ppcountp = " + playerPlayStats.getPpcount() + " WHERE playeruuid = '" + all.getUniqueId() + "';");
+            mySQL.update("UPDATE tablename SET failcount = " + playerPlayStats.getFailscount() + " WHERE playeruuid = '" + all.getUniqueId() + "';");
             mySQL.update("UPDATE tablename SET playtime = " +
-                (((new Date().getTime() - playerObject.getPlaytimeSave()) + playerObject.getPlaytime()) + " WHERE playeruuid = '" + all.getUniqueId() + "';"));
+                (((new Date().getTime() - playerPlayStats.getPlaytimeSave()) + playerPlayStats.getPlaytime()) + " WHERE playeruuid = '" + all.getUniqueId() + "';"));
 
         }
 

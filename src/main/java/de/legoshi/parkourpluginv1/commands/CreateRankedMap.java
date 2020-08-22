@@ -2,7 +2,9 @@ package de.legoshi.parkourpluginv1.commands;
 
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.AsyncMySQL;
-import de.legoshi.parkourpluginv1.util.MapObject;
+import de.legoshi.parkourpluginv1.util.mapinformation.MapJudges;
+import de.legoshi.parkourpluginv1.util.mapinformation.MapMetaData;
+import de.legoshi.parkourpluginv1.util.mapinformation.MapObject;
 import de.legoshi.parkourpluginv1.util.Message;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -66,8 +68,26 @@ public class CreateRankedMap implements CommandExecutor {
 
                         ArrayList<MapObject> mapObjectArrayList = Main.getInstance().mapObjectMananger.getMapObjectArrayList();
 
-                        Main.getInstance().mapObjectMananger.getMapObjectArrayList().add(new MapObject(name, mapObjectArrayList.size()+1, difficulty,
-                            0, minFails, minTime, spawn, maptype, "ranked", builder));
+                        MapJudges mapJudges = new MapJudges(
+                            0,
+                                difficulty,
+                                minFails,
+                                minTime
+                        );
+                        MapMetaData mapMetaData = new MapMetaData(
+                            spawn,
+                            "",
+                            builder,
+                            name,
+                            ""
+                        );
+                        Main.getInstance().mapObjectMananger.getMapObjectArrayList().add(
+                            new MapObject(
+                                mapObjectArrayList.size()+1,
+                                mapMetaData,
+                                mapJudges
+                                )
+                        );
 
                         mySQL.update("INSERT INTO maps (mapname, maptype, difficulty, minfails, mintime, x, y, z, world) VALUES " +
                             "('"+name+"', '"+maptype+"', "+difficulty+", "+minFails+", "+minTime+", '"+x+"', '"+y+"', '"+z+"', '"+world+"');");

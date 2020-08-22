@@ -1,6 +1,7 @@
 package de.legoshi.parkourpluginv1.util;
 
 import de.legoshi.parkourpluginv1.Main;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

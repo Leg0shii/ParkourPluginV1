@@ -1,5 +1,7 @@
 package de.legoshi.parkourpluginv1.util;
 
+import de.legoshi.parkourpluginv1.util.mapinformation.MapObject;
+
 public class PPMapObject {
 
     double pp;

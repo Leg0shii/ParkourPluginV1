@@ -2,6 +2,11 @@ package de.legoshi.parkourpluginv1.manager;
 
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.*;
+import de.legoshi.parkourpluginv1.util.mapinformation.MapJudges;
+import de.legoshi.parkourpluginv1.util.mapinformation.MapMetaData;
+import de.legoshi.parkourpluginv1.util.mapinformation.MapObject;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerPlayStats;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -25,8 +30,9 @@ public class PlayerManager {
         Main instance = Main.getInstance();
         AsyncMySQL mySQL = instance.mySQL;
         PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
+        PlayerPlayStats playerPlayStats = playerObject.getPlayerPlayStats();
         FW file = new FW("./ParkourBuild", player.getUniqueId().toString() + ".yml");
-        if(file.getBoolean("hascourse")) playerObject.setBuildCourse(true);
+        if(file.getBoolean("hascourse")) playerObject.getPlayerStatus().setBuildCourse(true);
 
         mySQL.query("SELECT * FROM tablename WHERE playeruuid = '"+player.getUniqueId()+"';", new Consumer<ResultSet>() {
 
@@ -42,10 +48,10 @@ public class PlayerManager {
                         long playtime = resultSet.getLong("playtime");
                         int fails = resultSet.getInt("failcount");
 
-                        playerObject.setPpcount(pp);
+                        playerPlayStats.setPpcount(pp);
                         //playerObject.setScorecount(score);
-                        playerObject.setPlaytime(playtime);
-                        playerObject.setFailscount(fails);
+                        playerPlayStats.setPlaytime(playtime);
+                        playerPlayStats.setFailscount(fails);
 
                         Bukkit.getConsoleSender().sendMessage("Loaded Playerdata from " + player.getName());
 
@@ -66,23 +72,22 @@ public class PlayerManager {
                     if(resultSet.next()) {
 
                         ArrayList<PPMapObject> ppMapObjects = new ArrayList<>();
-                        int id = resultSet.getInt("mapid");
-                        double pp = resultSet.getDouble("ppcountc");
-                        MapObject mapObject = new MapObject("", id, 0, 0, 0, 0, null, "", "", "");
-                        PPMapObject ppMapObject = new PPMapObject(pp, mapObject);
-                        ppMapObjects.add(ppMapObject);
 
-                        while (resultSet.next()) {
+                        do {
 
-                            id = resultSet.getInt("mapid");
-                            pp = resultSet.getDouble("ppcountc");
-                            mapObject = new MapObject("", id, 0, 0, 0, 0, null, "", "", "");
-                            ppMapObject = new PPMapObject(pp, mapObject);
+                            int id = resultSet.getInt("mapid");
+                            double pp = resultSet.getDouble("ppcountc");
+                            MapJudges mapJudges = new MapJudges();
+                            MapMetaData mapMetaData = new MapMetaData();
+                            MapObject mapObject = new MapObject(id, mapMetaData, mapJudges);
+                            PPMapObject ppMapObject = new PPMapObject(pp, mapObject);
                             ppMapObjects.add(ppMapObject);
 
                         }
 
-                        instance.playerManager.playerObjectHashMap.get(player).setPpScoreList(ppMapObjects);
+                        while (resultSet.next());
+
+                        instance.playerManager.playerObjectHashMap.get(player).getPlayerPlayStats().setPpScoreList(ppMapObjects);
 
                     }
 
@@ -99,6 +104,7 @@ public class PlayerManager {
         Main instance = Main.getInstance();
         AsyncMySQL mySQL = instance.mySQL;
         PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
+        PlayerPlayStats playerPlayStats = playerObject.getPlayerPlayStats();
 
         mySQL.query("SELECT * FROM tablename ORDER BY ppcountp DESC", new Consumer<ResultSet>() {
 
@@ -108,14 +114,14 @@ public class PlayerManager {
                 try {
                     if(resultSet.next()) {
 
-                        playerObject.setRank(1);
+                        playerPlayStats.setRank(1);
                         int index = 1;
 
                         for(; resultSet.next(); index++) {
 
                             if(resultSet.getString("playeruuid").equals(player.getUniqueId().toString())) {
 
-                                playerObject.setRank(index+1);
+                                playerPlayStats.setRank(index+1);
 
                             }
 
@@ -134,11 +140,12 @@ public class PlayerManager {
 
         Main instance = Main.getInstance();
         PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
+        PlayerPlayStats playerPlayStats = playerObject.getPlayerPlayStats();
 
-        playerObject.setRank(0);
-        playerObject.setFailscount(0);
-        playerObject.setPpcount(0);
-        playerObject.setPlaytime(0);
+        playerPlayStats.setRank(0);
+        playerPlayStats.setFailscount(0);
+        playerPlayStats.setPpcount(0);
+        playerPlayStats.setPlaytime(0);
         instance.scoreboardHelper.initializeScoreboard(player);
 
     }
@@ -158,21 +165,22 @@ public class PlayerManager {
 
         }
 
-        playerObject.setPpcount(totalPP);
+        playerObject.getPlayerPlayStats().setPpcount(totalPP);
         instance.scoreboardHelper.updatePPScoreOnScoreBoard(playerObject.getPlayer(), totalPP);
 
     }
 
     public void updatePlaytimeOfPlayer(PlayerObject playerObject) {
 
+        PlayerPlayStats playerPlayStats = playerObject.getPlayerPlayStats();
         long systemTimeNow = new Date().getTime();
-        long systemTimeLastUpdate = playerObject.getPlaytimeSave();
-        long playTime = playerObject.getPlaytime();
+        long systemTimeLastUpdate = playerPlayStats.getPlaytimeSave();
+        long playTime = playerPlayStats.getPlaytime();
         long newPlayTime = (systemTimeNow - systemTimeLastUpdate) + playTime;
         Main instance = Main.getInstance();
 
-        playerObject.setPlaytime(newPlayTime);
-        playerObject.setPlaytimeSave(systemTimeNow);
+        playerPlayStats.setPlaytime(newPlayTime);
+        playerPlayStats.setPlaytimeSave(systemTimeNow);
 
         instance.scoreboardHelper.updatePlaytimeOnScoreBoard(playerObject.getPlayer(), newPlayTime);
 
@@ -190,7 +198,7 @@ public class PlayerManager {
             @Override
             public void run() {
 
-                instance.scoreboardHelper.updateRankOnScoreBoard(player, playerObject.getRank());
+                instance.scoreboardHelper.updateRankOnScoreBoard(player, playerObject.getPlayerPlayStats().getRank());
                 timer.cancel();
 
             }
@@ -226,23 +234,24 @@ public class PlayerManager {
 
         boolean checking = true;
         ArrayList<Double> ppList = new ArrayList<>();
+        ArrayList<PPMapObject> ppMapObjectArrayList = playerObject.getPlayerPlayStats().getPpScoreList();
         int k = 0;
-        for(; k < playerObject.getPpScoreList().size(); k++) {
+        for(; k < ppMapObjectArrayList.size(); k++) {
 
-            if(playerObject.getPpScoreList().get(k).getMapObject().getID() == playerObject.getMapObject().getID()) {
+            if(ppMapObjectArrayList.get(k).getMapObject().getID() == playerObject.getPlayerMap().getMapObject().getID()) {
 
-                playerObject.getPpScoreList().get(k).setPp(ppGained);
+                ppMapObjectArrayList.get(k).setPp(ppGained);
                 checking = false;
 
             }
 
-            ppList.add(playerObject.getPpScoreList().get(k).getPp());
+            ppList.add(ppMapObjectArrayList.get(k).getPp());
 
         }
 
         if(checking) {
 
-            playerObject.getPpScoreList().add(new PPMapObject(ppGained, playerObject.getMapObject()));
+            ppMapObjectArrayList.add(new PPMapObject(ppGained, playerObject.getPlayerMap().getMapObject()));
             ppList.add(ppGained);
 
         }

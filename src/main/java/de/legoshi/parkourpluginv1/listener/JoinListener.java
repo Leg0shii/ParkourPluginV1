@@ -2,8 +2,11 @@ package de.legoshi.parkourpluginv1.listener;
 
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.*;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerMap;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerPlayStats;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerStatus;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -27,7 +30,7 @@ public class JoinListener implements Listener {
         Location location = new Location(world, -619, 5, 10, -160, 5);
 
         Main instance = Main.getInstance();
-        PlayerObject playerObject = new PlayerObject(player.getUniqueId(), 0, 0, 0, 0, 0, 0);
+        PlayerObject playerObject = new PlayerObject(player);
         FW fw = new FW("./ParkourBuild/", player.getUniqueId().toString() + ".yml");
         fw.save();
 
@@ -36,7 +39,7 @@ public class JoinListener implements Listener {
         instance.playerManager.playerObjectHashMap.put(player, playerObject);
 
         Date now = new Date();
-        playerObject.setPlaytimeSave(now.getTime());
+        playerObject.getPlayerPlayStats().setPlaytimeSave(now.getTime());
 
         //welcome message
         instance.titelManager.sendTitle(player, "", "Welcome to RPK!", 20);
@@ -57,7 +60,7 @@ public class JoinListener implements Listener {
             instance.playerManager.calculateRanking(player);
 
             fw.setValue( "hasCourse", false);
-            playerObject.setBuildCourse(false);
+            playerObject.getPlayerStatus().setBuildCourse(false);
 
             Timer t = new Timer();
             t.scheduleAtFixedRate(new TimerTask() {
@@ -88,7 +91,7 @@ public class JoinListener implements Listener {
         event.setJoinMessage(Message.MSG_Join.getMessage().replace("{Player}", player.getName()));
         instance.playerManager.calculateRanking(player);
         instance.scoreboardHelper.initializeScoreboard(player);
-        playerObject.setBuildCourse(fw.getBoolean("hasCourse"));
+        playerObject.getPlayerStatus().setBuildCourse(fw.getBoolean("hasCourse"));
 
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -96,10 +99,12 @@ public class JoinListener implements Listener {
             @Override
             public void run() {
 
-                instance.scoreboardHelper.updatePPScoreOnScoreBoard(player, playerObject.getPpcount());
-                instance.scoreboardHelper.updateFailsOnScoreBoard(player, playerObject.getFailscount());
-                instance.scoreboardHelper.updatePlaytimeOnScoreBoard(player, playerObject.getPlaytime());
-                instance.scoreboardHelper.updateRankOnScoreBoard(player, playerObject.getRank());
+                PlayerPlayStats playerPlayStats = playerObject.getPlayerPlayStats();
+
+                instance.scoreboardHelper.updatePPScoreOnScoreBoard(player, playerPlayStats.getPpcount());
+                instance.scoreboardHelper.updateFailsOnScoreBoard(player, playerPlayStats.getFailscount());
+                instance.scoreboardHelper.updatePlaytimeOnScoreBoard(player, playerPlayStats.getPlaytime());
+                instance.scoreboardHelper.updateRankOnScoreBoard(player, playerPlayStats.getRank());
 
                 for(Player all : Bukkit.getOnlinePlayers()) instance.tabTagCreator.updateRank(all);
 
