@@ -1,5 +1,7 @@
 package de.legoshi.parkourpluginv1.listener;
 
+import de.legoshi.parkourpluginv1.Main;
+import de.legoshi.parkourpluginv1.util.PlayerObject;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,10 +13,20 @@ public class BlockPlaceListener implements Listener {
     public void onBlockPlace(BlockPlaceEvent event) {
 
         Player player = event.getPlayer();
+        player.sendMessage("Block pl");
 
-        if(!(player.hasPermission("permission.build"))) {
-            event.setCancelled(true);
+        PlayerObject playerObject = Main.getInstance().playerManager.playerObjectHashMap.get(player);
+        player.sendMessage("Perm: " + playerObject.isBuildmode());
+
+        if(playerObject.isBuildmode()) {
+
+            event.setCancelled(false);
+            return;
+
         }
 
+        event.setCancelled(true);
+
     }
+
 }

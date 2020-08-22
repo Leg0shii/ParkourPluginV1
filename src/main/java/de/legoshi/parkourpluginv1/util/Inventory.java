@@ -51,14 +51,39 @@ public class Inventory {
         player.getInventory().clear();
 
         ItemStack netherStar;
-        ItemMeta meta;
+        ItemStack diamondPickaxe;
+        ItemMeta diamondPickaxeMeta;
+        ItemMeta netherStarMeta;
 
         netherStar = new ItemStack(Material.NETHER_STAR, 1);
-        meta = netherStar.getItemMeta();
-        meta.setDisplayName("Map Selector");
-        netherStar.setItemMeta(meta);
+        netherStarMeta = netherStar.getItemMeta();
+        netherStarMeta.setDisplayName(ChatColor.RESET + "Map Selector");
+        netherStar.setItemMeta(netherStarMeta);
+
+        diamondPickaxe = new ItemStack(Material.DIAMOND_PICKAXE, 1);
+        diamondPickaxeMeta = diamondPickaxe.getItemMeta();
+        diamondPickaxeMeta.setDisplayName(ChatColor.RESET + "Building");
+        diamondPickaxe.setItemMeta(diamondPickaxeMeta);
 
         player.getInventory().setItem(0, netherStar);
+        player.getInventory().setItem(4, diamondPickaxe);
+        player.updateInventory();
+
+    }
+
+    public void builderInventory(Player player) {
+
+        player.getInventory().clear();
+
+        ItemStack grayDye;
+        ItemMeta metaGrayDye;
+
+        grayDye = new ItemStack(Material.INK_SACK, 1, (short) 5);
+        metaGrayDye = grayDye.getItemMeta();
+        metaGrayDye.setDisplayName(ChatColor.RESET + "Back to Spawn");
+        grayDye.setItemMeta(metaGrayDye);
+
+        player.getInventory().setItem(8, grayDye);
         player.updateInventory();
 
     }

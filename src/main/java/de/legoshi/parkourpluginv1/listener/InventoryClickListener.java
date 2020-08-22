@@ -1,5 +1,7 @@
 package de.legoshi.parkourpluginv1.listener;
 
+import de.legoshi.parkourpluginv1.Main;
+import de.legoshi.parkourpluginv1.util.PlayerObject;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,15 +12,18 @@ public class InventoryClickListener implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
 
-        if(!(event.getWhoClicked() instanceof Player)) return;
+       /*if(!(event.getWhoClicked() instanceof Player)) return;
 
         Player player = (Player) event.getWhoClicked();
+        PlayerObject playerObject = Main.getInstance().playerManager.playerObjectHashMap.get(player);
 
-        if(!player.isOp()) {
+        if(player.hasPermission("permission.build") || playerObject.isBuildmode()) {
 
-            event.setCancelled(true);
+            return;
 
         }
+
+        event.setCancelled(true); */
 
     }
 

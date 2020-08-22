@@ -12,7 +12,7 @@ public enum Message {
     ERR_NoPermission("You dont have permission for that!"),
     ERR_NoPlayer("You have to be player for that!"),
     MSG_SetCP("CP set"),
-    ERR_createRankedMap("/createRankedMap [id] [name] [difficulty] [minFails] [minTime]"),
+    ERR_createRankedMap("/createRankedMap [name] [difficulty] [minFails] [minTime] [builder]"),
     ERR_nameExist("Name already exists"),
     ERR_noNegative("No negative numbers allowed"),
     MSG_successfulCreatedMap("Successfully created new Ranked Map"),

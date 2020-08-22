@@ -64,7 +64,9 @@ public class MapObjectMananger {
                             resultSet.getInt("minFails"),
                             resultSet.getDouble("minTime"),
                             l,
-                            resultSet.getString("maptype"));
+                            resultSet.getString("maptype"),
+                            resultSet.getString("mapstatus"),
+                            resultSet.getString("builder"));
 
                         //saves the highestpp of a course into the DB
                         mySQL.query("SELECT ppcountc FROM clears WHERE mapID = "+ mo.getID() +" ORDER BY ppcountc DESC", new Consumer<ResultSet>() {
@@ -96,6 +98,8 @@ public class MapObjectMananger {
             }
 
         });
+
+        Bukkit.getConsoleSender().sendMessage("Loaded all Maps");
 
     }
 

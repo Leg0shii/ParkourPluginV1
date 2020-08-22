@@ -28,7 +28,10 @@ public class PlayerObject {
     private int scorecount;
     private double accuracy;
     private boolean jumpmode;
+    private boolean buildmode;
     private boolean dyeClick;
+
+    private boolean buildCourse;
 
     private MapObject mapObject;
     private UUID uuid;
@@ -57,8 +60,18 @@ public class PlayerObject {
         this.mapObject = new MapObject();
         this.timer = new Timer();
         this.player = Bukkit.getPlayer(uuid);
+        this.buildmode = false;
+        this.buildCourse = true;
 
     }
+
+    public boolean isBuildCourse() { return buildCourse; }
+
+    public void setBuildCourse(boolean buildCourse) { this.buildCourse = buildCourse; }
+
+    public boolean isBuildmode() { return buildmode; }
+
+    public void setBuildmode(boolean buildmode) { this.buildmode = buildmode; }
 
     public Player getPlayer() { return player; }
 

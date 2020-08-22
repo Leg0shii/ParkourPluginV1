@@ -3,6 +3,7 @@ package de.legoshi.parkourpluginv1.listener;
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.Message;
 import de.legoshi.parkourpluginv1.util.PlayerObject;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,16 +32,26 @@ public class PlayerGrayDyeClick {
             //prevents calling function with offhand
             if(event.getHand() == EquipmentSlot.OFF_HAND) return;
 
-            if (event.getItem().equals(grayDye)) {
+            if (event.getItem().equals(grayDye) && !(playerObject.isBuildmode())) {
 
                 playerObject.setFailscount(playerObject.getFailsrelative() + playerObject.getFailscount());
                 playerObject.setFailsrelative(0);
                 playerObject.setJumpmode(false);
+                playerObject.setBuildmode(false);
 
                 player.teleport(new Location(player.getWorld(), -616, 4, 9));
                 player.sendMessage(Message.Prefix.getRawMessage() + "You left the Map");
                 instance.inventory.createSpawnInventory(player);
+                event.setCancelled(true);
 
+            } else if(event.getItem().equals(grayDye) && playerObject.isBuildmode()) {
+
+                playerObject.setBuildmode(false);
+                player.getWorld().save();
+                player.teleport(new Location(Bukkit.getWorld("world"), -616, 4, 9));
+                player.sendMessage(Message.Prefix.getRawMessage() + "World Saved!");
+                instance.inventory.createSpawnInventory(player);
+                player.closeInventory();
                 event.setCancelled(true);
 
             }

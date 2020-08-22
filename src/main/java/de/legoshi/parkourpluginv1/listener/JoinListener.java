@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -18,13 +19,15 @@ import java.util.TimerTask;
 public class JoinListener implements Listener {
 
     @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
+    public void onJoin(PlayerJoinEvent event) throws IOException {
 
         Player player = event.getPlayer();
         World world = Bukkit.getWorld("world");
         Location location = new Location(world, -619, 5, 10, -160, 5);
         Main instance = Main.getInstance();
         PlayerObject playerObject = new PlayerObject(player.getUniqueId(), 0, 0, 0, 0, 0, 0);
+        FW fw = new FW("./ParkourBuild/", player.getUniqueId().toString() + ".yml");
+        fw.save();
 
         instance.inventory.createSpawnInventory(player);
         instance.checkpointManager.playerJoin(player);
@@ -36,6 +39,7 @@ public class JoinListener implements Listener {
         //welcome message
         instance.titelManager.sendTitle(player, "", "Welcome to RPK!", 20);
 
+        Bukkit.getConsoleSender().sendMessage("Initialize new Playerdata");
 
         if (!(player.hasPlayedBefore())) {
 
@@ -50,7 +54,8 @@ public class JoinListener implements Listener {
             instance.playerManager.createPlayerData(player);
             instance.playerManager.calculateRanking(player);
 
-            Bukkit.getConsoleSender().sendMessage("Initialize new Playerdata");
+            fw.setValue( "hasCourse", false);
+            playerObject.setBuildCourse(false);
 
             Timer t = new Timer();
             t.scheduleAtFixedRate(new TimerTask() {
@@ -69,6 +74,7 @@ public class JoinListener implements Listener {
 
             for(Player all : Bukkit.getOnlinePlayers()) instance.tabTagCreator.updateRank(all);
 
+            Bukkit.getConsoleSender().sendMessage("New Player created!");
             return;
 
         }
@@ -80,6 +86,7 @@ public class JoinListener implements Listener {
         event.setJoinMessage(Message.MSG_Join.getMessage().replace("{Player}", player.getName()));
         instance.playerManager.calculateRanking(player);
         instance.scoreboardHelper.initializeScoreboard(player);
+        playerObject.setBuildCourse(fw.getBoolean("hasCourse"));
 
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -99,6 +106,8 @@ public class JoinListener implements Listener {
             }
 
         }, 1500, 1);
+
+        Bukkit.getConsoleSender().sendMessage("Existing Player loaded!");
 
     }
 
