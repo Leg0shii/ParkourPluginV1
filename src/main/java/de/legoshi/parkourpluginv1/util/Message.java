@@ -80,11 +80,17 @@ public enum Message {
     MSG_HELPPPTOP("\n /pptop [page] - Shows the global Leaderboard for total PP."),
     MSG_HELPBRACKETS("Please note that arguments with [ ] are optional."),
 
+    //ppmap
+    MSG_PPMAP_SET_NAME("Successfully changed Mapname to {mapname}!"),
+    MSG_PPMAP_SET_STATUS("Successfully changed Mapstatus to {mapstatus}!"),
+    MSG_PPMAP_SET_DIFFICULTY("Successfully changed difficulty to {difficulty}!"),
+
     //errormessages for commands
     ERR_MAPTOPCOMMAND("/pptopmap <mapID> <fails/pp/time> [page]"),
     ERR_BESTPPCOMMAND("/ppbest <playername> [page]"),
     ERR_PPSTATSCOMMAND("/ppstats"),
     ERR_PPTOPCOMMAND("/pptop [page]"),
+    ERR_PPMAP("/ppmap <name/status/difficulty> <mapid> <value>"),
     ERR_PAGENOTEXIST("This page doesnt exist..."),
     ERR_NOTANUMBER("Please enter a number..."),
 
@@ -99,7 +105,6 @@ public enum Message {
         + ChatColor.RESET + "Time:  {newTime}s " + ChatColor.GRAY + " ({oldTime}s) \n"
         + ChatColor.RESET + "Fails:  {newFails} " + ChatColor.GRAY + " ({oldFails})"),
     MSG_RESUT_FOOTER("" + ChatColor.BOLD + ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH + "                                            ");
-
 
 
     String m;

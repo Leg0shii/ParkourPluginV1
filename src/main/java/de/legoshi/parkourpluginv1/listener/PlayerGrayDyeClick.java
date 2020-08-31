@@ -1,15 +1,13 @@
 package de.legoshi.parkourpluginv1.listener;
 
 import de.legoshi.parkourpluginv1.Main;
+import de.legoshi.parkourpluginv1.util.FW;
 import de.legoshi.parkourpluginv1.util.Message;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerMap;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerPlayStats;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerStatus;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -17,9 +15,13 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class PlayerGrayDyeClick {
 
-    public void onGrayClick(PlayerInteractEvent event) {
+    public void onGrayClick(PlayerInteractEvent event) throws IOException {
 
         if (!(event.getAction() == Action.PHYSICAL) && event.hasItem()) {
 
@@ -45,19 +47,40 @@ public class PlayerGrayDyeClick {
                 playerStatus.setJumpmode(false);
                 playerStatus.setBuildmode(false);
 
-                player.teleport(new Location(player.getWorld(), -616, 4, 9));
+                World playerWorld = player.getWorld();
+                player.teleport(instance.spawn);
+                int i = 0;
+
+                for(Player all : Bukkit.getOnlinePlayers()) { //checks if players are still in the world
+
+                    if(all.getWorld().equals(playerWorld)) {
+
+                        i++;
+
+                    }
+
+                }
+
+                if(i == 0) instance.worldSaver.zipWorld(playerWorld);
+
                 player.sendMessage(Message.Prefix.getRawMessage() + "You left the Map");
                 instance.inventory.createSpawnInventory(player);
+                instance.checkpointManager.checkpointObjectHashMap.get(player).setLocation(instance.spawn);
                 event.setCancelled(true);
 
             } else if(event.getItem().equals(grayDye) && playerStatus.isBuildmode()) {
 
                 playerStatus.setBuildmode(false);
-                player.getWorld().save();
-                player.teleport(new Location(Bukkit.getWorld("world"), -616, 4, 9));
-                player.sendMessage(Message.Prefix.getRawMessage() + "World Saved!");
+                player.setGameMode(GameMode.ADVENTURE);
+                World playerWorld = player.getWorld();
+                player.teleport(instance.spawn);
+                instance.worldSaver.moveAllPlayer(playerWorld);
+                instance.worldSaver.zipWorld(playerWorld);
                 instance.inventory.createSpawnInventory(player);
                 player.closeInventory();
+                instance.checkpointManager.checkpointObjectHashMap.get(player).setLocation(instance.spawn);
+
+                player.sendMessage(Message.Prefix.getRawMessage() + "World Saved!");
                 event.setCancelled(true);
 
             }

@@ -76,13 +76,21 @@ public class Inventory {
         player.getInventory().clear();
 
         ItemStack grayDye;
+        ItemStack redDye;
         ItemMeta metaGrayDye;
+        ItemMeta metaRedDye;
 
         grayDye = new ItemStack(Material.INK_SACK, 1, (short) 5);
         metaGrayDye = grayDye.getItemMeta();
         metaGrayDye.setDisplayName(ChatColor.RESET + "Back to Spawn");
         grayDye.setItemMeta(metaGrayDye);
 
+        redDye = new ItemStack(Material.INK_SACK, 1, (short) 1);
+        metaRedDye = redDye.getItemMeta();
+        metaRedDye.setDisplayName(ChatColor.RESET + "Checkpoint");
+        redDye.setItemMeta(metaRedDye);
+
+        player.getInventory().setItem(0, redDye);
         player.getInventory().setItem(8, grayDye);
         player.updateInventory();
 

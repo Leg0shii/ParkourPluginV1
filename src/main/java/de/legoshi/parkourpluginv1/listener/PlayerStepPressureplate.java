@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -21,7 +22,7 @@ import java.util.function.Consumer;
 
 public class PlayerStepPressureplate {
 
-    public void onPressureplatStep(PlayerInteractEvent event) {
+    public void onPressureplatStep(PlayerInteractEvent event) throws IOException {
 
         Player player = event.getPlayer();
         Main instance = Main.getInstance();
@@ -51,6 +52,8 @@ public class PlayerStepPressureplate {
                 int failsGained;
                 double timeGained;
 
+                World playerWorld = player.getWorld();
+
                 //player jumpmode to false and tp back to spawn
                 playerObject.getPlayerStatus().setJumpmode(false);
                 checkpointObject.setLocation(new Location(player.getWorld(), 0, 0, 0));
@@ -58,6 +61,20 @@ public class PlayerStepPressureplate {
                 //player.sendMessage("You got teleported! From: " + player.getDisplayName());
                 player.teleport(location);
                 instance.inventory.createSpawnInventory(player);
+
+                int i = 0;
+
+                for(Player all : Bukkit.getOnlinePlayers()) { //checks if players are still in the world
+
+                    if(all.getWorld().equals(playerWorld)) {
+
+                        i++;
+
+                    }
+
+                }
+
+                if(i == 0) instance.worldSaver.zipWorld(playerWorld);
 
                 //calculates pp and saves player that played the map
                 ppFromMap = calculatePPFromMap(playerObject);

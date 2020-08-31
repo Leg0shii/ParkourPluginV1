@@ -13,7 +13,6 @@ public class BlockDestroyListener implements Listener {
     public void onBlockDestroy(BlockBreakEvent event) {
 
         Player player = event.getPlayer();
-        player.sendMessage("Block destr");
 
         PlayerObject playerObject = Main.getInstance().playerManager.playerObjectHashMap.get(player);
 

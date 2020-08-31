@@ -22,7 +22,15 @@ public class PlayerNetherStarClick {
 
             if (event.getItem().getType().equals(Material.NETHER_STAR) && !(playerObject.getPlayerStatus().isBuildmode())) {
 
-                instance.invGui.guiShowAllCourses(player).show(player);
+                if(player.isOp()) {
+
+                    instance.invGui.guiStatusSelect(player).show(player);
+
+                } else {
+
+                    instance.invGui.guiShowAllCourses(player, "ranked");
+
+                }
 
             }
 

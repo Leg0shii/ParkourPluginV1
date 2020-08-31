@@ -6,10 +6,14 @@ import de.legoshi.parkourpluginv1.manager.*;
 import de.legoshi.parkourpluginv1.util.*;
 import org.bukkit.Bukkit;
 
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 
 public final class Main extends JavaPlugin {
 
@@ -28,6 +32,9 @@ public final class Main extends JavaPlugin {
     public TitelManager titelManager;
     public PlayerStepPressureplate playerStepPressureplate;
     public InvGui invGui;
+    public WorldSaver worldSaver;
+
+    public Location spawn;
 
     @Override
     public void onEnable() {
@@ -52,6 +59,23 @@ public final class Main extends JavaPlugin {
 
         mySQLManager.savingAllPlayerDataToDB();
 
+        for(Player all : Bukkit.getOnlinePlayers()) {
+
+            World playerWorld = all.getWorld();
+
+            if(!playerWorld.getName().equals("world")) {
+
+                try {
+                    instance.worldSaver.moveAllPlayer(playerWorld);
+                    instance.worldSaver.zipWorld(playerWorld);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }
+
     }
 
     private void CommandRegistration() {
@@ -62,7 +86,7 @@ public final class Main extends JavaPlugin {
         getCommand("pptopmap").setExecutor(new MapTopCommand());
         getCommand("ppbest").setExecutor(new PPBestCommand());
         getCommand("pphelp").setExecutor(new HelpCommand());
-        getCommand("setmapname").setExecutor(new SetMapNameCommand());
+        getCommand("ppmap").setExecutor(new PPMapCommand());
 
     }
 
@@ -105,6 +129,8 @@ public final class Main extends JavaPlugin {
         titelManager = new TitelManager();
         playerStepPressureplate = new PlayerStepPressureplate();
         invGui = new InvGui();
+        worldSaver = new WorldSaver();
+        spawn = new Location(Bukkit.getWorld("world"), -619, 5, 10, -160, 5);
 
     }
 
