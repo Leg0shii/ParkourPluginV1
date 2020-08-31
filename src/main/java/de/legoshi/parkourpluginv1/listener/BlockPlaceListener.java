@@ -15,7 +15,7 @@ public class BlockPlaceListener implements Listener {
         Player player = event.getPlayer();
         PlayerObject playerObject = Main.getInstance().playerManager.playerObjectHashMap.get(player);
 
-        if(playerObject.getPlayerStatus().isBuildmode()) {
+        if(playerObject.getPlayerStatus().isBuildmode() || player.isOp()) {
 
             event.setCancelled(false);
             return;

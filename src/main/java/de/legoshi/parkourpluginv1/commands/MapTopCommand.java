@@ -91,33 +91,43 @@ public class MapTopCommand implements CommandExecutor {
                 try {
 
                     int pageAmount = 1;
-                    int totalPageAmount = instance.mySQLManager.getPages(resultSet);
                     int enteredPage = 1;
+                    int totalPageAmount = 0;
 
-                    if (args.length == 3) {
+                    if(resultSet.next()) {
 
-                        try {
+                        totalPageAmount = instance.mySQLManager.getPages(resultSet);
 
-                            enteredPage = Integer.parseInt(args[2]);
+                        if (args.length == 3) {
+
+                            try {
+
+                                enteredPage = Integer.parseInt(args[2]);
+
+                            } catch (NumberFormatException nfe) {
+
+                                player.sendMessage(Message.ERR_NOTANUMBER.getMessage());
+                                return;
+
+                            }
+
+                            if (enteredPage <= totalPageAmount && enteredPage >= 1) {
+
+                                pageAmount = enteredPage;
+
+                            } else {
+
+                                player.sendMessage(Message.ERR_PAGENOTEXIST.getMessage());
+                                return;
+
+                            }
 
                         }
-                        catch (NumberFormatException nfe) {
 
-                            player.sendMessage(Message.ERR_NOTANUMBER.getMessage());
-                            return;
+                    } else {
 
-                        }
-
-                        if (enteredPage <= totalPageAmount && enteredPage >= 1) {
-
-                            pageAmount = enteredPage;
-
-                        } else {
-
-                            player.sendMessage(Message.ERR_PAGENOTEXIST.getMessage());
-                            return;
-
-                        }
+                        player.sendMessage(Message.ERR_PAGENOTEXIST.getRawMessage());
+                        return;
 
                     }
 

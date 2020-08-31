@@ -7,6 +7,7 @@ import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerPlayStats;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerStatus;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -25,6 +26,7 @@ public class JoinListener implements Listener {
     public void onJoin(PlayerJoinEvent event) throws IOException {
 
         Player player = event.getPlayer();
+        player.setGameMode(GameMode.ADVENTURE);
         World world = Bukkit.getWorld("world");
       
         Location location = new Location(world, -619, 5, 10, -160, 5);

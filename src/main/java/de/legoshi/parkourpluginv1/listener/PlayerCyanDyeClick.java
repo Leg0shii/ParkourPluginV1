@@ -47,6 +47,8 @@ public class PlayerCyanDyeClick {
             playerMap.setTimeRelative(0);
 
             //teleports player to start
+            playerMap.getMapObject().getMapMetaData().getSpawn().setWorld(player.getWorld());
+            player.sendMessage("" + playerMap.getMapObject().getMapMetaData().getSpawn());
             player.teleport(playerMap.getMapObject().getMapMetaData().getSpawn());
             player.sendMessage(Message.Prefix.getRawMessage() + "Restarted");
 

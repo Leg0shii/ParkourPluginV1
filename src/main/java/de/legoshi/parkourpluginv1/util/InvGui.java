@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 public class InvGui {
@@ -45,9 +46,9 @@ public class InvGui {
 						mapObjectArrayList.sort(Comparator.comparing(MapObject::getID));
 						MapObject mapObject = null;
 
-						for(MapObject maps : mapObjectArrayList) {
+						for (MapObject maps : mapObjectArrayList) {
 
-									if(fw.getString("mapname").equals(Integer.toString(maps.getID()))) {
+									if (fw.getString("mapname").equals(Integer.toString(maps.getID()))) {
 
 												mapObject = maps;
 
@@ -77,9 +78,13 @@ public class InvGui {
 								click1 -> {
 
 											player.sendMessage("Joining your course...");
+											player.setGameMode(GameMode.CREATIVE);
+											instance.worldSaver.unzipWorld(new File("./ParkourMapsPlayers/" + fw.getString("mapname") + ".zip"));
 											WorldCreator worldCreator = new WorldCreator(String.valueOf(mapid));
 											World world = worldCreator.createWorld();
-											player.teleport(new Location(world, 0, 50, 0));
+											Location mapSpawn = new Location(world, 0, 50, 0);
+											player.teleport(mapSpawn);
+											instance.checkpointManager.checkpointObjectHashMap.get(player).setLocation(mapSpawn);
 											playerObject.getPlayerStatus().setBuildmode(true);
 											instance.inventory.builderInventory(player);
 											player.closeInventory();
@@ -139,43 +144,46 @@ public class InvGui {
 
 																	try {
 
+																				int mapid;
 																				if (resultSet.next()) {
 
-																							//initializes new MapObject
-																							MapJudges mapJudges = new MapJudges();
-																							MapMetaData mapMetaData = new MapMetaData();
-																							mapMetaData.setBuilder(player.getName());
-																							int mapid = (resultSet.getInt("mapid") + 1);
-																							World newWorld = createNewWorld(String.valueOf(mapid));
-																							Location mapSpawn = new Location(newWorld, 0, 50, 0);
-																							mapMetaData.setSpawn(mapSpawn);
-																							MapObject mapObject = new MapObject(mapid, mapMetaData, mapJudges);
-
-																							//saves new map into mapfile of player
-																							fw.setValue("mapname", mapid);
-																							fw.save();
-
-																							//adding map to servermaplist
-																							Main.getInstance().mapObjectMananger.getMapObjectArrayList().add(mapObject);
-
-																							//inserting map into database
-																							String buildername = player.getName();
-																							String worldName = String.valueOf(mapid);
-
-																							mySQL.update("INSERT INTO maps (mapname, builder, maptype, difficulty, minfails, mintime, x, y, z, world) VALUES " +
-																									"('-','"+ buildername +"' ,'' ,0 ,0 ,0 ,0 ,50 ,0 , '" + worldName + "');");
-
-																							player.teleport(mapSpawn);
-																							click.getEvent().getWhoClicked().sendMessage(ChatColor.RED + "New World Created");
-																							instance.inventory.builderInventory(player);
-																							player.closeInventory();
+																							mapid = (resultSet.getInt("mapid") + 1);
 
 																				} else {
 
-																							player.sendMessage("No maps build yet - PlayerPickAxeClick l127");
+																							mapid = 1;
 
 																				}
 
+																				//initializes new MapObject
+																				MapJudges mapJudges = new MapJudges();
+																				MapMetaData mapMetaData = new MapMetaData();
+																				mapMetaData.setBuilder(player.getName());
+																				World newWorld = createNewWorld(String.valueOf(mapid));
+																				Location mapSpawn = new Location(newWorld, 0, 51, 0);
+																				mapMetaData.setSpawn(mapSpawn);
+																				MapObject mapObject = new MapObject(mapid, mapMetaData, mapJudges);
+
+																				instance.checkpointManager.checkpointObjectHashMap.get(player).setLocation(mapSpawn);
+
+																				//saves new map into mapfile of player
+																				fw.setValue("mapname", mapid);
+																				fw.save();
+
+																				//adding map to servermaplist
+																				Main.getInstance().mapObjectMananger.getMapObjectArrayList().add(mapObject);
+
+																				//inserting map into database
+																				String buildername = player.getName();
+																				String worldName = String.valueOf(mapid);
+
+																				mySQL.update("INSERT INTO maps (mapname, mapstatus, builder, maptype, difficulty, minfails, mintime, x, y, z, world) VALUES " +
+																						"('-','wip' ,'" + buildername + "' ,'' ,0 ,0 ,0 ,0 ,51 ,0 , '" + worldName + "');");
+
+																				player.teleport(mapSpawn);
+																				click.getEvent().getWhoClicked().sendMessage(ChatColor.RED + "New World Created");
+																				instance.inventory.builderInventory(player);
+																				player.setGameMode(GameMode.CREATIVE);
 																				player.closeInventory();
 
 																	} catch (SQLException | IOException throwables) {
@@ -199,7 +207,7 @@ public class InvGui {
 
 			}
 
-			public InventoryGui guiShowAllCourses(Player player) {
+			public void guiShowAllCourses(Player player, String search) {
 
 						Main instance = Main.getInstance();
 						ArrayList<MapObject> mapObjectArrayList = instance.mapObjectMananger.getMapObjectArrayList();
@@ -236,7 +244,7 @@ public class InvGui {
 									PlayerStatus playerStatus = playerObject.getPlayerStatus();
 									PlayerMap playerMap = playerObject.getPlayerMap();
 
-									if (mapMetaData.getMapstatus().equals("ranked")) {
+									if (mapMetaData.getMapstatus().equals(search)) {
 
 												ItemStack material = null;
 												double difficulty = mapJudges.getDifficulty();
@@ -256,22 +264,69 @@ public class InvGui {
 												group.addElement((new StaticGuiElement('e', new ItemStack(material),
 														click -> {
 
-																	playerStatus.setJumpmode(true);
-																	playerMap.setFailsrelative(0);
-																	playerMap.setMapObject(maps);
-																	playerMap.setTimeRelative(0);
-																	instance.inventory.createParkourInventory(player);
+																	File playerW = new File("./ParkourMapsPlayers/" + mapId + ".zip");
 
-																	WorldCreator worldCreator = new WorldCreator(Integer.toString(maps.getID()));
-																	worldCreator.createWorld();
+																	if(playerW.exists()) { //if the map isnt loaded yet: Load
 
-																	click.getEvent().getWhoClicked().sendMessage(Message.MSG_JOINED_COURSE.getMessage().replace("{mapname}", mapMetaData.getName()));
-																	click.getEvent().getWhoClicked().teleport(mapMetaData.getSpawn());
-																	playerObject.getPlayerPlayStats().setTimer(timer(player));
+																				new Thread(new Runnable() {
 
-																	//adding mapattempt into db
-																	instance.mapObjectMananger.firstPlayerMapLoad(player, maps);
+																							@Override
+																							public void run() {
 
+																										ExecutorService executorService = Executors.newSingleThreadExecutor();
+																										Future<Integer> task = executorService.submit(() -> instance.worldSaver.unzipWorld(playerW));
+
+																										try { task.get(); }
+																										catch (InterruptedException | ExecutionException e) { e.printStackTrace(); }
+
+																										executorService.shutdown();
+
+																										File f = new File("./" + mapId);
+																										Bukkit.getConsoleSender().sendMessage("Created? " + f.exists());
+																										Bukkit.getConsoleSender().sendMessage("Bit: " + playerW.getTotalSpace());
+
+																										Bukkit.getScheduler().runTask(instance, new Runnable() {
+
+																													@Override
+																													public void run() {
+
+																																WorldCreator worldCreator = new WorldCreator(String.valueOf(mapId));
+																																worldCreator.createWorld();
+
+																																player.teleport(new Location(Bukkit.getWorld(String.valueOf(mapId)), 0, 50, 0));
+																																playerMap.setTimeRelative(0);
+																																playerMap.setFailsrelative(0);
+																																instance.inventory.createParkourInventory(player);
+																																click.getEvent().getWhoClicked().sendMessage(Message.MSG_JOINED_COURSE.getMessage().replace("{mapname}", mapMetaData.getName()));
+																																playerObject.getPlayerPlayStats().setTimer(timer(player));
+
+																													}
+																										});
+
+																							}
+																				}).start();
+
+																	} else {
+
+																				player.teleport(new Location(Bukkit.getWorld(String.valueOf(mapId)), 0, 50, 0));
+																				playerMap.setTimeRelative(0);
+																				playerMap.setFailsrelative(0);
+																				instance.inventory.createParkourInventory(player);
+																				click.getEvent().getWhoClicked().sendMessage(Message.MSG_JOINED_COURSE.getMessage().replace("{mapname}", mapMetaData.getName()));
+																				playerObject.getPlayerPlayStats().setTimer(timer(player));
+
+																	}
+
+																				playerStatus.setJumpmode(true);
+																				playerMap.setMapObject(maps);
+
+																				//click.getEvent().getWhoClicked().teleport(mapMetaData.getSpawn());
+
+																				//adding mapattempt into db
+																				instance.mapObjectMananger.firstPlayerMapLoad(player, maps);
+
+
+																	player.closeInventory();
 																	return true; // returning true will cancel the click event and stop taking the item
 
 														},
@@ -290,7 +345,7 @@ public class InvGui {
 
 						}
 
-						return gui;
+						gui.show(player);
 
 			}
 
@@ -310,14 +365,36 @@ public class InvGui {
 								click -> {
 
 											playerStatus.setBuildCourse(false);
-											mySQL.update("UPDATE maps SET mapstatus = 'unranked' WHERE mapid = " + Integer.parseInt(file.getString("mapname")));
-											mySQL.update("UPDATE maps SET world = " + file.getString("mapname") +
-													" WHERE mapid = " + Integer.parseInt(file.getString("mapname")));
+											int mapid = Integer.parseInt(file.getString("mapname"));
+											String mapname = file.getString("mapname");
+											mySQL.update("UPDATE maps SET mapstatus = 'unranked' WHERE mapid = " + mapid + ";");
+											mySQL.update("UPDATE maps SET world = " + mapname + " WHERE mapid = " + mapid + ";");
 
 											file.setValue("hasCourse", false);
 											file.setValue("mapname", "");
-											try { file.save();
-											} catch (IOException e) { e.printStackTrace(); }
+											try {
+														file.save();
+											} catch (IOException e) {
+														e.printStackTrace();
+											}
+
+											//adds map to list
+											mySQL.query("SELECT * FROM maps WHERE mapid = " + mapid + ";", new Consumer<ResultSet>() {
+
+														@Override
+														public void accept(ResultSet resultSet) {
+
+																	MapJudges mapJudges = new MapJudges();
+																	MapMetaData mapMetaData = new MapMetaData();
+																	mapMetaData.setName(mapname);
+																	mapMetaData.setMapstatus("unranked");
+																	MapObject mapObject = new MapObject(mapid, mapMetaData, mapJudges);
+
+																	instance.mapObjectMananger.getMapObjectArrayList().add(mapObject);
+
+														}
+
+											});
 
 											player.sendMessage("Successfully uploaded Map!");
 											player.closeInventory();
@@ -337,6 +414,39 @@ public class InvGui {
 
 								}, "Uploading Map?",
 								"Upload now!"
+						));
+
+						return gui;
+
+			}
+
+			public InventoryGui guiStatusSelect(Player player) {
+
+						String[] guiSetup = {"  g   r  "};
+						InventoryGui gui = new InventoryGui(Main.getInstance(), player, "MapStatus", guiSetup);
+
+						gui.addElement(new StaticGuiElement('g',
+								new ItemStack(Material.WOOL, 1, (short) 3),
+								click -> {
+
+											player.closeInventory();
+											guiShowAllCourses(player, "ranked");
+											return true;
+
+								}, "Select Mapstatus",
+								"Ranked Maps"
+						));
+
+						gui.addElement(new StaticGuiElement('r',
+								new ItemStack(Material.WOOL, 1, (short) 6),
+								click -> {
+
+											player.closeInventory();
+											guiShowAllCourses(player, "unranked");
+											return true;
+
+								}, "Select Mapstatus",
+								"Unranked Maps"
 						));
 
 						return gui;

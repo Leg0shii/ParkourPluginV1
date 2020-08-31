@@ -54,6 +54,37 @@ public class PlayerRedDyeClick {
                 }
 
             }
+
+        }
+
+        if(playerStatus.isBuildmode()) {
+
+            ItemStack redDye = new ItemStack(Material.INK_SACK, 1, (short) 1);
+            ItemMeta metaRedDye = redDye.getItemMeta();
+            metaRedDye.setDisplayName(ChatColor.RESET + "Checkpoint");
+            redDye.setItemMeta(metaRedDye);
+
+            if ((action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) && event.hasItem()) {
+
+                if(clickedItem.equals(redDye) && clickedItem.getItemMeta().getDisplayName().equals(ChatColor.RESET + "Checkpoint")) {
+
+                    player.teleport(instance.checkpointManager.checkpointObjectHashMap.get(player).getLocation());
+                    event.setCancelled(true);
+
+                }
+
+            } else if((action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) && event.hasItem()) {
+
+                if(clickedItem.equals(redDye) && clickedItem.getItemMeta().getDisplayName().equals(ChatColor.RESET + "Checkpoint")) {
+
+                    player.sendMessage("Position saved: " + player.getLocale());
+                    instance.checkpointManager.checkpointObjectHashMap.get(player).setLocation(player.getLocation());
+                    event.setCancelled(true);
+
+                }
+
+            }
+
         }
 
     }

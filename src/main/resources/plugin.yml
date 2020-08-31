@@ -13,5 +13,7 @@ commands:
   ppbest:
   pphelp:
   setmapname:
+  ppmap:
+
 
 
