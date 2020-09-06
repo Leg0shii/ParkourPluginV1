@@ -123,7 +123,7 @@ public class PlayerStepPressureplate {
 
                                     if(ppFromMap > playerMap.getMapObject().getMapJudges().getHighestPP()) {
 
-                                        setNewHighestPPScoreOnMap(playerMap.getMapObject(), ppFromMap);
+                                        playerObject.getPlayerMap().getMapObject().getMapJudges().setHighestPP(ppFromMap);
 
                                     }
 
@@ -180,16 +180,6 @@ public class PlayerStepPressureplate {
             }
 
         }
-
-    }
-
-    public void setNewHighestPPScoreOnMap(MapObject map, double ppGained) {
-
-        Main instance = Main.getInstance();
-        ArrayList<MapObject> mapObjectArrayList = instance.mapObjectMananger.getMapObjectArrayList();
-
-        mapObjectArrayList.sort(Comparator.comparing(MapObject::getID));
-        mapObjectArrayList.get(map.getID()-1).getMapJudges().setHighestPP(ppGained);
 
     }
 

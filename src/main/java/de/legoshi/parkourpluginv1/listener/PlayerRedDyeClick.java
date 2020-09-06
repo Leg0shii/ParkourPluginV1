@@ -28,9 +28,7 @@ public class PlayerRedDyeClick {
         ItemStack clickedItem = event.getItem();
         Main instance = Main.getInstance();
 
-        boolean isJumpmode = playerStatus.isJumpmode();
-
-        if(isJumpmode) {
+        if(playerStatus.isJumpmode()) {
             if ((action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) && event.hasItem()) {
 
                 ItemStack redDye = new ItemStack(Material.INK_SACK, 1, (short) 1);
@@ -47,7 +45,7 @@ public class PlayerRedDyeClick {
                     if(event.getHand() == EquipmentSlot.OFF_HAND) return;
 
                     playerMap.setFailsrelative(playerMap.getFailsrelative() + 1);
-                    player.teleport(Main.getInstance().checkpointManager.checkpointObjectHashMap.get(player).getLocation());
+                    player.teleport(instance.checkpointManager.checkpointObjectHashMap.get(player).getLocation());
                     instance.scoreboardHelper.updateFailsOnScoreBoard(player, (playerObject.getPlayerPlayStats().getFailscount()+playerMap.getFailsrelative()));
                     timerRedDyeClick(player);
 

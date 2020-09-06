@@ -5,9 +5,13 @@ import de.legoshi.parkourpluginv1.util.*;
 import de.legoshi.parkourpluginv1.util.mapinformation.MapJudges;
 import de.legoshi.parkourpluginv1.util.mapinformation.MapMetaData;
 import de.legoshi.parkourpluginv1.util.mapinformation.MapObject;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerMap;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerPlayStats;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerStatus;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
@@ -260,6 +264,30 @@ public class PlayerManager {
         Collections.reverse(ppList);
 
         return ppList;
+
+    }
+
+    public void playerMapJoin(Player player) {
+
+        Main instance = Main.getInstance();
+        PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
+        PlayerMap playerMap = playerObject.getPlayerMap();
+        PlayerStatus playerStatus = playerObject.getPlayerStatus();
+        MapObject mapObject = playerMap.getMapObject();
+        MapMetaData mapMetaData = mapObject.getMapMetaData();
+        Location mapSpawn = mapMetaData.getSpawn();
+
+        player.teleport(mapSpawn);
+        playerObject.getPlayerPlayStats().setTimer(instance.mapSelectGUI.timer(player));
+
+        playerMap.setTimeRelative(0);
+        playerMap.setFailsrelative(0);
+        playerStatus.setJumpmode(true);
+        instance.inventory.createParkourInventory(player);
+
+        player.sendMessage(Message.MSG_JOINED_COURSE.getMessage().replace("{mapname}", mapMetaData.getName()));
+
+        instance.checkpointManager.checkpointObjectHashMap.get(player).setLocation(mapSpawn); //set cp
 
     }
 

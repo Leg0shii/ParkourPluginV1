@@ -6,11 +6,8 @@ import de.legoshi.parkourpluginv1.util.mapinformation.MapJudges;
 import de.legoshi.parkourpluginv1.util.mapinformation.MapMetaData;
 import de.legoshi.parkourpluginv1.util.mapinformation.MapObject;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.meta.MapMeta;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,134 +16,92 @@ import java.util.function.Consumer;
 
 public class MapObjectMananger {
 
-    ArrayList<MapObject> mapObjectArrayList;
+			public void firstPlayerMapLoad(Player player, MapObject maps) {
 
-    public MapObjectMananger() {
+						Main instance = Main.getInstance();
+						AsyncMySQL mySQL = instance.mySQL;
+						PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
 
-       this.mapObjectArrayList = new ArrayList<>();
+						mySQL.query("SELECT playeruuid, mapid FROM clears WHERE playeruuid = '" + player.getUniqueId().toString() + "' AND mapid = " + maps.getID() + ";",
+								new Consumer<ResultSet>() {
 
-    }
+											@Override
+											public void accept(ResultSet resultSet) {
 
-    public ArrayList<MapObject> getMapObjectArrayList() {
-        return mapObjectArrayList;
-    }
+														try {
 
-    public void setMapObjectArrayList(ArrayList<MapObject> mapObjectArrayList) {
-        this.mapObjectArrayList = mapObjectArrayList;
-    }
+																	if (!(resultSet.next())) {
 
-    public void getAllMapsFromDB() {
+																				mySQL.update("INSERT INTO clears (playeruuid, playername, mapid, cleared, ppcountc, ptime, pfails) VALUES " +
+																						"('" + playerObject.getPlayer().getUniqueId().toString() + "', '" + player.getName() + "', '" + maps.getID() + "', false, 0.0, 0, 0.0);");
 
-        AsyncMySQL mySQL = Main.getInstance().mySQL;
-        ArrayList<MapObject> mapObjectList = new ArrayList<>();
+																	}
 
-        mySQL.query("SELECT * FROM maps ORDER BY difficulty", new Consumer<ResultSet>() {
+														} catch (SQLException throwables) {
 
-            @Override
-            public void accept(ResultSet resultSet) {
+																	throwables.printStackTrace();
 
-                while (true) {
-                    try {
-                        if (!resultSet.next()) {
+														}
 
-                            Main.getInstance().mapObjectMananger.setMapObjectArrayList(mapObjectList);
-                            return;
-                        }
+											}
 
-                        //loads all MapObjects from the DB into the MapObjectManager
-                        World world = Bukkit.getWorld(resultSet.getString("world"));
-                        Location mapSpawn = new Location(
-                            world,
-                            resultSet.getDouble("x"),
-                            resultSet.getDouble("y"),
-                            resultSet.getDouble("z")
-                        );
+								});
 
-                        MapJudges mapJudges = new MapJudges(
-                            0,
-                            resultSet.getDouble("difficulty"),
-                            resultSet.getInt("minFails"),
-                            resultSet.getDouble("minTime"));
-                        MapMetaData mapMetaData = new MapMetaData(
-                            mapSpawn,
-                            resultSet.getString("mapstatus"),
-                            resultSet.getString("builder"),
-                            resultSet.getString("mapname"),
-                            resultSet.getString("maptype")
-                        );
-                        MapObject mapObject = new MapObject(
-                            resultSet.getInt("mapid"),
-                            mapMetaData,
-                            mapJudges
-                        );
+			}
 
-                        //saves the highestpp of a course into the DB
-                        mySQL.query("SELECT ppcountc FROM clears WHERE mapID = "+ mapObject.getID() +" ORDER BY ppcountc DESC", new Consumer<ResultSet>() {
+			public void loadHighestPP(Player player, MapObject mapObject) {
 
-                            @Override
-                            public void accept(ResultSet resultSet) {
+						Main instance = Main.getInstance();
+						AsyncMySQL mySQL = instance.mySQL;
 
-                                try {
+						//saves the highestpp of a course into the DB
+						mySQL.query("SELECT ppcountc FROM clears WHERE mapID = " + mapObject.getID() + " ORDER BY ppcountc DESC", new Consumer<ResultSet>() {
 
-                                    if(resultSet.next()) {
+									@Override
+									public void accept(ResultSet resultSet) {
 
-                                        mapObject.getMapJudges().setHighestPP(resultSet.getDouble("ppcountc"));
-                                        Bukkit.getConsoleSender().sendMessage("Map: " + mapObject.getID() + " PP: " + mapObject.getMapJudges().getHighestPP());
+												try {
 
-                                    }
+															if (resultSet.next()) {
 
-                                } catch (SQLException throwables) { throwables.printStackTrace(); }
+																		instance.playerManager.playerObjectHashMap.get(player).getPlayerMap().getMapObject().getMapJudges().setHighestPP(resultSet.getDouble("ppcountc"));
 
-                                mapObjectList.add(mapObject);
+															}
 
-                            }
+												} catch (SQLException throwables) { throwables.printStackTrace(); }
 
-                        });
+									}
 
-                    } catch (SQLException throwables) { throwables.printStackTrace(); }
+						});
 
-                }
+			}
 
-            }
+			public MapObject loadMapFromDB(ResultSet resultSet) throws SQLException {
 
-        });
+						Location mapSpawn = new Location(
+								null,
+								resultSet.getDouble("x"),
+								resultSet.getDouble("y"),
+								resultSet.getDouble("z"));
+						MapJudges mapJudges = new MapJudges(
+								0,
+								resultSet.getDouble("difficulty"),
+								resultSet.getInt("minFails"),
+								resultSet.getDouble("minTime"));
+						MapMetaData mapMetaData = new MapMetaData(
+								mapSpawn,
+								resultSet.getString("mapstatus"),
+								resultSet.getString("builder"),
+								resultSet.getString("mapname"),
+								resultSet.getString("maptype"));
+						MapObject mapObject = new MapObject(
+								resultSet.getInt("mapid"),
+								mapMetaData,
+								mapJudges);
 
-        Bukkit.getConsoleSender().sendMessage("Loaded all Maps");
+						return mapObject;
 
-    }
-
-    public void firstPlayerMapLoad(Player player, MapObject maps) {
-
-        Main instance = Main.getInstance();
-        AsyncMySQL mySQL = instance.mySQL;
-        PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
-
-        mySQL.query("SELECT playeruuid, mapid FROM clears WHERE playeruuid = '" + player.getUniqueId().toString() + "' AND mapid = " + maps.getID() + ";",
-            new Consumer<ResultSet>() {
-
-                @Override
-                public void accept(ResultSet resultSet) {
-
-                    try {
-
-                        if(!(resultSet.next())) {
-
-                            mySQL.update("INSERT INTO clears (playeruuid, playername, mapid, cleared, ppcountc, ptime, pfails) VALUES " +
-                                "('"+playerObject.getPlayer().getUniqueId().toString()+"', '"+ player.getName() +"', '"+maps.getID()+"', false, 0.0, 0, 0.0);");
-
-                        }
-
-                    } catch (SQLException throwables) {
-
-                        throwables.printStackTrace();
-
-                    }
-
-                }
-
-            });
-
-    }
+			}
 
 }
 

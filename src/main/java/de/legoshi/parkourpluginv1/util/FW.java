@@ -60,13 +60,10 @@ public class FW {
         return c.getConfigurationSection(Section);
     }
 
-    public FW save() throws IOException {
+    public FW save() {
 
-        try {
-
-            this.c.save(this.f);
-
-        } catch (IOException e) {}
+        try { this.c.save(this.f); }
+        catch (IOException ignored) {}
 
         return this;
 

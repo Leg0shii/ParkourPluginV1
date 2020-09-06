@@ -22,13 +22,8 @@ public class CreateRankedMap implements CommandExecutor {
                 if(!(sender instanceof Player)) return true;
 
                 Player player = ((Player) sender).getPlayer();
-                String name;
-                Location spawn;
-                double difficulty;
                 AsyncMySQL mySQL = Main.getInstance().mySQL;
-                int minFails;
-                double minTime;
-                String maptype;
+                double difficulty;
 
                 //if Input has all arguments
                 if(args.length == 6 && player.getName().equals("Leg0shi_")) {
@@ -54,11 +49,11 @@ public class CreateRankedMap implements CommandExecutor {
 
                         }
 
-                        name = args[0];
-                        minFails = Integer.parseInt(args[2]);
-                        minTime = Double.parseDouble(args[3]);
-                        maptype = args[4];
-                        spawn = player.getLocation();
+                        String name = args[0];
+                        int minFails = Integer.parseInt(args[2]);
+                        double minTime = Double.parseDouble(args[3]);
+                        String maptype = args[4];
+                        Location spawn = player.getLocation();
 
                         double x = spawn.getX();
                         double y = spawn.getY();
@@ -66,31 +61,8 @@ public class CreateRankedMap implements CommandExecutor {
                         String world = spawn.getWorld().getName();
                         String builder = args[5];
 
-                        ArrayList<MapObject> mapObjectArrayList = Main.getInstance().mapObjectMananger.getMapObjectArrayList();
-
-                        MapJudges mapJudges = new MapJudges(
-                            0,
-                                difficulty,
-                                minFails,
-                                minTime
-                        );
-                        MapMetaData mapMetaData = new MapMetaData(
-                            spawn,
-                            "",
-                            builder,
-                            name,
-                            ""
-                        );
-                        Main.getInstance().mapObjectMananger.getMapObjectArrayList().add(
-                            new MapObject(
-                                mapObjectArrayList.size()+1,
-                                mapMetaData,
-                                mapJudges
-                                )
-                        );
-
-                        mySQL.update("INSERT INTO maps (mapname, maptype, difficulty, minfails, mintime, x, y, z, world) VALUES " +
-                            "('"+name+"', '"+maptype+"', "+difficulty+", "+minFails+", "+minTime+", '"+x+"', '"+y+"', '"+z+"', '"+world+"');");
+                        mySQL.update("INSERT INTO maps (mapname, builder, maptype, difficulty, minfails, mintime, x, y, z, world) VALUES " +
+                            "('"+name+"','"+builder+"' , '"+maptype+"', "+difficulty+", "+minFails+", "+minTime+", '"+x+"', '"+y+"', '"+z+"', '"+world+"');");
 
                         sender.sendMessage(Message.MSG_successfulCreatedMap.getMessage());
 

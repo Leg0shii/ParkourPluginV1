@@ -1,13 +1,15 @@
 package de.legoshi.parkourpluginv1.util;
 import de.legoshi.parkourpluginv1.Main;
 import org.apache.commons.io.FileUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class WorldSaver {
 
@@ -37,6 +39,20 @@ public class WorldSaver {
 
 			}
 
+			public void delayedUnzipWorld(File playerW) {
+
+						//wait for Worldunzip
+						ExecutorService executorService = Executors.newSingleThreadExecutor();
+						Future<Integer> task = executorService.submit(() -> unzipWorld(playerW));
+						try {
+									task.get();
+						} catch (InterruptedException | ExecutionException e) {
+									e.printStackTrace();
+						}
+						executorService.shutdown();
+
+			}
+
 			public void moveAllPlayer(World world) {
 
 						for(Player all : Bukkit.getOnlinePlayers()) {
@@ -44,6 +60,8 @@ public class WorldSaver {
 									if(all.getWorld().equals(world)) {
 
 												all.setGameMode(GameMode.ADVENTURE);
+												Main.getInstance().inventory.createSpawnInventory(all);
+												Main.getInstance().playerManager.playerObjectHashMap.get(all).getPlayerStatus().setBuildmode(false);
 												all.teleport(Main.instance.spawn);
 
 									}
@@ -52,4 +70,39 @@ public class WorldSaver {
 
 			}
 
+			public World createNewWorld(String name) throws IOException {
+
+						File worldDir = new File("./prw");
+						FileUtils.copyDirectory(worldDir, new File(worldDir.getParent(), name));
+						//delete uid so file can be loaded
+						File uid = new File("./" + name + "/uid.dat");
+						uid.delete();
+
+						WorldCreator creator = new WorldCreator(name);
+
+						World world = Bukkit.createWorld(creator);
+						world.setGameRuleValue("doDaylightCycle", "false");
+						world.setGameRuleValue("doMobSpawning", "false");
+						world.setGameRuleValue("doFireTick", "false");
+						world.setDifficulty(Difficulty.PEACEFUL);
+						world.save();
+
+						return world;
+
+			}
+
+			public World loadWorld(String valueOf) {
+
+						WorldCreator worldCreator = new WorldCreator(valueOf);
+						World world = Bukkit.createWorld(worldCreator);
+
+						world.setGameRuleValue("doDaylightCycle", "false");
+						world.setGameRuleValue("doMobSpawning", "false");
+						world.setGameRuleValue("doFireTick", "false");
+						world.setDifficulty(Difficulty.PEACEFUL);
+						world.save();
+
+						return world;
+
+			}
 }
