@@ -1,6 +1,10 @@
 package de.legoshi.parkourpluginv1;
 
 import de.legoshi.parkourpluginv1.commands.*;
+import de.legoshi.parkourpluginv1.commands.insidemapcommand.SetSpawn;
+import de.legoshi.parkourpluginv1.gui.MapCreateGUI;
+import de.legoshi.parkourpluginv1.gui.MapEditGUI;
+import de.legoshi.parkourpluginv1.gui.MapSelectGUI;
 import de.legoshi.parkourpluginv1.listener.*;
 import de.legoshi.parkourpluginv1.manager.*;
 import de.legoshi.parkourpluginv1.util.*;
@@ -31,10 +35,14 @@ public final class Main extends JavaPlugin {
     public TabTagCreator tabTagCreator;
     public TitelManager titelManager;
     public PlayerStepPressureplate playerStepPressureplate;
-    public InvGui invGui;
     public WorldSaver worldSaver;
+    public MapSelectGUI mapSelectGUI;
+    public MapCreateGUI buildCreateGUI;
+    public MapEditGUI mapEditGUI;
 
     public Location spawn;
+    public String spawnName;
+    public Location standardSpawn;
 
     @Override
     public void onEnable() {
@@ -42,7 +50,6 @@ public final class Main extends JavaPlugin {
         initializeMethods();
 
         this.mySQL = mySQLManager.initializeTables(); //Initializes all required sql tables
-        mapObjectMananger.getAllMapsFromDB(); //loads all build maps from sql into an arraylist
 
         updateSchedular.onRun(); //updates playertime every 30min
         mySQLManager.keepMySQLbusy(); //so DB doesnt loose connection
@@ -87,6 +94,9 @@ public final class Main extends JavaPlugin {
         getCommand("ppbest").setExecutor(new PPBestCommand());
         getCommand("pphelp").setExecutor(new HelpCommand());
         getCommand("ppmap").setExecutor(new PPMapCommand());
+        getCommand("invite").setExecutor(new MapInviteCommand());
+        getCommand("accept").setExecutor(new MapAcceptCommand());
+        getCommand("setspawn").setExecutor(new SetSpawn());
 
     }
 
@@ -95,6 +105,8 @@ public final class Main extends JavaPlugin {
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new BlockPlaceListener(), this);
         pm.registerEvents(new BlockDestroyListener(), this);
+        pm.registerEvents(new RedstoneListener(), this);
+        pm.registerEvents(new PortalCreateListener(), this);
         pm.registerEvents(new ItemDropListener(), this);
         pm.registerEvents(new PlayerDamageListener(), this);
 
@@ -128,9 +140,13 @@ public final class Main extends JavaPlugin {
         tabTagCreator = new TabTagCreator();
         titelManager = new TitelManager();
         playerStepPressureplate = new PlayerStepPressureplate();
-        invGui = new InvGui();
         worldSaver = new WorldSaver();
+        mapSelectGUI = new MapSelectGUI();
+        mapEditGUI = new MapEditGUI();
+        buildCreateGUI = new MapCreateGUI();
         spawn = new Location(Bukkit.getWorld("world"), -619, 5, 10, -160, 5);
+        standardSpawn = new Location(null, 8.5, 4, 8.5);
+        spawnName = "world";
 
     }
 

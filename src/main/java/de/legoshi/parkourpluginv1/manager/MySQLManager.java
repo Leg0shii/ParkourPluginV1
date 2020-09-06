@@ -47,7 +47,7 @@ public class MySQLManager {
 
         try {
 
-            mySQL = new AsyncMySQL(instance, "51.195.32.101", 3306, "root", "qexGGHZfFzWyKYE", "serverpro_db");
+            mySQL = new AsyncMySQL(instance, "51.89.102.233", 3306, "root", "qexGGHZfFzWyKYE", "serverpro_db");
             //mySQL = new AsyncMySQL(instance, "localhost", 3306, "root", "root", "testdb");
             return mySQL;
 

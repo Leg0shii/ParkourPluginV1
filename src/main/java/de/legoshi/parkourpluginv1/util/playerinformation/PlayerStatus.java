@@ -5,6 +5,7 @@ public class PlayerStatus {
 			private boolean jumpmode;
 			private boolean buildmode;
 			private boolean dyeClick;
+			private int page;
 
 			private boolean buildCourse;
 
@@ -14,8 +15,13 @@ public class PlayerStatus {
 						this.buildmode = false;
 						this.dyeClick = false;
 						this.buildCourse = false;
+						this.page = 0;
 
 			}
+
+			public int getPage() { return page; }
+
+			public void setPage(int page) { this.page = page; }
 
 			public boolean isJumpmode() { return jumpmode; }
 

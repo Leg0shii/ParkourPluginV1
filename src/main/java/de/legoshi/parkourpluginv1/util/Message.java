@@ -78,12 +78,14 @@ public enum Message {
     MSG_HELPPBESTPP(" /ppbest <name> [page] - Shows best PP-Scores."),
     MSG_HELPPPSTATS(" /ppstats - Shows your personal Serverstats."),
     MSG_HELPPPTOP("\n /pptop [page] - Shows the global Leaderboard for total PP."),
+    MSG_HELPPPMAP(" /ppmap <name/difficulty/status> <mapid> <fact>"),
     MSG_HELPBRACKETS("Please note that arguments with [ ] are optional."),
 
     //ppmap
     MSG_PPMAP_SET_NAME("Successfully changed Mapname to {mapname}!"),
     MSG_PPMAP_SET_STATUS("Successfully changed Mapstatus to {mapstatus}!"),
     MSG_PPMAP_SET_DIFFICULTY("Successfully changed difficulty to {difficulty}!"),
+    MSG_SETSPAWN("Successfully set new Spawnpoint"),
 
     //errormessages for commands
     ERR_MAPTOPCOMMAND("/pptopmap <mapID> <fails/pp/time> [page]"),
@@ -93,9 +95,28 @@ public enum Message {
     ERR_PPMAP("/ppmap <name/status/difficulty> <mapid> <value>"),
     ERR_PAGENOTEXIST("This page doesnt exist..."),
     ERR_NOTANUMBER("Please enter a number..."),
+    ERR_INVITE("/invite <playername>"),
+    ERR_ACCEPT("/accept <playername>"),
+    ERR_NOT_YOURSELF("You cant use your own name here."),
+
+    //inviteCommand
+    ERR_INVITE_NOT_ONLINE("{playername} is not online."),
+    ERR_INVITE_NOT_MAINWORLD("{playername} is not in the Lobby."),
+    ERR_INVITE_NOT_MAP("You are not in a build map."),
+    MSG_INVITE_PLAYER("{playername} invited you to his Course."),
+    MSG_SUCC_INVITE("{playername} invited successfully."),
+
+    //acceptCommand
+    ERR_ACCEPT_PLAYER_LEFT("{playername} isnt online anymore."),
+    ERR_ACCEPT_PLAYER_NOT_WORLD("{playername} is not in his world anymore"),
+    ERR_ACCEPT_NOT_INV("This player didnt invite you!"),
+    ERR_ACCEPT_NOT_LOBBY("You are not in the Lobby!"),
 
     //pageMessage
     MSG_PAGEAMOUNT(ChatColor.GRAY + "       Page " + ChatColor.WHITE + "{page}" + ChatColor.GRAY + "/" + "{pagetotal}"),
+
+    //setspawn
+    MSG_SUCC_SET_SPAWN("Successfully changed Spawn of Map"),
 
     //resultscreen
     MSG_RESULT_HEADER("" + ChatColor.BOLD + ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH + "                                            "

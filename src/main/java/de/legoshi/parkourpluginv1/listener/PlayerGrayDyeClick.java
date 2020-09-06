@@ -16,8 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class PlayerGrayDyeClick {
 
@@ -73,14 +71,27 @@ public class PlayerGrayDyeClick {
                 playerStatus.setBuildmode(false);
                 player.setGameMode(GameMode.ADVENTURE);
                 World playerWorld = player.getWorld();
-                player.teleport(instance.spawn);
-                instance.worldSaver.moveAllPlayer(playerWorld);
-                instance.worldSaver.zipWorld(playerWorld);
+
+                FW fw = new FW("./ParkourBuild", player.getUniqueId().toString() + ".yml");
+
+                if(fw.getInt("mapname") == Integer.parseInt(player.getWorld().getName())) {
+
+                    instance.worldSaver.moveAllPlayer(playerWorld);
+                    instance.worldSaver.zipWorld(playerWorld);
+                    instance.checkpointManager.checkpointObjectHashMap.get(player).setLocation(instance.spawn);
+
+                    player.closeInventory();
+                    player.sendMessage(Message.Prefix.getRawMessage() + "World Saved!");
+                    event.setCancelled(true);
+                    return;
+
+                }
+
                 instance.inventory.createSpawnInventory(player);
                 player.closeInventory();
                 instance.checkpointManager.checkpointObjectHashMap.get(player).setLocation(instance.spawn);
+                player.teleport(instance.spawn);
 
-                player.sendMessage(Message.Prefix.getRawMessage() + "World Saved!");
                 event.setCancelled(true);
 
             }

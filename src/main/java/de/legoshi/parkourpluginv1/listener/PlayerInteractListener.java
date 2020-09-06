@@ -20,6 +20,7 @@ public class PlayerInteractListener implements Listener {
         instance.playerInteractManager.getPlayerGrayDyeClick().onGrayClick(event);
         instance.playerInteractManager.getPlayerCyanDyeClick().onCyanDyeInventoryClick(event);
         instance.playerInteractManager.getPlayerPickAxeClick().onPickAxeClick(event);
+        instance.playerInteractManager.getPlayerChestClick().onChestOpen(event);
 
     }
 

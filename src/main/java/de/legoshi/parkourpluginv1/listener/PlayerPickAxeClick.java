@@ -29,11 +29,11 @@ public class PlayerPickAxeClick implements Listener {
 
 									if(playerStatus.isBuildCourse()) {
 
-												instance.invGui.guiEditMap(player).show(player);
+												instance.mapEditGUI.guiEditMap(player);
 
 									} else {
 
-												instance.invGui.guiCreateMap(player).show(player);
+												instance.buildCreateGUI.guiCreateMap(player).show(player);
 
 									}
 

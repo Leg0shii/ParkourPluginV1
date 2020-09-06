@@ -1,6 +1,7 @@
 package de.legoshi.parkourpluginv1.listener;
 
 import de.legoshi.parkourpluginv1.Main;
+import de.legoshi.parkourpluginv1.util.FW;
 import de.legoshi.parkourpluginv1.util.Message;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
 import org.bukkit.Bukkit;
@@ -22,6 +23,9 @@ public class QuitListener implements Listener {
         World playerWorld = player.getWorld();
         Main instance = Main.getInstance();
         PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
+        FW fw = new FW("./ParkourBuild", player.getUniqueId().toString() + ".yml");
+        fw.setValue("invited", "");
+        fw.save();
 
         //cancels timer that might be running when leaving from course
         playerObject.getPlayerPlayStats().getTimer().cancel();

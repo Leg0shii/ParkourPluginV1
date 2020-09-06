@@ -62,6 +62,8 @@ public class JoinListener implements Listener {
             instance.playerManager.calculateRanking(player);
 
             fw.setValue( "hasCourse", false);
+            fw.setValue("mapname", "");
+            fw.save();
             playerObject.getPlayerStatus().setBuildCourse(false);
 
             Timer t = new Timer();

@@ -1,10 +1,12 @@
 package de.legoshi.parkourpluginv1.util;
 
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
 
 public class Inventory {
 
@@ -41,6 +43,9 @@ public class Inventory {
         player.getInventory().setItem(0, redDye);
         player.getInventory().setItem(2, purpleDye);
         player.getInventory().setItem(8, grayDye);
+
+        player.setGameMode(GameMode.ADVENTURE);
+
         player.updateInventory();
 
     }
@@ -66,7 +71,18 @@ public class Inventory {
         diamondPickaxe.setItemMeta(diamondPickaxeMeta);
 
         player.getInventory().setItem(0, netherStar);
+
+        //removes potion effect
+        for(PotionEffect potionEffect : player.getActivePotionEffects()) {
+
+            player.removePotionEffect(potionEffect.getType());
+
+        }
+
         player.getInventory().setItem(4, diamondPickaxe);
+
+        player.setGameMode(GameMode.ADVENTURE);
+
         player.updateInventory();
 
     }
@@ -92,6 +108,9 @@ public class Inventory {
 
         player.getInventory().setItem(0, redDye);
         player.getInventory().setItem(8, grayDye);
+
+        player.setGameMode(GameMode.CREATIVE);
+
         player.updateInventory();
 
     }
