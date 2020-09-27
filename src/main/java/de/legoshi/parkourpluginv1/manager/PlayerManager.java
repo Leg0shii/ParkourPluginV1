@@ -195,14 +195,16 @@ public class PlayerManager {
         Main instance = Main.getInstance();
         PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
         instance.playerManager.calculateRanking(player);
-        Timer timer = new Timer();
 
+        Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
 
             @Override
             public void run() {
 
-                instance.scoreboardHelper.updateRankOnScoreBoard(player, playerObject.getPlayerPlayStats().getRank());
+                if(player.getWorld().getName().equals("world")) {
+                    instance.scoreboardHelper.updateRankOnScoreBoard(player, playerObject.getPlayerPlayStats().getRank());
+                }
                 timer.cancel();
 
             }

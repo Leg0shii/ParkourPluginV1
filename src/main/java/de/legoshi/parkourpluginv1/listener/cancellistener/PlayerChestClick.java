@@ -1,4 +1,4 @@
-package de.legoshi.parkourpluginv1.listener;
+package de.legoshi.parkourpluginv1.listener.cancellistener;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;

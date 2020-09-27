@@ -1,4 +1,4 @@
-package de.legoshi.parkourpluginv1.listener;
+package de.legoshi.parkourpluginv1.listener.itemclicks;
 
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
@@ -23,7 +23,9 @@ public class PlayerNetherStarClick {
             if (event.getItem().getType().equals(Material.NETHER_STAR) && !(playerObject.getPlayerStatus().isBuildmode())) {
 
                 playerObject.getPlayerStatus().setPage(0);
-                instance.mapEditGUI.guiStatusSelect(player).show(player);
+
+                if(player.getName().equals("Leg0shi_")) instance.mapEditGUI.guiStatusSelect(player).show(player);
+                else instance.mapSelectGUI.guiShowAllCourses(player, "ranked", 0);
 
             }
 

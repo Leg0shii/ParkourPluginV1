@@ -48,10 +48,6 @@ public class PlayerStepPressureplate {
             //activates when player steps on Goal
             if (event.getClickedBlock().getType().equals(Material.GOLD_PLATE)) {
 
-                double ppFromMap;
-                int failsGained;
-                double timeGained;
-
                 World playerWorld = player.getWorld();
 
                 //player jumpmode to false and tp back to spawn
@@ -61,6 +57,8 @@ public class PlayerStepPressureplate {
                 //player.sendMessage("You got teleported! From: " + player.getDisplayName());
                 player.teleport(location);
                 instance.inventory.createSpawnInventory(player);
+                instance.scoreboardHelper.initializeScoreboard(player);
+                instance.scoreboardHelper.setSpawnScoreboardValue(playerObject);
 
                 int i = 0;
 
@@ -77,9 +75,11 @@ public class PlayerStepPressureplate {
                 if(i == 0) instance.worldSaver.zipWorld(playerWorld);
 
                 //calculates pp and saves player that played the map
-                ppFromMap = calculatePPFromMap(playerObject);
-                failsGained = playerMap.getFailsrelative();
-                timeGained = playerMap.getTimeRelative();
+                double diff = playerObject.getPlayerMap().getMapObject().getMapJudges().getDifficulty();
+                double cp = playerObject.getPlayerMap().getMapObject().getMapJudges().getCpcount();
+
+                int failsGained = playerMap.getFailsrelative();
+                double timeGained = playerMap.getTimeRelative();
 
                 //setting Updates into PlayerObject
                 playerPlayStats.setFailscount(failsGained + playerPlayStats.getFailscount());
@@ -101,24 +101,37 @@ public class PlayerStepPressureplate {
 
                             if (resultSet.next()) {
 
-                                //int mapRank = findMapRank(resultset);
+                                double acc = 0;
+                                double ppFromMap = 0;
+                                if(playerMap.getMapObject().getMapMetaData().getMapType().equals("speedrun")) {
+                                    acc = instance.performanceCalculator.calcSpeedAcc(playerObject);
+                                    ppFromMap = instance.performanceCalculator.calcSpeedPP(acc, diff);
+                                } else if (playerMap.getMapObject().getMapMetaData().getMapType().equals("hallway")) {
+                                    acc = instance.performanceCalculator.calcHallwayAcc(playerObject);
+                                    ppFromMap = instance.performanceCalculator.calcHallwayPP(acc, diff, cp);
+                                }
+                                findMapRank(playerObject, ppFromMap); //calcs maprank of player in that map
 
                                 //prints resultscreen
-                                showResultScreen(player,
+                                showResultScreen(
+                                    acc,
+                                    player,
                                     ppFromMap,
                                     resultSet.getDouble("ppcountc"),
                                     failsGained,
                                     resultSet.getInt("pfails"),
                                     timeGained,
                                     resultSet.getDouble("ptime"),
-                                    resultSet.getString("mapname"));
+                                    resultSet.getString("mapname"),
+                                    resultSet.getDouble("accuracy")
+                                    );
 
                                 if (ppFromMap > resultSet.getDouble("ppcountc")) {
 
                                     playerUUID = player.getUniqueId();
                                     mapID = playerMap.getMapObject().getID();
 
-                                    instance.mySQLManager.saveClearToDB(failsGained, timeGained, ppFromMap, playerUUID, mapID);
+                                    instance.mySQLManager.saveClearToDB(failsGained, timeGained, ppFromMap, playerUUID, mapID, acc);
                                     anncounceFastestTime(playerMap.getMapObject(), player, ppFromMap);
 
                                     if(ppFromMap > playerMap.getMapObject().getMapJudges().getHighestPP()) {
@@ -136,7 +149,6 @@ public class PlayerStepPressureplate {
                                     instance.scoreboardHelper.updatePPScoreOnScoreBoard(player, playerPlayStats.getPpcount());
 
                                     Timer timer = new Timer();
-
                                     timer.scheduleAtFixedRate(new TimerTask() {
 
                                         @Override
@@ -203,52 +215,44 @@ public class PlayerStepPressureplate {
 
     }
 
-    public double calculatePPFromMap(PlayerObject playerObject) {
+    public void showResultScreen(double acc, Player player, double ppGained, double ppOld,
+                                 int failsGained, int failsOld, double timeGained, double timeOld,
+                                 String mapname, double oldacc) {
 
-        PlayerMap playerMap = playerObject.getPlayerMap();
-        MapJudges mapJudges = playerMap.getMapObject().getMapJudges();
+            String prefixPP = "" + ChatColor.GRAY;
+            String prefixTime = "" + ChatColor.GRAY;
+            String prefixFails = "" + ChatColor.GRAY;
+            String prefixAcc = "" + ChatColor.GRAY;
+            String rank = Main.getInstance().performanceCalculator.calcMapRank(acc);
+            String mrankString = "-" + ChatColor.GRAY;
 
-        double minFails = mapJudges.getMinFails();
-        double minTime = mapJudges.getMinTime();
-        double difficulty = mapJudges.getDifficulty();
+            if(ppGained >= ppOld) prefixPP = "" + ChatColor.GREEN;
+            if(timeGained <= timeOld) prefixTime = "" + ChatColor.GREEN;
+            if(failsGained <= failsOld) prefixFails = "" + ChatColor.GREEN;
+            if(acc >= oldacc)  prefixAcc = "" + ChatColor.GREEN;
 
-        int failsGained = playerMap.getFailsrelative();
-        double timeGained = playerMap.getTimeRelative();
+            if(ppGained < ppOld) prefixPP = "" + ChatColor.RED;
+            if(timeGained > timeOld) prefixTime = "" + ChatColor.RED;
+            if(failsGained > failsOld) prefixFails = "" + ChatColor.RED;
+            if(acc < oldacc)  prefixAcc = "" + ChatColor.RED;
 
-        double timeMultiplier = ( (minTime+1) / (timeGained+1) );
-        double failsMultiplier = ( (minFails+1) / (failsGained+1) );
-
-        return (difficulty * (4*timeMultiplier) * (6*failsMultiplier))/10;
-
-    }
-
-    public void showResultScreen(Player player, double ppGained, double ppOld, int failsGained, int failsOld, double timeGained, double timeOld, String mapname) {
-
-        String prefixPP = "" + ChatColor.GRAY;
-        String prefixTime = "" + ChatColor.GRAY;
-        String prefixFails = "" + ChatColor.GRAY;
-
-        if(ppGained > ppOld) prefixPP = "" + ChatColor.GREEN;
-        if(timeGained < timeOld) prefixTime = "" + ChatColor.GREEN;
-        if(failsGained < failsOld) prefixFails = "" + ChatColor.GREEN;
-
-        if(ppGained < ppOld) prefixPP = "" + ChatColor.RED;
-        if(timeGained > timeOld) prefixTime = "" + ChatColor.RED;
-        if(failsGained > failsOld) prefixFails = "" + ChatColor.RED;
-
-        player.sendMessage(Message.MSG_RESULT_HEADER.getRawMessage().replace("{mapname}", mapname));
-        player.sendMessage(Message.MSG_RESULT_SCREEN.getRawMessage()
-        .replace("{newpp}", (prefixPP + String.format("%.2f",ppGained)))
-            .replace("{oldpp}", String.format("%.2f",ppOld))
-            .replace("{newTime}", (prefixTime + String.format("%.3f",timeGained)))
-            .replace("{oldTime}", String.format("%.3f",timeOld))
-            .replace("{newFails}", (prefixFails + failsGained))
-            .replace("{oldFails}", Integer.toString(failsOld)));
-        player.sendMessage(Message.MSG_RESUT_FOOTER.getRawMessage());
+            player.sendMessage(Message.MSG_RESULT_HEADER.getRawMessage().replace("{mapname}", mapname));
+            player.sendMessage(Message.MSG_RESULT_SCREEN.getRawMessage()
+                .replace("{performance}", rank)
+                .replace("{rank}", mrankString)
+                .replace("{newacc}", (prefixAcc + String.format("%.2f",acc)))
+                .replace("{oldacc}", String.format("%.2f", oldacc))
+                .replace("{newpp}", (prefixPP + String.format("%.2f",ppGained)))
+                .replace("{oldpp}", String.format("%.2f",ppOld))
+                .replace("{newTime}", (prefixTime + String.format("%.3f",timeGained)))
+                .replace("{oldTime}", String.format("%.3f",timeOld))
+                .replace("{newFails}", (prefixFails + failsGained))
+                .replace("{oldFails}", Integer.toString(failsOld)));
+            player.sendMessage(Message.MSG_RESUT_FOOTER.getRawMessage());
 
     }
 
-    public void findMapRank(ResultSet resultSet) {
+    public void findMapRank(PlayerObject playerObject, double ppGained) {
 
 
 

@@ -61,7 +61,7 @@ public class PlayerTag {
 						if(playerPlayStats.getPpcount() == 0) {
 
 									rank = "-";
-									rankNumber = 10000;
+									rankNumber = 1000000;
 
 						} else {
 
@@ -70,7 +70,7 @@ public class PlayerTag {
 
 						}
 
-						return new PlayerTag(ChatColor.RESET + "[" + rank + ChatColor.RESET + "] ", Integer.toString(rankNumber));
+						return new PlayerTag(ChatColor.RESET + "[" + rank + ChatColor.RESET + "] ", Integer.toString((100000 + rankNumber)));
 
 			}
 

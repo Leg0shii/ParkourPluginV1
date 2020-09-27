@@ -1,6 +1,9 @@
 package de.legoshi.parkourpluginv1.manager;
 
 import de.legoshi.parkourpluginv1.listener.*;
+import de.legoshi.parkourpluginv1.listener.cancellistener.PlayerChestClick;
+import de.legoshi.parkourpluginv1.listener.itemclicks.*;
+import org.bukkit.entity.Player;
 
 public class PlayerInteractManager {
 
@@ -11,6 +14,8 @@ public class PlayerInteractManager {
     PlayerCyanDyeClick playerCyanDyeClick;
     PlayerPickAxeClick playerPickAxeClick;
     PlayerChestClick playerChestClick;
+    PlayerTDClick playerTDClick;
+    PlayerGlowstoneClick playerGlowstoneClick;
 
     public PlayerInteractManager() {
 
@@ -21,8 +26,14 @@ public class PlayerInteractManager {
         playerCyanDyeClick = new PlayerCyanDyeClick();
         playerPickAxeClick = new PlayerPickAxeClick();
         playerChestClick = new PlayerChestClick();
+        playerTDClick = new PlayerTDClick();
+        playerGlowstoneClick = new PlayerGlowstoneClick();
 
     }
+
+    public PlayerGlowstoneClick getPlayerGlowstoneClick() { return playerGlowstoneClick; }
+
+    public PlayerTDClick getPlayerTDClick() { return playerTDClick; }
 
     public PlayerNetherStarClick getNetherStarClick() { return netherStarClick; }
 

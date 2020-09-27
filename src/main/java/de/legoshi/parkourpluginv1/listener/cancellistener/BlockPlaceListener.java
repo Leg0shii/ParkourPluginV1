@@ -1,7 +1,8 @@
-package de.legoshi.parkourpluginv1.listener;
+package de.legoshi.parkourpluginv1.listener.cancellistener;
 
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
+import de.legoshi.parkourpluginv1.util.playerinformation.PlayerStatus;
 import net.minecraft.server.v1_12_R1.Block;
 import net.minecraft.server.v1_12_R1.BlockEnderPortal;
 import org.bukkit.Material;
@@ -18,16 +19,13 @@ public class BlockPlaceListener implements Listener {
 
         Player player = event.getPlayer();
 
-        player.sendMessage(event.getBlockPlaced().getType().toString().equals("FIRE") + "");
-        player.sendMessage(event.getBlockPlaced().getType().toString());
-
         //no fire no tnt
         if( event.getBlockPlaced().getType().equals(Material.FIRE) ||
             event.getBlockPlaced().getType().equals(Material.TNT) ||
             event.getBlockPlaced().getType().equals(Material.BARRIER) ||
             event.getBlockPlaced().getType().equals(Material.COMMAND) ||
-            event.getBlockPlaced().getType().equals(Material.COMMAND_MINECART) ||
-            event.getBlockPlaced().getType().equals(Material.EXPLOSIVE_MINECART)) {
+            event.getBlockPlaced().getType().equals(Material.OBSERVER) ||
+            event.getBlockPlaced().getType().equals(Material.PISTON_STICKY_BASE)) {
 
             event.getPlayer().sendMessage("You cant place this Block.");
             event.setCancelled(true);
@@ -35,14 +33,14 @@ public class BlockPlaceListener implements Listener {
 
         }
 
-        if(!(player.getWorld().getName().equals("world")) || player.isOp()) {
+        PlayerStatus playerStatus = Main.getInstance().playerManager.playerObjectHashMap.get(player).getPlayerStatus();
 
-            event.setCancelled(false);
-            return;
+        if(player.getWorld().getName().equals("world") || !playerStatus.isBuildmode()) {
+
+            player.sendMessage("Not at spawn!");
+            event.setCancelled(true);
 
         }
-
-        event.setCancelled(true);
 
     }
 

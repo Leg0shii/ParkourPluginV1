@@ -12,6 +12,7 @@ import de.themoep.inventorygui.*;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.io.File;
 import java.sql.ResultSet;
@@ -49,20 +50,23 @@ public class MapSelectGUI {
 									public void accept(ResultSet resultSet) {
 
 												try {
-															resultSet.last();
-															gui.addElement(upElement(search));
-															gui.addElement(downElement(search, resultSet.getRow()));
-															player.sendMessage("" + resultSet.getRow());
-															resultSet.beforeFirst();
+															if(resultSet.next()) {
 
-															while (resultSet.next()) {
+																		resultSet.last();
+																		gui.addElement(upElement(search));
+																		gui.addElement(downElement(search, resultSet.getRow()));
+																		resultSet.beforeFirst();
 
-																		group.addElement(mapElements(resultSet)); //adding Elements to the Selector
+																		while (resultSet.next()) {
+
+																					group.addElement(mapElements(resultSet)); //adding Elements to the Selector
+
+																		}
+
+																		gui.addElement(group);
+																		gui.show(player);
 
 															}
-
-															gui.addElement(group);
-															gui.show(player);
 
 												} catch (SQLException throwables) {
 															throwables.printStackTrace();
@@ -125,6 +129,10 @@ public class MapSelectGUI {
 																							instance.mapObjectMananger.firstPlayerMapLoad(player, mapObject); //adding mapattempt into db
 																							instance.mapObjectMananger.loadHighestPP(player, mapObject); //loading highest ppPlay in mabobject
 
+																							PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
+																							instance.scoreboardHelper.initializeInMapSB(playerObject);
+																							instance.tabTagCreator.updateRank(player);
+
 																				}
 																	});
 
@@ -142,7 +150,8 @@ public class MapSelectGUI {
 										ChatColor.RESET + ChatColor.GRAY + "MapID: " + ChatColor.GOLD + mapId +
 										"\n\n" +
 										ChatColor.RESET + ChatColor.GRAY + ChatColor.GRAY + "------[ Map-Judge ]------\n" +
-										ChatColor.RESET + ChatColor.GRAY + "Min-Fails: " + ChatColor.GOLD + mapJudges.getMinFails() + "\n" +
+										ChatColor.RESET + ChatColor.GRAY + "Precision: " + ChatColor.GOLD + mapJudges.getPrecision() + "\n" +
+										ChatColor.RESET + ChatColor.GRAY + "Min-Fails: " + ChatColor.GOLD + instance.performanceCalculator.calcMinFails(mapObject) + "\n" +
 										ChatColor.RESET + ChatColor.GRAY + "Min-Time: " + ChatColor.GOLD + mapJudges.getMinTime()
 						);
 
@@ -227,24 +236,55 @@ public class MapSelectGUI {
 									@Override
 									public void run() {
 
+												//outputs the time and current pp of player over hotbar
+												double acc = 0.00;
+												double currentPP = 0.00;
+
+												double diff = playerObject.getPlayerMap().getMapObject().getMapJudges().getDifficulty();
+												double cp = playerObject.getPlayerMap().getMapObject().getMapJudges().getCpcount();
+
+												if(playerMap.getMapObject().getMapMetaData().getMapType().equals("speedrun")) {
+															acc = instance.performanceCalculator.calcSpeedAcc(playerObject);
+															currentPP = instance.performanceCalculator.calcSpeedPP(acc, diff);
+												} else if (playerMap.getMapObject().getMapMetaData().getMapType().equals("hallway")) {
+															acc = instance.performanceCalculator.calcHallwayAcc(playerObject);
+															currentPP = instance.performanceCalculator.calcHallwayPP(acc, diff, cp);
+												}
+
+												Scoreboard scoreboard = player.getScoreboard();
+
 												if (!(playerStatus.isJumpmode())) {
 
 															timer.cancel();
+															//scoreboard.getTeam("ppscoremap").setPrefix(ChatColor.WHITE + "0 pp");
+															//scoreboard.getTeam("acc").setPrefix("" + ChatColor.WHITE + "60.0%");
 
 												}
 
-												//outputs the time and current pp of player over hotbar
-												double currentPP = instance.playerStepPressureplate.calculatePPFromMap(playerObject);
 												double currentTime = playerMap.getTimeRelative();
+												int currentFails = playerMap.getFailsrelative();
 
-												instance.titelManager.sendActionBar(player,
-														ChatColor.BLUE + "Time: " + ChatColor.GRAY + String.format("%.3f", currentTime) + ChatColor.BLUE + " || Current PP: " + ChatColor.GRAY + String.format("%.2f", currentPP));
+												if(acc > 60 && playerStatus.isJumpmode()) {
+															scoreboard.getTeam("ppscoremap").setPrefix("" + ChatColor.WHITE + String.format("%.2f", currentPP) + "pp");
+															scoreboard.getTeam("acc").setPrefix("" + ChatColor.WHITE + String.format("%.2f", acc) + "%");
+															scoreboard.getTeam("time").setPrefix("" + ChatColor.WHITE + String.format("%.3f", currentTime) + "s ");
+															scoreboard.getTeam("time").setSuffix(ChatColor.GRAY + " (" +  playerMap.getMapObject().getMapJudges().getMinTime() + "s)");
+															scoreboard.getTeam("mapfail").setPrefix("" + ChatColor.WHITE + currentFails +
+																	ChatColor.GRAY + " (" +instance.performanceCalculator.calcMinFails(playerMap.getMapObject()) + ")");
+												} else if (playerStatus.isJumpmode()) {
+															scoreboard.getTeam("ppscoremap").setPrefix("" + ChatColor.WHITE + "0 pp");
+															scoreboard.getTeam("acc").setPrefix("" + ChatColor.WHITE + "60.00 %");
+															scoreboard.getTeam("time").setPrefix("" + ChatColor.WHITE + String.format("%.3f", currentTime) + "s ");
+															scoreboard.getTeam("time").setSuffix(ChatColor.GRAY + " (" + instance.performanceCalculator.calcMinFails(playerMap.getMapObject()) + "s)");
+															scoreboard.getTeam("mapfail").setPrefix("" + ChatColor.WHITE + currentFails +
+																	ChatColor.GRAY + " (" + playerMap.getMapObject().getMapJudges().getMinFails() + ")");
+												}
 
 												playerMap.setTimeRelative(playerMap.getTimeRelative() + 0.05);
 
 									}
 
-						}, 0, 50);
+						}, 200, 50);
 
 						return timer;
 

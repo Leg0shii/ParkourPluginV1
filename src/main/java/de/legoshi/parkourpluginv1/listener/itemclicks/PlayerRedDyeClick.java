@@ -1,4 +1,4 @@
-package de.legoshi.parkourpluginv1.listener;
+package de.legoshi.parkourpluginv1.listener.itemclicks;
 
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerMap;
@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -46,7 +47,6 @@ public class PlayerRedDyeClick {
 
                     playerMap.setFailsrelative(playerMap.getFailsrelative() + 1);
                     player.teleport(instance.checkpointManager.checkpointObjectHashMap.get(player).getLocation());
-                    instance.scoreboardHelper.updateFailsOnScoreBoard(player, (playerObject.getPlayerPlayStats().getFailscount()+playerMap.getFailsrelative()));
                     timerRedDyeClick(player);
 
                 }

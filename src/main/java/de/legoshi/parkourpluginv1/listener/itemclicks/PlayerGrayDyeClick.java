@@ -1,4 +1,4 @@
-package de.legoshi.parkourpluginv1.listener;
+package de.legoshi.parkourpluginv1.listener.itemclicks;
 
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.FW;
@@ -44,6 +44,9 @@ public class PlayerGrayDyeClick {
                 playerMap.setFailsrelative(0);
                 playerStatus.setJumpmode(false);
                 playerStatus.setBuildmode(false);
+                instance.scoreboardHelper.initializeScoreboard(player);
+                instance.scoreboardHelper.setSpawnScoreboardValue(playerObject);
+                instance.tabTagCreator.updateRank(player);
 
                 World playerWorld = player.getWorld();
                 player.teleport(instance.spawn);
@@ -74,7 +77,7 @@ public class PlayerGrayDyeClick {
 
                 FW fw = new FW("./ParkourBuild", player.getUniqueId().toString() + ".yml");
 
-                if(fw.getInt("mapname") == Integer.parseInt(player.getWorld().getName())) {
+                if(fw.getInt("mapname") == Integer.parseInt(playerWorld.getName())) {
 
                     instance.worldSaver.moveAllPlayer(playerWorld);
                     instance.worldSaver.zipWorld(playerWorld);

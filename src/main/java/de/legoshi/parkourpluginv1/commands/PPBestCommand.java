@@ -5,6 +5,7 @@ import de.legoshi.parkourpluginv1.util.AsyncMySQL;
 import de.legoshi.parkourpluginv1.util.ChatColorHelper;
 import de.legoshi.parkourpluginv1.util.Message;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -97,8 +98,12 @@ public class PPBestCommand implements CommandExecutor {
                                 fails = resultSet.getInt("pfails");
                                 ppcount = resultSet.getDouble("ppcountc");
                                 time = resultSet.getDouble("ptime");
+                                double accuracy = resultSet.getDouble("accuracy");
+                                String mapRank = instance.performanceCalculator.calcMapRank(accuracy);
 
                                 player.sendMessage(ChatColorHelper.chat(Message.MSG_BEST_FORMAT.getRawMessage()
+                                    .replace("{maprank}", mapRank)
+                                    .replace("{acc}", String.format("%.2f", accuracy))
                                     .replace("{num}", Integer.toString(((pageAmount - 1) * 10) + index))
                                     .replace("{map}", instance.playerTag.fillSpaces(16, mapName + ":"))
                                     .replace("{time}", String.format("%.3f", time))
