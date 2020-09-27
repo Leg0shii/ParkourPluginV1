@@ -87,7 +87,9 @@ public class MapObjectMananger {
 								0,
 								resultSet.getDouble("difficulty"),
 								resultSet.getInt("minFails"),
-								resultSet.getDouble("minTime"));
+								resultSet.getDouble("minTime"),
+								resultSet.getDouble("prec"),
+								resultSet.getInt("cpcount"));
 						MapMetaData mapMetaData = new MapMetaData(
 								mapSpawn,
 								resultSet.getString("mapstatus"),

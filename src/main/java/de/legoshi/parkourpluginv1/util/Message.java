@@ -47,7 +47,7 @@ public enum Message {
     MSG_BEST_HEADER(
             "\n&8&m                                            " +
                     "&r\n &7&l{player}'s Top Scores"),
-    MSG_BEST_FORMAT(" {num}. {map} &a{time}&fs - &c{fails} &ffails - &6{pp}&fpp"),
+    MSG_BEST_FORMAT(" {num}. {map} {maprank} &f{acc}%: &a{time}&fs - &c{fails} &ffails - &6{pp}&fpp"),
     MSG_BEST_FOOTER("&8&m                                            "),
 
     // maptop command
@@ -57,7 +57,7 @@ public enum Message {
     MSG_MAPTOP_FAILS("&c{num} &ffails"),
     MSG_MAPTOP_PP("&6{num}&fpp"),
     MSG_MAPTOP_TIMES("&a{num}&fs"),
-    MSG_MAPTOP_FORMAT(" {num}. {name} {amount}"),
+    MSG_MAPTOP_FORMAT(" {num}. {name} {maprank} &f{acc}%: &a{time}&fs - &c{fails} &ffails - &6{pp}&fpp"),
     MSG_MAPTOP_FOOTER("&8&m                                            "),
 
     //announcement
@@ -74,7 +74,7 @@ public enum Message {
     MSG_HELPHEADER("\n" + ChatColor.RESET + ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH + "                                            " +
         "\n" + ChatColor.GRAY + ChatColor.BOLD + " Help"),
     MSG_HELPFOOTER("" + ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH + "                                            "),
-    MSG_HELPMAPTOP(" /pptopmap <mapID> <fails/pp/time> [page] - Shows top plays of a selected Map."),
+    MSG_HELPMAPTOP(" /pptopmap <mapID> pp [page] - Shows top plays of a selected Map."),
     MSG_HELPPBESTPP(" /ppbest <name> [page] - Shows best PP-Scores."),
     MSG_HELPPPSTATS(" /ppstats - Shows your personal Serverstats."),
     MSG_HELPPPTOP("\n /pptop [page] - Shows the global Leaderboard for total PP."),
@@ -120,9 +120,11 @@ public enum Message {
 
     //resultscreen
     MSG_RESULT_HEADER("" + ChatColor.BOLD + ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH + "                                            "
-    + ChatColor.RESET + ChatColor.GRAY + ChatColor.BOLD + "\n You completed the course " + ChatColor.WHITE + "{mapname}!"),
+    + ChatColor.RESET + ChatColor.GRAY + ChatColor.BOLD + "\n You completed the course " + ChatColor.WHITE + "{mapname}!\n"),
     MSG_RESULT_SCREEN(
-        "\n" + ChatColor.RESET + "PP-Score:  {newpp}pp " + ChatColor.GRAY + " ({oldpp}pp) \n"
+          ChatColor.RESET + "Rank: {performance} "+ChatColor.GRAY +"(#{rank})\n"
+        + ChatColor.RESET + "Accuracy:  {newacc}% " + ChatColor.GRAY + " ({oldacc}%) \n"
+        + ChatColor.RESET + "PP-Score:  {newpp}pp " + ChatColor.GRAY + " ({oldpp}pp) \n"
         + ChatColor.RESET + "Time:  {newTime}s " + ChatColor.GRAY + " ({oldTime}s) \n"
         + ChatColor.RESET + "Fails:  {newFails} " + ChatColor.GRAY + " ({oldFails})"),
     MSG_RESUT_FOOTER("" + ChatColor.BOLD + ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH + "                                            ");

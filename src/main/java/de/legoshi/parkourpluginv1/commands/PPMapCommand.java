@@ -33,15 +33,14 @@ public class PPMapCommand implements CommandExecutor {
 						String playermapidS = fw.getString("mapname");
 						int playermapid;
 
-						if(args.length == 1) {
+						if(!(args.length == 4)) {
 
-									mapidS = playermapidS;
-
-						} else {
-
-									mapidS = args[1];
+									player.sendMessage(Message.ERR_PPMAP.getMessage());
+									return false;
 
 						}
+
+						mapidS = args[1];
 
 						try {
 

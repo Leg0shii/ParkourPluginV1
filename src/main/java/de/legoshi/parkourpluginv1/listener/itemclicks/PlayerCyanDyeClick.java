@@ -1,4 +1,4 @@
-package de.legoshi.parkourpluginv1.listener;
+package de.legoshi.parkourpluginv1.listener.itemclicks;
 
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.Message;
@@ -47,6 +47,7 @@ public class PlayerCyanDyeClick {
             playerMap.setTimeRelative(0);
 
             //teleports player to start
+            instance.checkpointManager.checkpointObjectHashMap.get(player).setLocation(playerMap.getMapObject().getMapMetaData().getSpawn());
             player.teleport(playerMap.getMapObject().getMapMetaData().getSpawn());
             player.sendMessage(Message.Prefix.getRawMessage() + "Restarted");
 

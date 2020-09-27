@@ -6,6 +6,7 @@ import de.legoshi.parkourpluginv1.gui.MapCreateGUI;
 import de.legoshi.parkourpluginv1.gui.MapEditGUI;
 import de.legoshi.parkourpluginv1.gui.MapSelectGUI;
 import de.legoshi.parkourpluginv1.listener.*;
+import de.legoshi.parkourpluginv1.listener.cancellistener.*;
 import de.legoshi.parkourpluginv1.manager.*;
 import de.legoshi.parkourpluginv1.util.*;
 import org.bukkit.Bukkit;
@@ -39,6 +40,7 @@ public final class Main extends JavaPlugin {
     public MapSelectGUI mapSelectGUI;
     public MapCreateGUI buildCreateGUI;
     public MapEditGUI mapEditGUI;
+    public PerformanceCalculator performanceCalculator;
 
     public Location spawn;
     public String spawnName;
@@ -87,7 +89,6 @@ public final class Main extends JavaPlugin {
 
     private void CommandRegistration() {
 
-        getCommand("createRankedMap").setExecutor(new CreateRankedMap());
         getCommand("ppstats").setExecutor(new PPStatsCommand());
         getCommand("pptop").setExecutor(new PPTopCommand());
         getCommand("pptopmap").setExecutor(new MapTopCommand());
@@ -103,12 +104,14 @@ public final class Main extends JavaPlugin {
     private void ListenerRegistration() {
 
         PluginManager pm = Bukkit.getPluginManager();
+        pm.registerEvents(new EntitySpawnListener(), this);
         pm.registerEvents(new BlockPlaceListener(), this);
         pm.registerEvents(new BlockDestroyListener(), this);
         pm.registerEvents(new RedstoneListener(), this);
         pm.registerEvents(new PortalCreateListener(), this);
         pm.registerEvents(new ItemDropListener(), this);
         pm.registerEvents(new PlayerDamageListener(), this);
+        pm.registerEvents(new MinecartListener(), this);
 
         pm.registerEvents(new JoinListener(), this);
         pm.registerEvents(new QuitListener(), this);
@@ -144,6 +147,7 @@ public final class Main extends JavaPlugin {
         mapSelectGUI = new MapSelectGUI();
         mapEditGUI = new MapEditGUI();
         buildCreateGUI = new MapCreateGUI();
+        performanceCalculator = new PerformanceCalculator();
         spawn = new Location(Bukkit.getWorld("world"), -619, 5, 10, -160, 5);
         standardSpawn = new Location(null, 8.5, 4, 8.5);
         spawnName = "world";

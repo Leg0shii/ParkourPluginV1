@@ -72,8 +72,8 @@ public class MapCreateGUI {
 																				double y = spawn.getY();
 																				double z = spawn.getZ();
 
-																				mySQL.update("INSERT INTO maps (mapname, mapstatus, builder, maptype, difficulty, minfails, mintime, x, y, z, world) VALUES " +
-																						"('-','wip' ,'" + buildername + "' ,'' ,0 ,0 ,0 ,"+x+" ,"+y+" ,"+z+" , '" + worldName + "');");
+																				mySQL.update("INSERT INTO maps (mapname, mapstatus, builder, maptype, prec, cpcount, difficulty, minfails, mintime, x, y, z, world) VALUES " +
+																						"('-','wip' ,'" + buildername + "' ,'',0 ,0 ,0 ,0 ,0 ,"+x+" ,"+y+" ,"+z+" , '" + worldName + "');");
 
 																				instance.checkpointManager.checkpointObjectHashMap.get(player).setLocation(spawn); //sets cp
 
@@ -94,8 +94,7 @@ public class MapCreateGUI {
 
 								},
 
-								"Empty Slot",
-								"Click to generate a new Buildworld!"
+								"" + ChatColor.RESET + ChatColor.BOLD + "Create Buildworld"
 						));
 
 						return gui;

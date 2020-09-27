@@ -40,8 +40,8 @@ public class MapEditGUI {
 											player.closeInventory();
 											return true;
 
-								}, "MapName",
-								"Click here to change the Mapname!"));
+								}, "" + ChatColor.RESET + ChatColor.BOLD + "Change Mapname"
+						));
 
 						guiInMap.addElement(new StaticGuiElement('t',
 								new ItemStack(Material.DIAMOND_SWORD),
@@ -52,8 +52,8 @@ public class MapEditGUI {
 											guiUploadMap(player).show(player);
 											return true;
 
-								}, "Upload",
-								"Upload your course by clicking here!"));
+								}, "" + ChatColor.RESET + ChatColor.BOLD + "Upload"
+						));
 
 						instance.mySQL.query("SELECT * FROM maps WHERE mapid = " + Integer.parseInt(fw.getString("mapname")) + ";", new Consumer<ResultSet>() {
 
@@ -92,9 +92,9 @@ public class MapEditGUI {
 																	instance.inventory.builderInventory(player);
 																	return true;
 
-														}, "" + mapObject.getMapMetaData().getName(),
-														"Mapid: " + mapObject.getID(),
-														"Join your course by clicking here!"));
+														}, "" + ChatColor.RESET + ChatColor.BOLD + " " + mapObject.getMapMetaData().getName(),
+														ChatColor.RESET + "Mapid: " + mapObject.getID(),
+														ChatColor.RESET + "Join your course by clicking here!"));
 
 												guiInMap.show(player);
 
@@ -118,7 +118,7 @@ public class MapEditGUI {
 						InventoryGui gui = new InventoryGui(instance, player, "Upload?", guiSetup);
 
 						gui.addElement(new StaticGuiElement('g',
-								new ItemStack(Material.WOOL, 1, (short) 3),
+								new ItemStack(Material.WOOL, 1, (short) 13),
 								click -> {
 
 											player.closeInventory();
@@ -138,8 +138,7 @@ public class MapEditGUI {
 											player.sendMessage("Successfully uploaded Map!");
 											return true;
 
-								}, "Uploading Map?",
-								"Upload now!"
+								}, "" + ChatColor.RESET + ChatColor.GREEN + ChatColor.BOLD + "Upload now!"
 						));
 
 						gui.addElement(new StaticGuiElement('r',
@@ -150,8 +149,7 @@ public class MapEditGUI {
 											player.closeInventory();
 											return true;
 
-								}, "Uploading Map?",
-								"Upload now!"
+								}, "" + ChatColor.RESET + ChatColor.RED + ChatColor.BOLD + "Dont Upload!"
 						));
 
 						return gui;

@@ -1,4 +1,4 @@
-package de.legoshi.parkourpluginv1.listener;
+package de.legoshi.parkourpluginv1.listener.cancellistener;
 
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
@@ -16,13 +16,12 @@ public class BlockDestroyListener implements Listener {
 
         PlayerObject playerObject = Main.getInstance().playerManager.playerObjectHashMap.get(player);
 
-        if(player.hasPermission("permission.destroy") || playerObject.getPlayerStatus().isBuildmode()) {
+        if(player.getWorld().getName().equals("world") || !playerObject.getPlayerStatus().isBuildmode()) {
 
-            return;
+            player.sendMessage("Not at spawn!");
+            event.setCancelled(true);
 
         }
-
-        event.setCancelled(true);
 
     }
 

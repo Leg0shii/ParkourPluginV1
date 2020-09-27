@@ -20,9 +20,11 @@ public class Inventory {
         ItemStack redDye;
         ItemStack grayDye;
         ItemStack purpleDye;
+        ItemStack glowStone;
         ItemMeta metaRedDye;
         ItemMeta metaGrayDye;
         ItemMeta metaPurpleDye;
+        ItemMeta metaGlowStone;
 
         redDye = new ItemStack(Material.INK_SACK, 1, (short) 1);
         metaRedDye = redDye.getItemMeta();
@@ -39,10 +41,16 @@ public class Inventory {
         metaGrayDye.setDisplayName(ChatColor.RESET + "Back to Spawn");
         grayDye.setItemMeta(metaGrayDye);
 
+        glowStone = new ItemStack(Material.GLOWSTONE_DUST, 1);
+        metaGlowStone = glowStone.getItemMeta();
+        metaGlowStone.setDisplayName(ChatColor.RESET + "Player Invisible");
+        glowStone.setItemMeta(metaGlowStone);
+
 
         player.getInventory().setItem(0, redDye);
         player.getInventory().setItem(2, purpleDye);
         player.getInventory().setItem(8, grayDye);
+        player.getInventory().setItem(6, glowStone);
 
         player.setGameMode(GameMode.ADVENTURE);
 
@@ -57,8 +65,10 @@ public class Inventory {
 
         ItemStack netherStar;
         ItemStack diamondPickaxe;
+        ItemStack glowStone;
         ItemMeta diamondPickaxeMeta;
         ItemMeta netherStarMeta;
+        ItemMeta metaGlowStone;
 
         netherStar = new ItemStack(Material.NETHER_STAR, 1);
         netherStarMeta = netherStar.getItemMeta();
@@ -70,7 +80,13 @@ public class Inventory {
         diamondPickaxeMeta.setDisplayName(ChatColor.RESET + "Building");
         diamondPickaxe.setItemMeta(diamondPickaxeMeta);
 
+        glowStone = new ItemStack(Material.GLOWSTONE_DUST, 1);
+        metaGlowStone = glowStone.getItemMeta();
+        metaGlowStone.setDisplayName(ChatColor.RESET + "Player Invisible");
+        glowStone.setItemMeta(metaGlowStone);
+
         player.getInventory().setItem(0, netherStar);
+        player.getInventory().setItem(6, glowStone);
 
         //removes potion effect
         for(PotionEffect potionEffect : player.getActivePotionEffects()) {

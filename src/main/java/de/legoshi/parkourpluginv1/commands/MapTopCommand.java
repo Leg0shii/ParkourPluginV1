@@ -81,7 +81,7 @@ public class MapTopCommand implements CommandExecutor {
         Main instance = Main.getInstance();
         AsyncMySQL mySQL = instance.mySQL;
 
-        mySQL.query("SELECT maps.mapname, clears." + object + ", clears.cleared, clears.playername FROM clears, maps " +
+        mySQL.query("SELECT maps.mapname, clears.pfails, clears.ptime, clears.ppcountc, clears.cleared, clears.playername, clears.accuracy FROM clears, maps " +
             "WHERE clears.mapid = maps.mapid AND clears.mapid = "+ id +" AND clears.cleared = 1 ORDER BY clears."+ object + " " + sort +";", new Consumer<ResultSet>() {
             @Override
             public void accept(ResultSet resultSet) {
@@ -134,8 +134,6 @@ public class MapTopCommand implements CommandExecutor {
                     resultSet.absolute(((pageAmount-1)*10));
                     if(resultSet.next()) {
 
-                        String value = "";
-
                         player.sendMessage(ChatColorHelper.chat(Message.MSG_MAPTOP_HEADER.getRawMessage()
                             .replace("{map}", resultSet.getString("mapname"))
                             .replace("{type}", type)));
@@ -146,18 +144,20 @@ public class MapTopCommand implements CommandExecutor {
                                 if(resultSet.getBoolean("cleared")) {
 
                                     //parses numbers with correct rounding
-                                    if (type.equals("Fails")) {
-                                        value = String.valueOf(resultSet.getInt(object));
-                                    } else if (type.equals("Times")) {
-                                        value = String.format("%.3f", resultSet.getDouble(object));
-                                    } else if (type.equals("Performance")) {
-                                        value = String.format("%.2f", resultSet.getDouble(object)) + "";
-                                    }
+                                    String valueFail = String.valueOf(resultSet.getInt("pfails"));
+                                    String valueTime = String.format("%.3f", resultSet.getDouble("ptime"));
+                                    String valuePP = String.format("%.2f", resultSet.getDouble("ppcountc")) + "";
+                                    double acc = resultSet.getDouble("accuracy");
+                                    String maprank = instance.performanceCalculator.calcMapRank(acc);
 
                                     player.sendMessage(ChatColorHelper.chat(Message.MSG_MAPTOP_FORMAT.getRawMessage()
                                         .replace("{num}", String.valueOf(index))
+                                        .replace("{maprank}", maprank)
+                                        .replace("{acc}", String.format("%.2f", acc))
+                                        .replace("{time}", valueTime)
+                                        .replace("{fails}", valueFail)
                                         .replace("{name}", instance.playerTag.fillSpaces(17, resultSet.getString("playername") + ":"))
-                                        .replace("{amount}", format.replace("{num}", value))));
+                                        .replace("{pp}", valuePP)));
 
                                     index++;
 
