@@ -16,6 +16,8 @@ public class PlayerInteractManager {
     PlayerChestClick playerChestClick;
     PlayerTDClick playerTDClick;
     PlayerGlowstoneClick playerGlowstoneClick;
+    PlayerWoolClick playerWoolClick;
+    PlayerFarmlandStep playerFarmlandStep;
 
     public PlayerInteractManager() {
 
@@ -28,8 +30,14 @@ public class PlayerInteractManager {
         playerChestClick = new PlayerChestClick();
         playerTDClick = new PlayerTDClick();
         playerGlowstoneClick = new PlayerGlowstoneClick();
+        playerWoolClick = new PlayerWoolClick();
+        playerFarmlandStep = new PlayerFarmlandStep();
 
     }
+
+    public PlayerFarmlandStep getPlayerFarmlandStep() {return playerFarmlandStep; }
+
+    public PlayerWoolClick getPlayerWoolClick() { return playerWoolClick; }
 
     public PlayerGlowstoneClick getPlayerGlowstoneClick() { return playerGlowstoneClick; }
 

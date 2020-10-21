@@ -1,8 +1,11 @@
 package de.legoshi.parkourpluginv1.util;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +28,34 @@ public class FW {
 
         c.set(ValuePath, Value);
         return this;
+
+    }
+
+    public FW setLocation(Location location, int num) {
+
+        c.set(num + ".world", location.getWorld().getName());
+        c.set(num + ".x", location.getX());
+        c.set(num + ".y", location.getY());
+        c.set(num + ".z", location.getZ());
+        c.set(num + ".yaw", location.getYaw());
+        c.set(num + ".pitch", location.getPitch());
+
+        return this;
+
+    }
+
+    public Location getLocation(Player player, int pos) {
+
+        World world = Bukkit.getServer().getWorld(c.getString(pos + ".world") + "_" + player.getName());
+        double x = c.getDouble(pos + ".x");
+        double y = c.getDouble(pos + ".y");
+        double z = c.getDouble(pos + ".z");
+        float yaw = (float) c.getDouble(pos + ".yaw");
+        float pitch = (float) c.getDouble(pos + ".pitch");
+
+        Location location = new Location(world, x, y, z, yaw, pitch);
+
+        return location;
 
     }
 

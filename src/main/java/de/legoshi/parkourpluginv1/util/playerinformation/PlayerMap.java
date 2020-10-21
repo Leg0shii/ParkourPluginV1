@@ -9,6 +9,7 @@ public class PlayerMap {
 			private MapObject mapObject;
 			private double timeRelative;
 			private int failsrelative;
+			private double ppcountRelative;
 			private ArrayList<MapObject> mapObjectArrayList;
 
 			public PlayerMap() {
@@ -17,8 +18,13 @@ public class PlayerMap {
 						this.timeRelative = 0;
 						this.failsrelative = 0;
 						this.mapObjectArrayList = new ArrayList<>();
+						this.ppcountRelative = 100000000;
 
 			}
+
+			public double getPpcountRelative() { return ppcountRelative; }
+
+			public void setPpcountRelative(double ppcountRelative) { this.ppcountRelative = ppcountRelative; }
 
 			public ArrayList<MapObject> getMapObjectArrayList() { return mapObjectArrayList; }
 

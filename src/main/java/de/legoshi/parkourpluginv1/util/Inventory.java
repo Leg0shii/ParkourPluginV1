@@ -1,5 +1,6 @@
 package de.legoshi.parkourpluginv1.util;
 
+import de.legoshi.parkourpluginv1.Main;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -7,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class Inventory {
 
@@ -16,44 +18,19 @@ public class Inventory {
     public void createParkourInventory(Player player) {
 
         player.getInventory().clear();
+        Main instance = Main.getInstance();
 
-        ItemStack redDye;
-        ItemStack grayDye;
-        ItemStack purpleDye;
-        ItemStack glowStone;
-        ItemMeta metaRedDye;
-        ItemMeta metaGrayDye;
-        ItemMeta metaPurpleDye;
-        ItemMeta metaGlowStone;
-
-        redDye = new ItemStack(Material.INK_SACK, 1, (short) 1);
-        metaRedDye = redDye.getItemMeta();
-        metaRedDye.setDisplayName(ChatColor.RESET + "Checkpoint");
-        redDye.setItemMeta(metaRedDye);
-
-        purpleDye = new ItemStack(Material.INK_SACK, 1, (short) 6);
-        metaPurpleDye = purpleDye.getItemMeta();
-        metaPurpleDye.setDisplayName(ChatColor.RESET + "Restart");
-        purpleDye.setItemMeta(metaPurpleDye);
-
-        grayDye = new ItemStack(Material.INK_SACK, 1, (short) 5);
-        metaGrayDye = grayDye.getItemMeta();
-        metaGrayDye.setDisplayName(ChatColor.RESET + "Back to Spawn");
-        grayDye.setItemMeta(metaGrayDye);
-
-        glowStone = new ItemStack(Material.GLOWSTONE_DUST, 1);
-        metaGlowStone = glowStone.getItemMeta();
-        metaGlowStone.setDisplayName(ChatColor.RESET + "Player Invisible");
-        glowStone.setItemMeta(metaGlowStone);
-
+        ItemStack redDye = instance.itemCreator.createItem(Material.INK_SACK, 1, ChatColor.RESET + "Checkpoint", (short) 1);
+        ItemStack grayDye = instance.itemCreator.createItem(Material.INK_SACK, 1, ChatColor.RESET + "Restart", (short) 6);
+        ItemStack purpleDye = instance.itemCreator.createItem(Material.INK_SACK, 1, ChatColor.RESET + "Back to Spawn", (short) 5);
+        ItemStack glowStone = instance.itemCreator.createItem(Material.GLOWSTONE_DUST, 1, ChatColor.RESET + "Player Invisible");
 
         player.getInventory().setItem(0, redDye);
-        player.getInventory().setItem(2, purpleDye);
-        player.getInventory().setItem(8, grayDye);
+        player.getInventory().setItem(8, purpleDye);
+        player.getInventory().setItem(2, grayDye);
         player.getInventory().setItem(6, glowStone);
 
         player.setGameMode(GameMode.ADVENTURE);
-
         player.updateInventory();
 
     }
@@ -62,28 +39,11 @@ public class Inventory {
     public void createSpawnInventory(Player player) {
 
         player.getInventory().clear();
+        Main instance = Main.getInstance();
 
-        ItemStack netherStar;
-        ItemStack diamondPickaxe;
-        ItemStack glowStone;
-        ItemMeta diamondPickaxeMeta;
-        ItemMeta netherStarMeta;
-        ItemMeta metaGlowStone;
-
-        netherStar = new ItemStack(Material.NETHER_STAR, 1);
-        netherStarMeta = netherStar.getItemMeta();
-        netherStarMeta.setDisplayName(ChatColor.RESET + "Map Selector");
-        netherStar.setItemMeta(netherStarMeta);
-
-        diamondPickaxe = new ItemStack(Material.DIAMOND_PICKAXE, 1);
-        diamondPickaxeMeta = diamondPickaxe.getItemMeta();
-        diamondPickaxeMeta.setDisplayName(ChatColor.RESET + "Building");
-        diamondPickaxe.setItemMeta(diamondPickaxeMeta);
-
-        glowStone = new ItemStack(Material.GLOWSTONE_DUST, 1);
-        metaGlowStone = glowStone.getItemMeta();
-        metaGlowStone.setDisplayName(ChatColor.RESET + "Player Invisible");
-        glowStone.setItemMeta(metaGlowStone);
+        ItemStack netherStar = instance.itemCreator.createItem(Material.NETHER_STAR, 1, ChatColor.RESET + "Map Selector");
+        ItemStack diamondPickaxe = instance.itemCreator.createItem(Material.DIAMOND_PICKAXE, 1, ChatColor.RESET + "Building");
+        ItemStack glowStone = instance.itemCreator.createItem(Material.GLOWSTONE_DUST, 1, ChatColor.RESET + "Player Invisible");
 
         player.getInventory().setItem(0, netherStar);
         player.getInventory().setItem(6, glowStone);
@@ -91,14 +51,14 @@ public class Inventory {
         //removes potion effect
         for(PotionEffect potionEffect : player.getActivePotionEffects()) {
 
-            player.removePotionEffect(potionEffect.getType());
+            if(!potionEffect.getType().equals(PotionEffectType.NIGHT_VISION)) {
+                player.removePotionEffect(potionEffect.getType());
+            }
 
         }
 
         player.getInventory().setItem(4, diamondPickaxe);
-
         player.setGameMode(GameMode.ADVENTURE);
-
         player.updateInventory();
 
     }
@@ -106,27 +66,30 @@ public class Inventory {
     public void builderInventory(Player player) {
 
         player.getInventory().clear();
+        Main instance = Main.getInstance();
 
-        ItemStack grayDye;
-        ItemStack redDye;
-        ItemMeta metaGrayDye;
-        ItemMeta metaRedDye;
-
-        grayDye = new ItemStack(Material.INK_SACK, 1, (short) 5);
-        metaGrayDye = grayDye.getItemMeta();
-        metaGrayDye.setDisplayName(ChatColor.RESET + "Back to Spawn");
-        grayDye.setItemMeta(metaGrayDye);
-
-        redDye = new ItemStack(Material.INK_SACK, 1, (short) 1);
-        metaRedDye = redDye.getItemMeta();
-        metaRedDye.setDisplayName(ChatColor.RESET + "Checkpoint");
-        redDye.setItemMeta(metaRedDye);
+        ItemStack redDye = instance.itemCreator.createItem(Material.INK_SACK, 1, ChatColor.RESET + "Checkpoint", (short)1);
+        ItemStack grayDye = instance.itemCreator.createItem(Material.INK_SACK, 1, ChatColor.RESET + "Back to Spawn", (short)5);
 
         player.getInventory().setItem(0, redDye);
         player.getInventory().setItem(8, grayDye);
 
         player.setGameMode(GameMode.CREATIVE);
+        player.updateInventory();
 
+    }
+
+    public void replayInventory(Player player) {
+
+        player.getInventory().clear();
+        Main instance = Main.getInstance();
+
+        ItemStack grayDye = instance.itemCreator.createItem(Material.INK_SACK, 1, ChatColor.RESET + "Back to Spawn", (short)5);
+        ItemStack greenWool = instance.itemCreator.createItem(Material.WOOL, 1, ChatColor.RESET + "Start", (short)5);
+
+        player.getInventory().setItem(8, grayDye);
+        player.getInventory().setItem(4, greenWool);
+        player.setGameMode(GameMode.CREATIVE);
         player.updateInventory();
 
     }

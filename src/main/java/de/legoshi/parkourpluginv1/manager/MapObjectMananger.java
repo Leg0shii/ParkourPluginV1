@@ -32,8 +32,8 @@ public class MapObjectMananger {
 
 																	if (!(resultSet.next())) {
 
-																				mySQL.update("INSERT INTO clears (playeruuid, playername, mapid, cleared, ppcountc, ptime, pfails) VALUES " +
-																						"('" + playerObject.getPlayer().getUniqueId().toString() + "', '" + player.getName() + "', '" + maps.getID() + "', false, 0.0, 0, 0.0);");
+																				mySQL.update("INSERT INTO clears (playeruuid, playername, mapid, cleared, ppcountc, ptime, pfails, accuracy) VALUES " +
+																						"('" + playerObject.getPlayer().getUniqueId().toString() + "', '" + player.getName() + "', '" + maps.getID() + "', false, 0.0, 0, 0.0, 0);");
 
 																	}
 
@@ -82,7 +82,9 @@ public class MapObjectMananger {
 								null,
 								resultSet.getDouble("x"),
 								resultSet.getDouble("y"),
-								resultSet.getDouble("z"));
+								resultSet.getDouble("z"),
+								resultSet.getFloat("yaw"),
+								resultSet.getFloat("pitch"));
 						MapJudges mapJudges = new MapJudges(
 								0,
 								resultSet.getDouble("difficulty"),

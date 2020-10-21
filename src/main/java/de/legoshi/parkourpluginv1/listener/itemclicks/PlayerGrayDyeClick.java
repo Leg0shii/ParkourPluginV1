@@ -7,6 +7,7 @@ import de.legoshi.parkourpluginv1.util.playerinformation.PlayerMap;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerPlayStats;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerStatus;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -15,6 +16,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.io.File;
 import java.io.IOException;
 
 public class PlayerGrayDyeClick {
@@ -38,7 +40,7 @@ public class PlayerGrayDyeClick {
             //prevents calling function with offhand
             if(event.getHand() == EquipmentSlot.OFF_HAND) return;
 
-            if (event.getItem().equals(grayDye) && !(playerStatus.isBuildmode())) {
+            if (event.getItem().equals(grayDye) && playerStatus.isJumpmode()) {
 
                 playerPlayStats.setFailscount(playerMap.getFailsrelative() + playerPlayStats.getFailscount());
                 playerMap.setFailsrelative(0);
@@ -47,6 +49,8 @@ public class PlayerGrayDyeClick {
                 instance.scoreboardHelper.initializeScoreboard(player);
                 instance.scoreboardHelper.setSpawnScoreboardValue(playerObject);
                 instance.tabTagCreator.updateRank(player);
+
+                playerObject.getReplay().stopReplayRec();
 
                 World playerWorld = player.getWorld();
                 player.teleport(instance.spawn);
@@ -65,6 +69,7 @@ public class PlayerGrayDyeClick {
                 if(i == 0) instance.worldSaver.zipWorld(playerWorld);
 
                 player.sendMessage(Message.Prefix.getRawMessage() + "You left the Map");
+
                 instance.inventory.createSpawnInventory(player);
                 instance.checkpointManager.checkpointObjectHashMap.get(player).setLocation(instance.spawn);
                 event.setCancelled(true);
@@ -96,6 +101,21 @@ public class PlayerGrayDyeClick {
                 player.teleport(instance.spawn);
 
                 event.setCancelled(true);
+
+            } else if(event.getItem().equals(grayDye) && playerStatus.isReplaymode()) {
+
+                World world = player.getWorld();
+                String map = world.getName();
+                playerStatus.setReplaymode(false);
+                player.teleport(instance.spawn);
+                instance.inventory.createSpawnInventory(player);
+                playerStatus.setReplayStart(false);
+                playerStatus.setReplaymode(false);
+
+                File mapfile = new File(map);
+
+                Bukkit.unloadWorld(world, false);
+                FileUtils.deleteDirectory(mapfile);
 
             }
 

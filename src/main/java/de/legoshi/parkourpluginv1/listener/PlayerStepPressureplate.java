@@ -13,6 +13,8 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -104,13 +106,14 @@ public class PlayerStepPressureplate {
                                 double acc = 0;
                                 double ppFromMap = 0;
                                 if(playerMap.getMapObject().getMapMetaData().getMapType().equals("speedrun")) {
-                                    acc = instance.performanceCalculator.calcSpeedAcc(playerObject);
-                                    ppFromMap = instance.performanceCalculator.calcSpeedPP(acc, diff);
+                                    acc = instance.performanceCalculator.calcSpeedAcc(playerMap.getMapObject(), failsGained, timeGained);
+                                    ppFromMap = instance.performanceCalculator.calcSpeedPP(acc, diff, playerMap.getMapObject().getMapJudges().getMinTime());
                                 } else if (playerMap.getMapObject().getMapMetaData().getMapType().equals("hallway")) {
-                                    acc = instance.performanceCalculator.calcHallwayAcc(playerObject);
+                                    acc = instance.performanceCalculator.calcHallwayAcc(playerMap.getMapObject(), failsGained, timeGained);
                                     ppFromMap = instance.performanceCalculator.calcHallwayPP(acc, diff, cp);
                                 }
                                 findMapRank(playerObject, ppFromMap); //calcs maprank of player in that map
+                                if(acc <= 60) acc = 60;
 
                                 //prints resultscreen
                                 showResultScreen(
@@ -126,17 +129,22 @@ public class PlayerStepPressureplate {
                                     resultSet.getDouble("accuracy")
                                     );
 
-                                if (ppFromMap > resultSet.getDouble("ppcountc")) {
+                                if (ppFromMap > resultSet.getDouble("ppcountc") ||
+                                    ((String.format("%.2f", ppFromMap).equals(String.format("%.2f", resultSet.getDouble("ppcountc")))
+                                        && timeGained < resultSet.getDouble("ptime")))) {
 
                                     playerUUID = player.getUniqueId();
                                     mapID = playerMap.getMapObject().getID();
 
                                     instance.mySQLManager.saveClearToDB(failsGained, timeGained, ppFromMap, playerUUID, mapID, acc);
-                                    anncounceFastestTime(playerMap.getMapObject(), player, ppFromMap);
+                                    //Main.getInstance().replay.saveReplayFile(Main.getInstance().playerManager.playerObjectHashMap.get(player));
+                                    playerObject.getReplay().saveReplayRec();
+                                    playerObject.getReplay().getFwRec().setValue("length", playerObject.getReplay().getCounter());
 
                                     if(ppFromMap > playerMap.getMapObject().getMapJudges().getHighestPP()) {
 
                                         playerObject.getPlayerMap().getMapObject().getMapJudges().setHighestPP(ppFromMap);
+                                        anncounceFastestTime(playerMap.getMapObject(), player, ppFromMap);
 
                                     }
 
@@ -145,7 +153,6 @@ public class PlayerStepPressureplate {
 
                                     mySQL.update("UPDATE tablename SET ppcountp = " + playerPlayStats.getPpcount() + " WHERE playeruuid = '" + player.getUniqueId() + "';");
 
-                                    instance.playerManager.updateRankOfAllOnlinePlayer();
                                     instance.scoreboardHelper.updatePPScoreOnScoreBoard(player, playerPlayStats.getPpcount());
 
                                     Timer timer = new Timer();
@@ -162,11 +169,15 @@ public class PlayerStepPressureplate {
 
                                     }, 3000, 1);
 
-                                }
+                                } else { playerObject.getReplay().stopReplayRec();
+                                    }
 
                             }
 
                         } catch (SQLException throwables) { throwables.printStackTrace(); }
+
+                        instance.playerManager.updateRankOfAllOnlinePlayer(); //updates playerstabrank
+                        instance.tabTagCreator.updateRank(player);
 
                     }
 
@@ -180,16 +191,12 @@ public class PlayerStepPressureplate {
 
     public void anncounceFastestTime(MapObject map, Player player, double ppGained) {
 
-        if (ppGained > map.getMapJudges().getHighestPP()) {
+        for(Player all : Bukkit.getOnlinePlayers()) {
 
-            for(Player all : Bukkit.getOnlinePlayers()) {
-
-                all.sendMessage("" + Message.MSG_ANNOUNCEMENT_FAST.getMessage()
-                    .replace("{player}", player.getDisplayName())
-                    .replace("{mapname}", map.getMapMetaData().getName())
-                    .replace("{ppscore}", String.format("%.2f", ppGained)));
-
-            }
+            all.sendMessage("" + Message.MSG_ANNOUNCEMENT_FAST.getMessage()
+                .replace("{player}", player.getDisplayName())
+                .replace("{mapname}", map.getMapMetaData().getName())
+                .replace("{ppscore}", String.format("%.2f", ppGained)));
 
         }
 
@@ -202,14 +209,42 @@ public class PlayerStepPressureplate {
         Main instance = Main.getInstance();
         checkpoint.setX(checkpoint.getX() + 0.5);
         checkpoint.setZ(checkpoint.getZ() + 0.5);
+        checkpoint.setPitch(player.getLocation().getPitch());
+        checkpoint.setYaw(player.getLocation().getYaw());
         CheckpointObject checkpointObject = instance.checkpointManager.checkpointObjectHashMap.get(player);
         CheckpointManager checkpointManager = instance.checkpointManager;
+        PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
 
-        if (!(checkpointObject.getLocation().equals(checkpoint))) {
+        if (!(checkpointObject.getLocation().equals(checkpoint)) && !(playerObject.getPlayerStatus().isCppress())) {
 
             //saves Position of Player when stepped on cp
             checkpointManager.checkpointObjectHashMap.get(player).setLocation(checkpoint);
             player.sendMessage(Message.MSG_SetCP.getMessage());
+            playerObject.getPlayerStatus().setCppress(true);
+            playerObject.getPlayerStatus().setHasCP(true);
+
+            Location l = player.getLocation();
+            l.setY(l.getY()-1);
+
+            if(l.getBlock().getType().equals(Material.GREEN_GLAZED_TERRACOTTA)) {
+
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
+
+            }
+
+            Timer timer = new Timer();
+
+            timer.schedule(new TimerTask() {
+
+                @Override
+                public void run() {
+
+                    playerObject.getPlayerStatus().setCppress(false);
+                    timer.cancel();
+
+                }
+
+            }, 1000, 1);
 
         }
 
@@ -226,12 +261,12 @@ public class PlayerStepPressureplate {
             String rank = Main.getInstance().performanceCalculator.calcMapRank(acc);
             String mrankString = "-" + ChatColor.GRAY;
 
-            if(ppGained >= ppOld) prefixPP = "" + ChatColor.GREEN;
-            if(timeGained <= timeOld) prefixTime = "" + ChatColor.GREEN;
+            if(ppGained >= ppOld) { prefixPP = "" + ChatColor.GREEN; }
+            if(timeGained <= timeOld || timeOld == 0) prefixTime = "" + ChatColor.GREEN;
             if(failsGained <= failsOld) prefixFails = "" + ChatColor.GREEN;
             if(acc >= oldacc)  prefixAcc = "" + ChatColor.GREEN;
 
-            if(ppGained < ppOld) prefixPP = "" + ChatColor.RED;
+            if(ppGained < ppOld) { prefixPP = "" + ChatColor.RED; }
             if(timeGained > timeOld) prefixTime = "" + ChatColor.RED;
             if(failsGained > failsOld) prefixFails = "" + ChatColor.RED;
             if(acc < oldacc)  prefixAcc = "" + ChatColor.RED;

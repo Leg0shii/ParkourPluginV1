@@ -72,8 +72,8 @@ public class MapCreateGUI {
 																				double y = spawn.getY();
 																				double z = spawn.getZ();
 
-																				mySQL.update("INSERT INTO maps (mapname, mapstatus, builder, maptype, prec, cpcount, difficulty, minfails, mintime, x, y, z, world) VALUES " +
-																						"('-','wip' ,'" + buildername + "' ,'',0 ,0 ,0 ,0 ,0 ,"+x+" ,"+y+" ,"+z+" , '" + worldName + "');");
+																				mySQL.update("INSERT INTO maps (mapname, mapstatus, builder, maptype, prec, cpcount, difficulty, minfails, mintime, x, y, z, yaw, pitch, world) VALUES " +
+																						"('-','wip' ,'" + buildername + "' ,'',0 ,0 ,0 ,0 ,0 ,"+x+" ,"+y+" ,"+z+",0 ,0 , '" + worldName + "');");
 
 																				instance.checkpointManager.checkpointObjectHashMap.get(player).setLocation(spawn); //sets cp
 

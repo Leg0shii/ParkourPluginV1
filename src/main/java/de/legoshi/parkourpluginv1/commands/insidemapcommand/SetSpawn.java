@@ -43,11 +43,15 @@ public class SetSpawn implements CommandExecutor {
 						double x = location.getX();
 						double y = location.getY();
 						double z = location.getZ();
+						double yaw = location.getYaw();
+						double pitch = location.getPitch();
 
 						instance.checkpointManager.checkpointObjectHashMap.get(player).setLocation(player.getLocation());
 						mySQL.update("UPDATE maps SET x = '"+x+"' WHERE mapid = " + mapid);
-						mySQL.update("UPDATE maps SET x = '"+y+"' WHERE mapid = " + mapid);
-						mySQL.update("UPDATE maps SET x = '"+z+"' WHERE mapid = " + mapid);
+						mySQL.update("UPDATE maps SET y = '"+y+"' WHERE mapid = " + mapid);
+						mySQL.update("UPDATE maps SET z = '"+z+"' WHERE mapid = " + mapid);
+						mySQL.update("UPDATE maps SET yaw = '"+yaw+"' WHERE mapid = " + mapid);
+						mySQL.update("UPDATE maps SET pitch = '"+pitch+"' WHERE mapid = " + mapid);
 						player.sendMessage(Message.MSG_SUCC_SET_SPAWN.getMessage());
 
 						return false;

@@ -55,7 +55,8 @@ public class PPBestCommand implements CommandExecutor {
         Main instance = Main.getInstance();
         AsyncMySQL mySQL = instance.mySQL;
 
-        mySQL.query("SELECT * FROM clears, maps WHERE clears.mapid = maps.mapid AND playername = '" + playername + "' ORDER BY clears.ppcountc DESC;",
+        mySQL.query("SELECT * FROM clears, maps WHERE clears.mapid = maps.mapid " +
+                "AND playername = '" + playername + "' AND cleared = 1 ORDER BY clears.ppcountc DESC;",
             new Consumer<ResultSet>() {
 
             @Override

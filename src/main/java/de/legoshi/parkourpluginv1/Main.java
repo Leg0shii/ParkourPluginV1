@@ -2,6 +2,7 @@ package de.legoshi.parkourpluginv1;
 
 import de.legoshi.parkourpluginv1.commands.*;
 import de.legoshi.parkourpluginv1.commands.insidemapcommand.SetSpawn;
+import de.legoshi.parkourpluginv1.commands.insidemapcommand.UpdateMapPPCommand;
 import de.legoshi.parkourpluginv1.gui.MapCreateGUI;
 import de.legoshi.parkourpluginv1.gui.MapEditGUI;
 import de.legoshi.parkourpluginv1.gui.MapSelectGUI;
@@ -9,6 +10,7 @@ import de.legoshi.parkourpluginv1.listener.*;
 import de.legoshi.parkourpluginv1.listener.cancellistener.*;
 import de.legoshi.parkourpluginv1.manager.*;
 import de.legoshi.parkourpluginv1.util.*;
+import de.legoshi.parkourpluginv1.util.fakeplayer.NPC;
 import org.bukkit.Bukkit;
 
 import org.bukkit.Location;
@@ -23,6 +25,7 @@ import java.io.IOException;
 public final class Main extends JavaPlugin {
 
     public static Main instance;
+    private NPC npc;
     public AsyncMySQL mySQL;
     public MySQLManager mySQLManager;
     public PlayerManager playerManager;
@@ -41,6 +44,8 @@ public final class Main extends JavaPlugin {
     public MapCreateGUI buildCreateGUI;
     public MapEditGUI mapEditGUI;
     public PerformanceCalculator performanceCalculator;
+    public ItemCreator itemCreator;
+    public Replay replay;
 
     public Location spawn;
     public String spawnName;
@@ -98,6 +103,9 @@ public final class Main extends JavaPlugin {
         getCommand("invite").setExecutor(new MapInviteCommand());
         getCommand("accept").setExecutor(new MapAcceptCommand());
         getCommand("setspawn").setExecutor(new SetSpawn());
+        getCommand("ppupdate").setExecutor(new UpdateMapPPCommand());
+        getCommand("nv").setExecutor(new NightVisionCommand());
+        getCommand("replay").setExecutor(new ReplayCommand());
 
     }
 
@@ -112,6 +120,10 @@ public final class Main extends JavaPlugin {
         pm.registerEvents(new ItemDropListener(), this);
         pm.registerEvents(new PlayerDamageListener(), this);
         pm.registerEvents(new MinecartListener(), this);
+        pm.registerEvents(new LeafDecayListener(), this);
+        pm.registerEvents(new BlockGrowListener(), this);
+        pm.registerEvents(new LiquidSpreadListener(), this);
+        pm.registerEvents(new IceMeltListener(), this);
 
         pm.registerEvents(new JoinListener(), this);
         pm.registerEvents(new QuitListener(), this);
@@ -148,6 +160,8 @@ public final class Main extends JavaPlugin {
         mapEditGUI = new MapEditGUI();
         buildCreateGUI = new MapCreateGUI();
         performanceCalculator = new PerformanceCalculator();
+        itemCreator = new ItemCreator();
+        replay = new Replay();
         spawn = new Location(Bukkit.getWorld("world"), -619, 5, 10, -160, 5);
         standardSpawn = new Location(null, 8.5, 4, 8.5);
         spawnName = "world";
@@ -163,6 +177,10 @@ public final class Main extends JavaPlugin {
         File pkmapsfile = new File("./ParkourMapsPlayers");
         if(pkmapsfile.mkdir()) { Bukkit.getConsoleSender().sendMessage("Successfully created Folder: ParkourMapsPlayers"); }
         else { Bukkit.getConsoleSender().sendMessage("Folder: ParkourMapsPlayers Already exist"); }
+
+        File replayfolder = new File("./ParkourReplays");
+        if(replayfolder.mkdir()) { Bukkit.getConsoleSender().sendMessage("Successfully created Folder: ParkourReplays"); }
+        else { Bukkit.getConsoleSender().sendMessage("Folder: ParkourReplays Already exist"); }
 
     }
 
