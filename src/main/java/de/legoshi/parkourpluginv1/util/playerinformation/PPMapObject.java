@@ -1,4 +1,4 @@
-package de.legoshi.parkourpluginv1.util;
+package de.legoshi.parkourpluginv1.util.playerinformation;
 
 import de.legoshi.parkourpluginv1.util.mapinformation.MapObject;
 

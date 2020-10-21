@@ -29,6 +29,7 @@ public class HelpCommand implements CommandExecutor {
                         player.sendMessage(Message.MSG_HELPPBESTPP.getRawMessage());
                         player.sendMessage(Message.MSG_HELPMAPTOP.getRawMessage());
                         player.sendMessage(Message.MSG_HELPBRACKETS.getRawMessage());
+                        player.sendMessage(Message.MSG_HELPNV.getRawMessage());
 
                         player.sendMessage(Message.MSG_HELPFOOTER.getRawMessage());
 

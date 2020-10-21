@@ -1,6 +1,7 @@
 package de.legoshi.parkourpluginv1.listener.itemclicks;
 
 import de.legoshi.parkourpluginv1.Main;
+import de.legoshi.parkourpluginv1.util.Replay;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerMap;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerStatus;
@@ -37,16 +38,38 @@ public class PlayerRedDyeClick {
                 metaRedDye.setDisplayName(ChatColor.RESET + "Checkpoint");
                 redDye.setItemMeta(metaRedDye);
 
+
+
                 if(clickedItem.equals(redDye) && clickedItem.getItemMeta().getDisplayName().equals(ChatColor.RESET + "Checkpoint")) {
 
                     if(playerStatus.isDyeClick()) {  return; }
                     else playerStatus.setDyeClick(true);
 
+                    if(!playerStatus.isHasCP()) {
+
+                        //sets fails and time to 0 again
+                        playerMap.setFailsrelative(0);
+                        playerMap.setTimeRelative(0);
+
+                        playerObject.getReplay().stopReplayRec();
+                        Replay replay = new Replay(instance, playerObject);
+                        replay.runTaskTimer(instance, 0, 1L);
+                        playerObject.setReplay(replay);
+
+                        //instance.replay.deleteReplayFile(playerObject);
+                        //instance.replay.startReplayRecording(playerObject);
+
+                    } else {
+
+                        playerMap.setFailsrelative(playerMap.getFailsrelative() + 1);
+
+                    }
+
+                    player.teleport(instance.checkpointManager.checkpointObjectHashMap.get(player).getLocation());
+
                     //prevents calling function with offhand
                     if(event.getHand() == EquipmentSlot.OFF_HAND) return;
 
-                    playerMap.setFailsrelative(playerMap.getFailsrelative() + 1);
-                    player.teleport(instance.checkpointManager.checkpointObjectHashMap.get(player).getLocation());
                     timerRedDyeClick(player);
 
                 }

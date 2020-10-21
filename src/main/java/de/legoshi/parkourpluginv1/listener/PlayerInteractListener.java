@@ -23,6 +23,8 @@ public class PlayerInteractListener implements Listener {
         instance.playerInteractManager.getPlayerChestClick().onChestOpen(event);
         instance.playerInteractManager.getPlayerTDClick().onTDClick(event);
         instance.playerInteractManager.getPlayerGlowstoneClick().onGlowstoneClick(event);
+        instance.playerInteractManager.getPlayerWoolClick().onWoolClick(event);
+        instance.playerInteractManager.getPlayerFarmlandStep().onFarmland(event);
 
     }
 

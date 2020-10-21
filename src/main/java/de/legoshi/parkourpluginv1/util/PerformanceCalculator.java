@@ -1,24 +1,20 @@
 package de.legoshi.parkourpluginv1.util;
 
 import de.legoshi.parkourpluginv1.util.mapinformation.MapObject;
-import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 public class PerformanceCalculator {
 
-			public double calcSpeedAcc(PlayerObject playerObject) {
+			public double calcSpeedAcc(MapObject mapObject, double playerfails, double playertime) {
 
-						MapObject mapObject = playerObject.getPlayerMap().getMapObject();
 						double diff = mapObject.getMapJudges().getDifficulty();
 						double maptime = mapObject.getMapJudges().getMinTime();
 						double mapfails = Math.floor((diff / 3.0)) + 1;
 						double prec = mapObject.getMapJudges().getPrecision();
 
-						double playerfails = playerObject.getPlayerMap().getFailsrelative();
-						double playertime = playerObject.getPlayerMap().getTimeRelative();
-
 						double failsP = 1;
-						double acc = 0;
+						double acc;
 						double timeP = 1;
 
 						if (playertime > maptime) {
@@ -28,14 +24,9 @@ public class PerformanceCalculator {
 									failsP = 1 - (20 * Math.log10(playerfails / mapfails)) / 100;
 						}
 
-						if (timeP > 0 && failsP > 0) {
-
-									acc = ((1 - timeP + 1 - failsP) * 100);
-									if (acc < 100) {
-												acc = 100 - (Math.pow(prec, 3) / 50.0) * acc;
-									}
-
-						}
+						acc = ((2 - (timeP + failsP)) * 100);
+						acc = 100 - (Math.pow(prec, 3) / 50.0) * acc;
+						if(acc < 0) { acc = 0; }
 
 						return acc;
 
@@ -57,12 +48,11 @@ public class PerformanceCalculator {
 
 			}
 
-			public double calcSpeedPP(double acc, double diff) {
+			public double calcSpeedPP(double acc, double diff, double maptime) {
 
-						double mapfails = Math.floor((diff / 3.0)) + 1;
 						double totalPP = 0;
 
-						double length = 0.5 + 2 * (Math.atan(mapfails / 60.0)) / Math.PI;
+						double length = 0.5 + 2 * (Math.atan(maptime / 45.0)) / Math.PI;
 						double fcValue = 1;
 						double bpp;
 
@@ -82,30 +72,25 @@ public class PerformanceCalculator {
 
 			}
 
-			public double calcHallwayAcc(PlayerObject playerObject) {
-
-						MapObject mapObject = playerObject.getPlayerMap().getMapObject();
+			public double calcHallwayAcc(MapObject mapObject, double playerfails, double playertime) {
 
 						double prec = mapObject.getMapJudges().getPrecision();
-						double playerfails = playerObject.getPlayerMap().getFailsrelative();
-						double playertime = playerObject.getPlayerMap().getTimeRelative();
 						double cp = mapObject.getMapJudges().getCpcount();
 
 						double diff = mapObject.getMapJudges().getDifficulty();
 						double maptime = mapObject.getMapJudges().getMinTime();
 						double mapfails = diff < 1.5 ? 0.0831 * diff * cp : cp * ((Math.pow(diff, 2) - diff) / 6);
 
-						double acc = 0;
+						double acc;
 						double timeP = 1;
 						double failsP = 1;
 
 						if (maptime < playertime) { timeP = 1 - (4.32809 * Math.log10(playertime / maptime)) / 100; } //time
 						if (mapfails < playerfails) { failsP = 1 - (7.21348 * Math.log10(playerfails / mapfails)) / 100; } //fails
 
-						if (timeP > 0 && failsP > 0) {
-									acc = (((1 - timeP) + (1 - failsP)) * 100);
-									if (acc < 100) { acc = 100 - (Math.pow(prec, 3) / 50.0) * acc; }
-						}
+						acc = ((2 - (timeP + failsP)) * 100);
+						acc = 100 - (Math.pow(prec, 3) / 50.0) * acc;
+						if(acc < 0) { acc = 0; }
 
 						return acc;
 
@@ -137,8 +122,8 @@ public class PerformanceCalculator {
 
 									String rank;
 
-									if (acc == 100) { rank = "" + ChatColor.GOLD + ChatColor.BOLD + "SS";
-									} else if (acc >= 95) { rank = "" + ChatColor.GOLD + ChatColor.BOLD + "S";
+									if (acc >= 100) { rank = "" + ChatColor.GOLD + ChatColor.BOLD + "SS";
+									} else if (acc >= 95 && acc <= 99.99999) { rank = "" + ChatColor.GOLD + ChatColor.BOLD + "S";
 									} else if (acc >= 90 && acc < 95) { rank = "" + ChatColor.GREEN + ChatColor.BOLD + "A";
 									} else if (acc >= 80 && acc < 90) { rank = "" + ChatColor.BLUE + ChatColor.BOLD + "B";
 									} else if (acc >= 70 && acc < 80) { rank = "" + ChatColor.DARK_PURPLE + ChatColor.BOLD + "C";

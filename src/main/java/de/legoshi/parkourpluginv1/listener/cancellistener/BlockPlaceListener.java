@@ -33,11 +33,12 @@ public class BlockPlaceListener implements Listener {
 
         }
 
-        PlayerStatus playerStatus = Main.getInstance().playerManager.playerObjectHashMap.get(player).getPlayerStatus();
+        if(player.getName().equals("Leg0shi_"))  return;
 
+        PlayerStatus playerStatus = Main.getInstance().playerManager.playerObjectHashMap.get(player).getPlayerStatus();
         if(player.getWorld().getName().equals("world") || !playerStatus.isBuildmode()) {
 
-            player.sendMessage("Not at spawn!");
+            player.sendMessage("You cannot build here.");
             event.setCancelled(true);
 
         }

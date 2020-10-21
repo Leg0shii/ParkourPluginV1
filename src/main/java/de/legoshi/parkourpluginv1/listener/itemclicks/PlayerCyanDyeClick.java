@@ -2,6 +2,7 @@ package de.legoshi.parkourpluginv1.listener.itemclicks;
 
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.Message;
+import de.legoshi.parkourpluginv1.util.Replay;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerMap;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerPlayStats;
@@ -45,6 +46,16 @@ public class PlayerCyanDyeClick {
             //sets fails and time to 0 again
             playerMap.setFailsrelative(0);
             playerMap.setTimeRelative(0);
+
+            playerObject.getPlayerStatus().setHasCP(false);
+
+            playerObject.getReplay().stopReplayRec();
+
+            Replay replay = new Replay(instance, playerObject);
+            replay.runTaskTimer(instance, 0, 1L);
+            playerObject.setReplay(replay);
+            //instance.replay.deleteReplayFile(playerObject);
+            //instance.replay.startReplayRecording(playerObject);
 
             //teleports player to start
             instance.checkpointManager.checkpointObjectHashMap.get(player).setLocation(playerMap.getMapObject().getMapMetaData().getSpawn());

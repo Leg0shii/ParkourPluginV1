@@ -19,7 +19,9 @@ public class UpdateSchedular {
                     Main instance = Main.getInstance();
                     PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(all);
 
-                    instance.playerManager.updatePlaytimeOfPlayer(playerObject);
+                    if(playerObject.getPlayer().getWorld().equals("world")) {
+                        instance.playerManager.updatePlaytimeOfPlayer(playerObject);
+                    }
 
                 }
 

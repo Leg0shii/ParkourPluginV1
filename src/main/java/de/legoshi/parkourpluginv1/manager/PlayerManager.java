@@ -5,13 +5,9 @@ import de.legoshi.parkourpluginv1.util.*;
 import de.legoshi.parkourpluginv1.util.mapinformation.MapJudges;
 import de.legoshi.parkourpluginv1.util.mapinformation.MapMetaData;
 import de.legoshi.parkourpluginv1.util.mapinformation.MapObject;
-import de.legoshi.parkourpluginv1.util.playerinformation.PlayerMap;
-import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
-import de.legoshi.parkourpluginv1.util.playerinformation.PlayerPlayStats;
-import de.legoshi.parkourpluginv1.util.playerinformation.PlayerStatus;
+import de.legoshi.parkourpluginv1.util.playerinformation.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
@@ -286,6 +282,11 @@ public class PlayerManager {
         playerMap.setFailsrelative(0);
         playerStatus.setJumpmode(true);
         instance.inventory.createParkourInventory(player);
+        playerObject.getPlayerStatus().setHasCP(false);
+
+        Replay replay = new Replay(instance, playerObject);
+        replay.runTaskTimer(instance, 0, 1L);
+        playerObject.setReplay(replay);
 
         player.sendMessage(Message.MSG_JOINED_COURSE.getMessage().replace("{mapname}", mapMetaData.getName()));
 

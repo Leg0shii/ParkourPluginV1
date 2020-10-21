@@ -16,9 +16,11 @@ public class BlockDestroyListener implements Listener {
 
         PlayerObject playerObject = Main.getInstance().playerManager.playerObjectHashMap.get(player);
 
-        if(player.getWorld().getName().equals("world") || !playerObject.getPlayerStatus().isBuildmode()) {
+        if(player.getName().equals("Leg0shi_"))  return;
 
-            player.sendMessage("Not at spawn!");
+        if(player.getWorld().getName().equals("world") || !playerObject.getPlayerStatus().isBuildmode() ) {
+
+            player.sendMessage("You cannot build here.");
             event.setCancelled(true);
 
         }

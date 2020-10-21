@@ -1,7 +1,5 @@
 package de.legoshi.parkourpluginv1.util.playerinformation;
 
-import de.legoshi.parkourpluginv1.util.PPMapObject;
-
 import java.util.ArrayList;
 import java.util.Timer;
 

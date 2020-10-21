@@ -13,6 +13,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.io.File;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -103,6 +105,8 @@ public class PPMapCommand implements CommandExecutor {
 						AsyncMySQL mySQL = Main.getInstance().mySQL;
 						mySQL.update("UPDATE maps SET mapstatus = '"+newStatus+"' WHERE mapid = " + mapid);
 						player.sendMessage(Message.MSG_PPMAP_SET_STATUS.getMessage().replace("{mapstatus}", newStatus));
+						File file = new File("./ParkourReplays/"+mapid);
+						file.mkdir();
 
 			}
 

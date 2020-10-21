@@ -44,11 +44,8 @@ public class WorldSaver {
 						//wait for Worldunzip
 						ExecutorService executorService = Executors.newSingleThreadExecutor();
 						Future<Integer> task = executorService.submit(() -> unzipWorld(playerW));
-						try {
-									task.get();
-						} catch (InterruptedException | ExecutionException e) {
-									e.printStackTrace();
-						}
+						try { task.get(); }
+						catch (InterruptedException | ExecutionException e) { e.printStackTrace(); }
 						executorService.shutdown();
 
 			}
@@ -84,6 +81,7 @@ public class WorldSaver {
 						world.setGameRuleValue("doDaylightCycle", "false");
 						world.setGameRuleValue("doMobSpawning", "false");
 						world.setGameRuleValue("doFireTick", "false");
+						world.setGameRuleValue("randomTickSpeed", "0");
 						world.setDifficulty(Difficulty.PEACEFUL);
 						world.save();
 
@@ -93,12 +91,16 @@ public class WorldSaver {
 
 			public World loadWorld(String valueOf) {
 
+						File uid = new File("./" + valueOf + "/uid.dat");
+						uid.delete();
+
 						WorldCreator worldCreator = new WorldCreator(valueOf);
 						World world = Bukkit.createWorld(worldCreator);
 
 						world.setGameRuleValue("doDaylightCycle", "false");
 						world.setGameRuleValue("doMobSpawning", "false");
 						world.setGameRuleValue("doFireTick", "false");
+						world.setGameRuleValue("randomTickSpeed", "0");
 						world.setDifficulty(Difficulty.PEACEFUL);
 						world.save();
 

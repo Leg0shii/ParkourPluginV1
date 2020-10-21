@@ -30,7 +30,7 @@ public class MySQLManager {
             //create table for mapdata
             mySQL.update("CREATE TABLE IF NOT EXISTS maps (mapid INT(255) AUTO_INCREMENT" +
                 ", mapname VARCHAR(255), maptype VARCHAR(255), builder VARCHAR(255), mapstatus VARCHAR(255), difficulty DOUBLE(12, 4), minFails INT(255), minTime DOUBLE(12, 4)" +
-                ", prec DOUBLE(12, 4), cpcount INT(255), x DOUBLE(12, 4), y DOUBLE(12, 4), z DOUBLE(12, 4), world VARCHAR(255), PRIMARY KEY(mapid));");
+                ", prec DOUBLE(12, 4), cpcount INT(255), x DOUBLE(12, 4), y DOUBLE(12, 4), z DOUBLE(12, 4), yaw DOUBLE(12, 4), pitch DOUBLE(12, 4), world VARCHAR(255), PRIMARY KEY(mapid));");
             //create table for clears
             mySQL.update("CREATE TABLE IF NOT EXISTS clears (feldID INT(255) AUTO_INCREMENT, mapid VARCHAR(255), playeruuid VARCHAR(255), cleared BOOLEAN" +
                 ", playername VARCHAR(255), accuracy DOUBLE(12, 4), pfails INT(255), ptime DOUBLE(12, 4), ppcountc DOUBLE(12, 4), PRIMARY KEY(feldID));");
@@ -47,7 +47,7 @@ public class MySQLManager {
 
         try {
 
-            mySQL = new AsyncMySQL(instance, "51.89.102.233", 3306, "root", "qexGGHZfFzWyKYE", "serverpro_db");
+            mySQL = new AsyncMySQL(instance, "51.89.3.40", 3306, "root", "qexGGHZfFzWyKYE", "serverpro_db");
             //mySQL = new AsyncMySQL(instance, "localhost", 3306, "root", "root", "testdb");
             return mySQL;
 

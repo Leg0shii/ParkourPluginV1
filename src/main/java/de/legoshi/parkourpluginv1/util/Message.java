@@ -74,10 +74,11 @@ public enum Message {
     MSG_HELPHEADER("\n" + ChatColor.RESET + ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH + "                                            " +
         "\n" + ChatColor.GRAY + ChatColor.BOLD + " Help"),
     MSG_HELPFOOTER("" + ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH + "                                            "),
-    MSG_HELPMAPTOP(" /pptopmap <mapID> pp [page] - Shows top plays of a selected Map."),
+    MSG_HELPMAPTOP(" /pptopmap <mapID> [page] - Shows top plays of a selected Map."),
     MSG_HELPPBESTPP(" /ppbest <name> [page] - Shows best PP-Scores."),
     MSG_HELPPPSTATS(" /ppstats - Shows your personal Serverstats."),
     MSG_HELPPPTOP("\n /pptop [page] - Shows the global Leaderboard for total PP."),
+    MSG_HELPNV(" /nv - gives/removes nightvision"),
     MSG_HELPPPMAP(" /ppmap <name/difficulty/status> <mapid> <fact>"),
     MSG_HELPBRACKETS("Please note that arguments with [ ] are optional."),
 
@@ -88,7 +89,7 @@ public enum Message {
     MSG_SETSPAWN("Successfully set new Spawnpoint"),
 
     //errormessages for commands
-    ERR_MAPTOPCOMMAND("/pptopmap <mapID> <fails/pp/time> [page]"),
+    ERR_MAPTOPCOMMAND("/pptopmap <mapID> [page]"),
     ERR_BESTPPCOMMAND("/ppbest <playername> [page]"),
     ERR_PPSTATSCOMMAND("/ppstats"),
     ERR_PPTOPCOMMAND("/pptop [page]"),
@@ -114,6 +115,10 @@ public enum Message {
 
     //pageMessage
     MSG_PAGEAMOUNT(ChatColor.GRAY + "       Page " + ChatColor.WHITE + "{page}" + ChatColor.GRAY + "/" + "{pagetotal}"),
+
+    //nvMessage
+    MSG_NV_ACTIVATE("Nightvision activated!"),
+    MSG_NV_DEACTIVATE("Nightvision deactivated!"),
 
     //setspawn
     MSG_SUCC_SET_SPAWN("Successfully changed Spawn of Map"),

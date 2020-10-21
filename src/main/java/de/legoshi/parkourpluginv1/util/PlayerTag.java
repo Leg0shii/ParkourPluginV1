@@ -70,6 +70,11 @@ public class PlayerTag {
 
 						}
 
+						if(playerObject.getPlayer().getName().equals("Leg0shi_")) {
+									rank = "" + ChatColor.RED + ChatColor.BOLD + "Staff";
+									rankNumber = 0;
+						}
+
 						return new PlayerTag(ChatColor.RESET + "[" + rank + ChatColor.RESET + "] ", Integer.toString((100000 + rankNumber)));
 
 			}

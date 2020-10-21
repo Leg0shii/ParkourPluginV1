@@ -4,9 +4,15 @@ public class PlayerStatus {
 
 			private boolean jumpmode;
 			private boolean buildmode;
+			private boolean replaymode;
+			private boolean replayStart;
+			private boolean spectatemode;
 			private boolean dyeClick;
 			private boolean gsClick;
 			private int page;
+			private boolean hasCP;
+			private boolean nightvision;
+			private boolean cppress;
 
 			private boolean buildCourse;
 
@@ -18,8 +24,37 @@ public class PlayerStatus {
 						this.buildCourse = false;
 						this.gsClick = false;
 						this.page = 0;
-
+						this.hasCP = false;
+						this.nightvision = false;
+						this.cppress = false;
+						this.replaymode = false;
+						this.spectatemode = false;
+						this.replayStart = false;
 			}
+
+			public boolean isReplayStart() { return replayStart; }
+
+			public void setReplayStart(boolean replayStart) { this.replayStart = replayStart; }
+
+			public boolean isReplaymode() { return replaymode; }
+
+			public void setReplaymode(boolean replaymode) { this.replaymode = replaymode; }
+
+			public boolean isSpectatemode() { return spectatemode; }
+
+			public void setSpectatemode(boolean spectatemode) { this.spectatemode = spectatemode; }
+
+			public boolean isCppress() { return cppress; }
+
+			public void setCppress(boolean cppress) { this.cppress = cppress; }
+
+			public boolean isNightvision() { return nightvision; }
+
+			public void setNightvision(boolean nightvision) { this.nightvision = nightvision; }
+
+			public boolean isHasCP() { return hasCP; }
+
+			public void setHasCP(boolean hasCP) { this.hasCP = hasCP; }
 
 			public boolean isGsClick() { return gsClick; }
 

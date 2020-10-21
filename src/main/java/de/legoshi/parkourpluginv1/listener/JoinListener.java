@@ -2,10 +2,8 @@ package de.legoshi.parkourpluginv1.listener;
 
 import de.legoshi.parkourpluginv1.Main;
 import de.legoshi.parkourpluginv1.util.*;
-import de.legoshi.parkourpluginv1.util.playerinformation.PlayerMap;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerObject;
 import de.legoshi.parkourpluginv1.util.playerinformation.PlayerPlayStats;
-import de.legoshi.parkourpluginv1.util.playerinformation.PlayerStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;

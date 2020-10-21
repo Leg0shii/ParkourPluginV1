@@ -44,7 +44,7 @@ public class MapSelectGUI {
 						player.closeInventory();
 						gui.show(player);
 
-						mySQL.query("SELECT * FROM maps WHERE mapstatus = '" + search + "' LIMIT "+(40*pages)+", 41;", new Consumer<ResultSet>() {
+						mySQL.query("SELECT * FROM maps WHERE mapstatus = '" + search + "' ORDER BY difficulty ASC LIMIT "+(40*pages)+", 41;", new Consumer<ResultSet>() {
 
 									@Override
 									public void accept(ResultSet resultSet) {
@@ -230,6 +230,7 @@ public class MapSelectGUI {
 						PlayerObject playerObject = instance.playerManager.playerObjectHashMap.get(player);
 						PlayerStatus playerStatus = playerObject.getPlayerStatus();
 						PlayerMap playerMap = playerObject.getPlayerMap();
+						MapObject mapObject = playerObject.getPlayerMap().getMapObject();
 
 						timer.scheduleAtFixedRate(new TimerTask() {
 
@@ -237,21 +238,24 @@ public class MapSelectGUI {
 									public void run() {
 
 												//outputs the time and current pp of player over hotbar
-												double acc = 0.00;
-												double currentPP = 0.00;
+												double acc = 0.0;
+												double currentPP = 0.0;
 
 												double diff = playerObject.getPlayerMap().getMapObject().getMapJudges().getDifficulty();
 												double cp = playerObject.getPlayerMap().getMapObject().getMapJudges().getCpcount();
 
-												if(playerMap.getMapObject().getMapMetaData().getMapType().equals("speedrun")) {
-															acc = instance.performanceCalculator.calcSpeedAcc(playerObject);
-															currentPP = instance.performanceCalculator.calcSpeedPP(acc, diff);
-												} else if (playerMap.getMapObject().getMapMetaData().getMapType().equals("hallway")) {
-															acc = instance.performanceCalculator.calcHallwayAcc(playerObject);
-															currentPP = instance.performanceCalculator.calcHallwayPP(acc, diff, cp);
-												}
+												double playerfails = playerObject.getPlayerMap().getFailsrelative();
+												double playertime = playerObject.getPlayerMap().getTimeRelative();
 
-												Scoreboard scoreboard = player.getScoreboard();
+												if(playerMap.getMapObject().getMapMetaData().getMapType().equals("speedrun")) {
+															acc = instance.performanceCalculator.calcSpeedAcc(mapObject, playerfails, playertime);
+															currentPP = instance.performanceCalculator.calcSpeedPP(acc, diff, mapObject.getMapJudges().getMinTime());
+															//playerObject.getPlayerMap().setPpcountRelative(currentPP);
+												} else if (playerMap.getMapObject().getMapMetaData().getMapType().equals("hallway")) {
+															acc = instance.performanceCalculator.calcHallwayAcc(mapObject, playerfails, playertime);
+															currentPP = instance.performanceCalculator.calcHallwayPP(acc, diff, cp);
+															//playerObject.getPlayerMap().setPpcountRelative(currentPP);
+												}
 
 												if (!(playerStatus.isJumpmode())) {
 
@@ -261,23 +265,27 @@ public class MapSelectGUI {
 
 												}
 
+												Scoreboard scoreboard = player.getScoreboard();
+
 												double currentTime = playerMap.getTimeRelative();
 												int currentFails = playerMap.getFailsrelative();
 
-												if(acc > 60 && playerStatus.isJumpmode()) {
-															scoreboard.getTeam("ppscoremap").setPrefix("" + ChatColor.WHITE + String.format("%.2f", currentPP) + "pp");
-															scoreboard.getTeam("acc").setPrefix("" + ChatColor.WHITE + String.format("%.2f", acc) + "%");
-															scoreboard.getTeam("time").setPrefix("" + ChatColor.WHITE + String.format("%.3f", currentTime) + "s ");
-															scoreboard.getTeam("time").setSuffix(ChatColor.GRAY + " (" +  playerMap.getMapObject().getMapJudges().getMinTime() + "s)");
-															scoreboard.getTeam("mapfail").setPrefix("" + ChatColor.WHITE + currentFails +
-																	ChatColor.GRAY + " (" +instance.performanceCalculator.calcMinFails(playerMap.getMapObject()) + ")");
-												} else if (playerStatus.isJumpmode()) {
-															scoreboard.getTeam("ppscoremap").setPrefix("" + ChatColor.WHITE + "0 pp");
-															scoreboard.getTeam("acc").setPrefix("" + ChatColor.WHITE + "60.00 %");
-															scoreboard.getTeam("time").setPrefix("" + ChatColor.WHITE + String.format("%.3f", currentTime) + "s ");
-															scoreboard.getTeam("time").setSuffix(ChatColor.GRAY + " (" + instance.performanceCalculator.calcMinFails(playerMap.getMapObject()) + "s)");
-															scoreboard.getTeam("mapfail").setPrefix("" + ChatColor.WHITE + currentFails +
-																	ChatColor.GRAY + " (" + playerMap.getMapObject().getMapJudges().getMinFails() + ")");
+												if(scoreboard.getTeam("ppscoremap") != null) { //if scoreboard is initialized
+															if (acc > 60 && playerStatus.isJumpmode()) {
+																		scoreboard.getTeam("ppscoremap").setPrefix("" + ChatColor.WHITE + String.format("%.2f", currentPP) + "pp");
+																		scoreboard.getTeam("acc").setPrefix("" + ChatColor.WHITE + String.format("%.2f", acc) + "%");
+																		scoreboard.getTeam("time").setPrefix("" + ChatColor.WHITE + String.format("%.3f", currentTime) + "s ");
+																		scoreboard.getTeam("time").setSuffix(ChatColor.GRAY + " (" + playerMap.getMapObject().getMapJudges().getMinTime() + "s)");
+																		scoreboard.getTeam("mapfail").setPrefix("" + ChatColor.WHITE + currentFails +
+																				ChatColor.GRAY + " (" + instance.performanceCalculator.calcMinFails(playerMap.getMapObject()) + ")");
+															} else if (playerStatus.isJumpmode()) {
+																		scoreboard.getTeam("ppscoremap").setPrefix("" + ChatColor.WHITE + "0 pp");
+																		scoreboard.getTeam("acc").setPrefix("" + ChatColor.WHITE + "60.00 %");
+																		scoreboard.getTeam("time").setPrefix("" + ChatColor.WHITE + String.format("%.3f", currentTime) + "s ");
+																		scoreboard.getTeam("time").setSuffix(ChatColor.GRAY + " (" + playerMap.getMapObject().getMapJudges().getMinTime() + "s)");
+																		scoreboard.getTeam("mapfail").setPrefix("" + ChatColor.WHITE + currentFails +
+																				ChatColor.GRAY + " (" + playerMap.getMapObject().getMapJudges().getMinFails() + ")");
+															}
 												}
 
 												playerMap.setTimeRelative(playerMap.getTimeRelative() + 0.05);
